@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Lan Tian NoLitter</string>
+    <string name="xposed_description">阻止应用在内置存储里创建不必要的文件夹。</string>
+    <string name="lt_storage_directories">内置存储路径：（一行一个）</string>
+    <string name="lt_storage_banned">不阻止的应用：（一行一个）</string>
+    <string name="lt_save">保存</string>
+    <string name="lt_reset">重置</string>
+    <string name="lt_log">在 Xposed 安装器中显示日志</string>
+    <string name="toast_saved">设置已保存。</string>
+    <string name="toast_reseted">设置已重置。</string>
+    <string name="toast_invalidchar">路径中含有非法字符！</string>
+</resources>
