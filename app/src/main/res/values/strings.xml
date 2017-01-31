@@ -1,16 +1,25 @@
 <resources>
-    <string name="app_name">Lan Tian NoLitter</string>
+    <string name="app_name">LT NoLitter</string>
     <string name="xposed_description">Stops apps from littering in storage.</string>
 
-    <string name="ui_storageDirs">Storage Paths: (One per line)</string>
-    <string name="ui_save">Save</string>
-    <string name="ui_reset">Reset</string>
-    <string name="ui_chooseApp">Choose Apps</string>
+    <string name="ui_cat_config">Configuration</string>
     <string name="ui_log">Show log in Xposed Installer</string>
+    <string name="ui_log_on">You can see logs in Xposed Installer</string>
+    <string name="ui_log_off">You cannot see logs in Xposed Installer</string>
+    <string name="ui_storageDirs">Storage Paths</string>
+    <string name="ui_storageDirs_description">The path of your Internal Storage and SDCard, one per line</string>
+    <string name="ui_chooseApp">Whitelist apps</string>
+    <string name="ui_chooseApp_description">Apps that should not restricted, like File Mangers</string>
+
+    <string name="ui_cat_about">About</string>
+    <string name="ui_author">Author</string>
+    <string name="ui_author_description">Lan Tian</string>
+    <string name="ui_source">Source Code</string>
+    <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
 
     <string name="toast_saved">Settings Saved.</string>
-    <string name="toast_reset">Settings Reset.</string>
     <string name="toast_savedRestart">Settings Saved. Restart to take effect.</string>
-    <string name="toast_resetRestart">Settings Reset. Restart to take effect.</string>
-    <string name="toast_invalidChar">Invalid Char in Path!</string>
+
+    <string name="settings_sdcard">/storage/emulated/0\n/sdcard\n/storage/sdcard0</string>
+    <string name="settings_banned">pl.solidexplorer2\ncom.mixplorer\ncom.cyanogenmod.filemanager\nnextapp.fx\npl.mkexplorer.kormateusz\ncom.lonelycatgames.Xplore\nbin.mt\ncom.estrongs.android.pop\ncom.speedsoftware.rootexplorer\nbin.mt.plus</string>
 </resources>

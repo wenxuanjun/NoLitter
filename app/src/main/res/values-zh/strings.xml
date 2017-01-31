@@ -1,16 +1,22 @@
 <resources>
-    <string name="app_name">Lan Tian NoLitter</string>
-    <string name="xposed_description">阻止应用在存储空间根目录乱建文件夹。</string>
+    <string name="app_name">LT NoLitter</string>
+    <string name="xposed_description">阻止应用在存储空间里乱建文件夹。</string>
 
-    <string name="ui_storageDirs">存储空间路径：（一行一个）</string>
-    <string name="ui_save">保存</string>
-    <string name="ui_reset">重置</string>
-    <string name="ui_chooseApp">选择不阻止的应用（例如文件管理器）</string>
-    <string name="ui_log">在 Xposed 安装器中保存日志</string>
+    <string name="ui_cat_config">设置</string>
+    <string name="ui_log">在 Xposed 安装器中显示日志</string>
+    <string name="ui_log_on">你可以在 Xposed 安装器中看到日志</string>
+    <string name="ui_log_off">你不可以在 Xposed 安装器中看到日志</string>
+    <string name="ui_storageDirs">存储路径</string>
+    <string name="ui_storageDirs_description">你的内置存储和存储卡的路径，一行一个</string>
+    <string name="ui_chooseApp">白名单应用</string>
+    <string name="ui_chooseApp_description">不受限制的应用程序，例如文件管理器</string>
+
+    <string name="ui_cat_about">关于</string>
+    <string name="ui_author">作者</string>
+    <string name="ui_author_description">Lan Tian</string>
+    <string name="ui_source">源代码</string>
+    <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
 
     <string name="toast_saved">设置已保存。</string>
-    <string name="toast_reset">设置已重置。</string>
-    <string name="toast_savedRestart">设置已保存，重启生效。</string>
-    <string name="toast_resetRestart">设置已重置，重启生效。</string>
-    <string name="toast_invalidChar">存储空间路径中含有非法字符！</string>
+    <string name="toast_savedRestart">Settings Saved. Restart to take effect.</string>
 </resources>

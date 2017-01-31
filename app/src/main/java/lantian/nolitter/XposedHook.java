@@ -19,8 +19,31 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private static ArrayList<String> sdcard;
     private static ArrayList<String> banned;
 
+    // From http://stackoverflow.com/questions/4571346/how-to-encode-url-to-avoid-special-characters-in-java
+    private static String urlEncode(String input) {
+        StringBuilder resultStr = new StringBuilder();
+        for (char ch : input.toCharArray()) {
+            if (isUnsafe(ch)) {
+                resultStr.append('%');
+                resultStr.append(toHex(ch / 16));
+                resultStr.append(toHex(ch % 16));
+            } else {
+                resultStr.append(ch);
+            }
+        }
+        return resultStr.toString();
+    }
+
+    private static char toHex(int ch) {
+        return (char) (ch < 10 ? '0' + ch : 'A' + ch - 10);
+    }
+
+    private static boolean isUnsafe(char ch) {
+        return ch > 128 || " %$&+,:;=?@<>#%".indexOf(ch) >= 0;
+    }
+
     public void initZygote(StartupParam startupParam) throws Throwable {
-        prefs = new XSharedPreferences("lantian.nolitter", "MainActivity");
+        prefs = new XSharedPreferences("lantian.nolitter");
         prefs.makeWorldReadable();
     }
 
@@ -34,7 +57,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 if(path.startsWith("/cache/")) return;
                 prefs.reload();
                 prefs.makeWorldReadable();
-                banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", Common.bannedDefault).split(",")));
+                banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", "pl.solidexplorer2\ncom.mixplorer\ncom.cyanogenmod.filemanager\nnextapp.fx\npl.mkexplorer.kormateusz\ncom.lonelycatgames.Xplore\nbin.mt\ncom.estrongs.android.pop\ncom.speedsoftware.rootexplorer\nbin.mt.plus").split("\n")));
                 if(banned.contains(lpparam.packageName)) return;
                 String newPath = doReplace(path);
                 if (!path.equals(newPath)) {
@@ -50,14 +73,14 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 prefs.makeWorldReadable();
                 if(prefs.getBoolean("saveLog", true)) {
                     XposedBridge.log("[NoLitter] Reloaded Configuration");
-                    XposedBridge.log("[NoLitter] banned = " + prefs.getString("banned", Common.bannedDefault));
-                    XposedBridge.log("[NoLitter] sdcard = " + prefs.getString("sdcard", Common.sdcardDefault));
+                    XposedBridge.log("[NoLitter] banned = " + prefs.getString("banned", "pl.solidexplorer2\ncom.mixplorer\ncom.cyanogenmod.filemanager\nnextapp.fx\npl.mkexplorer.kormateusz\ncom.lonelycatgames.Xplore\nbin.mt\ncom.estrongs.android.pop\ncom.speedsoftware.rootexplorer\nbin.mt.plus"));
+                    XposedBridge.log("[NoLitter] sdcard = " + prefs.getString("sdcard", "/storage/emulated/0\n/sdcard\n/storage/sdcard0"));
                 }
                 return true;
             }
         };
         if(lpparam.packageName.equals("lantian.nolitter")) {
-            XposedHelpers.findAndHookMethod("lantian.nolitter.MainActivity", lpparam.classLoader, "ltReload", configReload);
+            XposedHelpers.findAndHookMethod("lantian.nolitter.SettingsFragment", lpparam.classLoader, "ltReload", configReload);
         } else {
             XposedHelpers.findAndHookConstructor(File.class, String.class, noLitter);
         }
@@ -65,7 +88,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     private String doReplace(String path) {
         String storageDir;
-        sdcard = new ArrayList<>(Arrays.asList(prefs.getString("sdcard", Common.sdcardDefault).split(",")));
+        sdcard = new ArrayList<>(Arrays.asList(prefs.getString("sdcard", "/storage/emulated/0\n/sdcard\n/storage/sdcard0").split("\n")));
         for(String storagePath: sdcard) {
             if(storagePath.isEmpty()) continue;
             if(storagePath.endsWith("/")) {
@@ -89,25 +112,4 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
         }
         return path;
     }
-
-    // From http://stackoverflow.com/questions/4571346/how-to-encode-url-to-avoid-special-characters-in-java
-    private static String urlEncode(String input) {
-        StringBuilder resultStr = new StringBuilder();
-        for (char ch : input.toCharArray()) {
-            if (isUnsafe(ch)) {
-                resultStr.append('%');
-                resultStr.append(toHex(ch / 16));
-                resultStr.append(toHex(ch % 16));
-            } else {
-                resultStr.append(ch);
-            }
-        }
-        return resultStr.toString();
-    }
-
-    private static char toHex(int ch) {
-        return (char) (ch < 10 ? '0' + ch : 'A' + ch - 10);
-    }
-
-    private static boolean isUnsafe(char ch) { return ch > 128 || " %$&+,:;=?@<>#%".indexOf(ch) >= 0; }
 }

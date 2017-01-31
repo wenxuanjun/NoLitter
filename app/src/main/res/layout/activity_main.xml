@@ -4,63 +4,11 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="lantian.nolitter.MainActivity"
-    android:orientation="vertical">
-
-    <TextView
-        android:text="@string/ui_storageDirs"
-        android:layout_width="wrap_content"
-        android:id="@+id/textView"
-        android:layout_weight="1"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:selectAllOnFocus="false"
-        android:layout_height="150dp"
-        android:layout_weight="1" />
-
-    <CheckBox
-        android:text="@string/ui_log"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/checkBox"
-        android:layout_weight="1" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-
-        <Button
-            android:text="@string/ui_chooseApp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/chooseAppButton"
-            android:onClick="ltChooseApp" />
-
-        <Button
-            android:text="@string/ui_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/saveButton"
-            android:onClick="ltSave" />
-
-        <Button
-            android:text="@string/ui_reset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/resetButton"
-            android:onClick="ltReset" />
-
-    </LinearLayout>
+    tools:context="lantian.nolitter.MainActivity">
 
 </LinearLayout>
