@@ -12,7 +12,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:text="@string/lt_storage_directories"
+        android:text="@string/ui_storageDirs"
         android:layout_width="wrap_content"
         android:id="@+id/textView"
         android:layout_weight="1"
@@ -27,24 +27,8 @@
         android:layout_height="150dp"
         android:layout_weight="1" />
 
-    <TextView
-        android:text="@string/lt_storage_banned"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:layout_weight="1" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_weight="1"
-        android:selectAllOnFocus="false" />
-
     <CheckBox
-        android:text="@string/lt_log"
+        android:text="@string/ui_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/checkBox"
@@ -57,18 +41,26 @@
         android:layout_weight="1">
 
         <Button
-            android:text="@string/lt_save"
+            android:text="@string/ui_chooseApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/chooseAppButton"
+            android:onClick="ltChooseApp" />
+
+        <Button
+            android:text="@string/ui_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/saveButton"
             android:onClick="ltSave" />
 
         <Button
-            android:text="@string/lt_reset"
+            android:text="@string/ui_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/resetButton"
             android:onClick="ltReset" />
+
     </LinearLayout>
 
 </LinearLayout>

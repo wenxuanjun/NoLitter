@@ -1,14 +1,16 @@
 <resources>
     <string name="app_name">Lan Tian NoLitter</string>
     <string name="xposed_description">Stops apps from littering in storage.</string>
-    <string name="lt_storage_directories">Storage Paths: (One per line)</string>
-    <string name="lt_storage_banned">Banned Apps: (One per line)</string>
-    <string name="lt_save">Save</string>
-    <string name="lt_reset">Reset</string>
-    <string name="lt_log">Show log in Xposed Installer</string>
+
+    <string name="ui_storageDirs">Storage Paths: (One per line)</string>
+    <string name="ui_save">Save</string>
+    <string name="ui_reset">Reset</string>
+    <string name="ui_chooseApp">Choose Apps</string>
+    <string name="ui_log">Show log in Xposed Installer</string>
+
     <string name="toast_saved">Settings Saved.</string>
     <string name="toast_reset">Settings Reset.</string>
-    <string name="toast_saved_restart">Settings Saved. Restart to take effect.</string>
-    <string name="toast_reset_restart">Settings Reset. Restart to take effect.</string>
-    <string name="toast_invalidchar">Invalid Char in Path!</string>
+    <string name="toast_savedRestart">Settings Saved. Restart to take effect.</string>
+    <string name="toast_resetRestart">Settings Reset. Restart to take effect.</string>
+    <string name="toast_invalidChar">Invalid Char in Path!</string>
 </resources>
