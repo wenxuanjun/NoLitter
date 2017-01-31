@@ -17,6 +17,6 @@
     <string name="ui_source">源代码</string>
     <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
 
-    <string name="toast_saved">设置已保存。</string>
-    <string name="toast_savedRestart">Settings Saved. Restart to take effect.</string>
+    <string name="toast_whitelist_add">加入白名单</string>
+    <string name="toast_whitelist_remove">从白名单删除</string>
 </resources>

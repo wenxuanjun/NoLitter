@@ -1,5 +1,6 @@
 package lantian.nolitter;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,11 +23,14 @@ public class SettingsFragment extends PreferenceFragment {
     public static SharedPreferences prefs;
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getPreferenceManager().setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.settings);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        findPreference("banned").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        getPreferenceScreen().removePreference(findPreference("hidden"));
+        findPreference("banned_ui").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 ltChooseApp();
@@ -49,20 +53,6 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
-        Preference.OnPreferenceChangeListener updateXposed = new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (ltReload()) {
-                    Toast.makeText(getActivity(), getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), getString(R.string.toast_savedRestart), Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        };
-        findPreference("saveLog").setOnPreferenceChangeListener(updateXposed);
-        findPreference("sdcard").setOnPreferenceChangeListener(updateXposed);
-        findPreference("banned").setOnPreferenceChangeListener(updateXposed);
     }
 
     public boolean ltChooseApp() {
@@ -71,13 +61,13 @@ public class SettingsFragment extends PreferenceFragment {
         Collections.sort(appInfo, new ApplicationInfo.DisplayNameComparator(getActivity().getPackageManager()));
 
         // Get current settings
-        final ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", getString(R.string.settings_banned)).split(",")));
+        ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", getString(R.string.settings_banned)).split(",")));
 
         // Form arrays
-        String[] appTitles = new String[appInfo.size()];
+        final String[] appTitles = new String[appInfo.size()];
         boolean[] appCared = new boolean[appInfo.size()];
         for (int i = 0; i < appInfo.size(); i++) {
-            appTitles[i] = appInfo.get(i).loadLabel(getActivity().getPackageManager()).toString() + " [" + appInfo.get(i).packageName + "]";
+            appTitles[i] = appInfo.get(i).loadLabel(getActivity().getPackageManager()).toString();
             appCared[i] = banned.contains(appInfo.get(i).packageName);
         }
 
@@ -87,18 +77,17 @@ public class SettingsFragment extends PreferenceFragment {
         dialog.setMultiChoiceItems(appTitles, appCared, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", getString(R.string.settings_banned)).split(",")));
                 if (isChecked) {
                     banned.add(appInfo.get(which).packageName);
+                    Toast.makeText(getActivity(), appTitles[which] + " " + getString(R.string.toast_whitelist_add), Toast.LENGTH_SHORT).show();
                 } else {
                     banned.remove(appInfo.get(which).packageName);
+                    Toast.makeText(getActivity(), appTitles[which] + " " + getString(R.string.toast_whitelist_remove), Toast.LENGTH_SHORT).show();
                 }
                 String newBanned = "";
-                for (String bannedItem : banned) {
-                    if (newBanned.isEmpty()) {
-                        newBanned += bannedItem;
-                    } else {
-                        newBanned += "," + bannedItem;
-                    }
+                for (String bannedFragment : banned) {
+                    if (!bannedFragment.trim().isEmpty()) newBanned += bannedFragment.trim() + ",";
                 }
                 prefs.edit().putString("banned", newBanned).apply();
             }
@@ -107,19 +96,9 @@ public class SettingsFragment extends PreferenceFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                if (ltReload()) {
-                    Toast.makeText(getActivity(), getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), getString(R.string.toast_savedRestart), Toast.LENGTH_SHORT).show();
-                }
             }
         });
         dialog.show();
-        return false;
-    }
-
-    public boolean ltReload() {
-        // Wait for Xposed to take control
         return false;
     }
 }

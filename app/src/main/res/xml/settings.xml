@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/ui_cat_config">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="saveLog"
-            android:summaryOff="@string/ui_log_off"
-            android:summaryOn="@string/ui_log_on"
-            android:title="@string/ui_log" />
         <EditTextPreference
             android:defaultValue="@string/settings_sdcard"
             android:key="sdcard"
             android:summary="@string/ui_storageDirs_description"
             android:title="@string/ui_storageDirs" />
         <Preference
-            android:id="@+id/preference"
-            android:defaultValue="@string/settings_banned"
-            android:key="banned"
+            android:key="banned_ui"
             android:summary="@string/ui_chooseApp_description"
             android:title="@string/ui_chooseApp" />
     </PreferenceCategory>
@@ -28,5 +20,10 @@
             android:key="source"
             android:summary="@string/ui_source_description"
             android:title="@string/ui_source" />
+    </PreferenceCategory>
+    <PreferenceCategory android:key="hidden">
+        <EditTextPreference
+            android:defaultValue="@string/settings_banned"
+            android:key="banned" />
     </PreferenceCategory>
 </PreferenceScreen>

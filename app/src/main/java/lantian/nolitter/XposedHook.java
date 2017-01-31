@@ -8,16 +8,12 @@ import java.util.Arrays;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage {
-    private static XSharedPreferences prefs;
-    private static ArrayList<String> sdcard;
-    private static ArrayList<String> banned;
+    private XSharedPreferences prefs;
 
     // From http://stackoverflow.com/questions/4571346/how-to-encode-url-to-avoid-special-characters-in-java
     private static String urlEncode(String input) {
@@ -42,6 +38,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
         return ch > 128 || " %$&+,:;=?@<>#%".indexOf(ch) >= 0;
     }
 
+    @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         prefs = new XSharedPreferences("lantian.nolitter");
         prefs.makeWorldReadable();
@@ -55,41 +52,23 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 if(path.startsWith("/data/")) return;
                 if(path.startsWith("/system/")) return;
                 if(path.startsWith("/cache/")) return;
-                prefs.reload();
-                prefs.makeWorldReadable();
-                banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", "pl.solidexplorer2\ncom.mixplorer\ncom.cyanogenmod.filemanager\nnextapp.fx\npl.mkexplorer.kormateusz\ncom.lonelycatgames.Xplore\nbin.mt\ncom.estrongs.android.pop\ncom.speedsoftware.rootexplorer\nbin.mt.plus").split("\n")));
-                if(banned.contains(lpparam.packageName)) return;
                 String newPath = doReplace(path);
                 if (!path.equals(newPath)) {
                     param.args[0] = newPath;
-                    if(prefs.getBoolean("saveLog", true)) XposedBridge.log("[NoLitter] " + lpparam.packageName + ": Redirecting " + path + " -> " + newPath);
+                    //XposedBridge.log("[NoLitter] " + lpparam.packageName + ": Redirecting " + path + " -> " + newPath);
                 }
             }
         };
-        XC_MethodReplacement configReload = new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                prefs.reload();
-                prefs.makeWorldReadable();
-                if(prefs.getBoolean("saveLog", true)) {
-                    XposedBridge.log("[NoLitter] Reloaded Configuration");
-                    XposedBridge.log("[NoLitter] banned = " + prefs.getString("banned", "pl.solidexplorer2\ncom.mixplorer\ncom.cyanogenmod.filemanager\nnextapp.fx\npl.mkexplorer.kormateusz\ncom.lonelycatgames.Xplore\nbin.mt\ncom.estrongs.android.pop\ncom.speedsoftware.rootexplorer\nbin.mt.plus"));
-                    XposedBridge.log("[NoLitter] sdcard = " + prefs.getString("sdcard", "/storage/emulated/0\n/sdcard\n/storage/sdcard0"));
-                }
-                return true;
-            }
-        };
-        if(lpparam.packageName.equals("lantian.nolitter")) {
-            XposedHelpers.findAndHookMethod("lantian.nolitter.SettingsFragment", lpparam.classLoader, "ltReload", configReload);
-        } else {
+        prefs.reload();
+        ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", "pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus").split(",")));
+        if (!(lpparam.packageName.equals("lantian.nolitter") || banned.contains(lpparam.packageName))) {
             XposedHelpers.findAndHookConstructor(File.class, String.class, noLitter);
         }
     }
 
     private String doReplace(String path) {
         String storageDir;
-        sdcard = new ArrayList<>(Arrays.asList(prefs.getString("sdcard", "/storage/emulated/0\n/sdcard\n/storage/sdcard0").split("\n")));
-        for(String storagePath: sdcard) {
+        for (String storagePath : prefs.getString("sdcard", "/storage/emulated/0\n/sdcard\n/storage/sdcard0").split("\n")) {
             if(storagePath.isEmpty()) continue;
             if(storagePath.endsWith("/")) {
                 storageDir = storagePath.substring(0, storagePath.length() - 1);
@@ -97,10 +76,10 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 storageDir = storagePath;
             }
             if(path.startsWith(storageDir + "/")) {
-                /* Check if is root dir itself */
+                // Check if is root dir itself
                 if(path.equals(storageDir + "/")) return path;
                 if(path.startsWith(storageDir + "/Android")) return path;
-                /* Split out path after storage dir */
+                // Split out path after storage dir
                 String newPath = path.substring(storageDir.length() + 1, path.length());
                 File f = new File(URI.create("file://" + urlEncode(storageDir + "/" + newPath.split("/")[0])));
                 if(f.exists()) {

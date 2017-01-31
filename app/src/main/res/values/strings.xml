@@ -9,7 +9,7 @@
     <string name="ui_storageDirs">Storage Paths</string>
     <string name="ui_storageDirs_description">The path of your Internal Storage and SDCard, one per line</string>
     <string name="ui_chooseApp">Whitelist apps</string>
-    <string name="ui_chooseApp_description">Apps that should not restricted, like File Mangers</string>
+    <string name="ui_chooseApp_description">Apps that should not be restricted, like File Mangers</string>
 
     <string name="ui_cat_about">About</string>
     <string name="ui_author">Author</string>
@@ -17,9 +17,9 @@
     <string name="ui_source">Source Code</string>
     <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
 
-    <string name="toast_saved">Settings Saved.</string>
-    <string name="toast_savedRestart">Settings Saved. Restart to take effect.</string>
+    <string name="toast_whitelist_add">added to whitelist</string>
+    <string name="toast_whitelist_remove">removed from whitelist</string>
 
     <string name="settings_sdcard">/storage/emulated/0\n/sdcard\n/storage/sdcard0</string>
-    <string name="settings_banned">pl.solidexplorer2\ncom.mixplorer\ncom.cyanogenmod.filemanager\nnextapp.fx\npl.mkexplorer.kormateusz\ncom.lonelycatgames.Xplore\nbin.mt\ncom.estrongs.android.pop\ncom.speedsoftware.rootexplorer\nbin.mt.plus</string>
+    <string name="settings_banned">pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus</string>
 </resources>
