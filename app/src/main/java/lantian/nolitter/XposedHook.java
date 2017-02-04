@@ -164,8 +164,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 // File to URI: Create a mock file, get its URI, and replace the mock part
                 File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
                 File fURI = new File(URI.create(fPath.toURI().toString()
-                        .replace("file:///lantian/", "file:///")
-                        .replace("file:/lantian/", "file:/")
+                        .replaceFirst("/lantian", "")
                 ));
                 //XposedBridge.log(fPath.toURI().toString());
 

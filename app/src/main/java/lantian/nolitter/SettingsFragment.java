@@ -74,7 +74,17 @@ public class SettingsFragment extends PreferenceFragment {
 
     public boolean ltChooseApp() {
         // Get app info
-        final List<ApplicationInfo> appInfo = getActivity().getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        final List<ApplicationInfo> appInfo;
+        if (prefs.getBoolean("enable_system", false)) {
+            appInfo = getActivity().getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        } else {
+            appInfo = new ArrayList<>();
+            for (ApplicationInfo appInfoSingle : getActivity().getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA)) {
+                if ((appInfoSingle.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    appInfo.add(appInfoSingle);
+                }
+            }
+        }
         Collections.sort(appInfo, new ApplicationInfo.DisplayNameComparator(getActivity().getPackageManager()));
 
         // Get current settings
