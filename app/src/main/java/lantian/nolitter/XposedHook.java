@@ -19,7 +19,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private XSharedPreferences prefs;
 
     // From http://stackoverflow.com/questions/4571346/how-to-encode-url-to-avoid-special-characters-in-java
-    private static String urlEncode(String input) {
+    /*private static String urlEncode(String input) {
         StringBuilder resultStr = new StringBuilder();
         for (char ch : input.toCharArray()) {
             if (isUnsafe(ch)) {
@@ -39,7 +39,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     private static boolean isUnsafe(char ch) {
         return ch > 128 || " %$&+,:;=?@<>#%".indexOf(ch) >= 0;
-    }
+    }*/
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
@@ -62,6 +62,9 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 if(path.startsWith("/data/")) return;
                 if(path.startsWith("/system/")) return;
                 if(path.startsWith("/cache/")) return;
+                if (path.startsWith("/proc/")) return;
+                if (path.startsWith("/sys/")) return;
+                if (path.startsWith("/vendor/")) return;
                 String newPath = doReplace(path);
                 if (!path.equals(newPath)) {
                     param.args[0] = newPath;
@@ -77,6 +80,9 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/data/")) return;
                     if (path.startsWith("/system/")) return;
                     if (path.startsWith("/cache/")) return;
+                    if (path.startsWith("/proc/")) return;
+                    if (path.startsWith("/sys/")) return;
+                    if (path.startsWith("/vendor/")) return;
                     String newPath = doReplace(path);
                     if (!path.equals(newPath)) {
                         param.args[1] = newPath;
@@ -88,6 +94,9 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/data/")) return;
                     if (path.startsWith("/system/")) return;
                     if (path.startsWith("/cache/")) return;
+                    if (path.startsWith("/proc/")) return;
+                    if (path.startsWith("/sys/")) return;
+                    if (path.startsWith("/vendor/")) return;
                     String newPath = doReplace(path);
                     if (!path.equals(newPath)) {
                         param.args[0] = null;
@@ -105,6 +114,9 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/data/")) return;
                     if (path.startsWith("/system/")) return;
                     if (path.startsWith("/cache/")) return;
+                    if (path.startsWith("/proc/")) return;
+                    if (path.startsWith("/sys/")) return;
+                    if (path.startsWith("/vendor/")) return;
                     String newPath = doReplace(path);
                     if (!path.equals(newPath)) {
                         param.args[1] = newPath;
@@ -116,6 +128,9 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/data/")) return;
                     if (path.startsWith("/system/")) return;
                     if (path.startsWith("/cache/")) return;
+                    if (path.startsWith("/proc/")) return;
+                    if (path.startsWith("/sys/")) return;
+                    if (path.startsWith("/vendor/")) return;
                     String newPath = doReplace(path);
                     if (!path.equals(newPath)) {
                         param.args[0] = null;
