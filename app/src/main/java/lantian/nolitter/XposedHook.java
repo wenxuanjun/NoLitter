@@ -147,12 +147,25 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     private String doReplace(String path) {
         String storageDir;
-        for (String storagePath : prefs.getString("sdcard", "/storage/emulated/0\n/sdcard\n/storage/sdcard0").split("\n")) {
+        for (String storagePath : prefs.getString("sdcard", "/data/media/0\n" +
+                "/mnt/runtime/default/emulated/0\n" +
+                "/mnt/runtime/default/sdcard0\n" +
+                "/mnt/runtime/default/self/primary\n" +
+                "/mnt/runtime/read/emulated/0\n" +
+                "/mnt/runtime/write/emulated/0\n" +
+                "/mnt/sdcard\n" +
+                "/mnt/shell/emulated/0\n" +
+                "/mnt/user/0/primary\n" +
+                "/sdcard\n" +
+                "/storage/emulated/0\n" +
+                "/storage/emulated/legacy\n" +
+                "/storage/sdcard0\n" +
+                "/storage/self/primary").split("\n")) {
             if(storagePath.isEmpty()) continue;
             if(storagePath.endsWith("/")) {
-                storageDir = storagePath.substring(0, storagePath.length() - 1);
+                storageDir = storagePath.substring(0, storagePath.length() - 1).trim();
             } else {
-                storageDir = storagePath;
+                storageDir = storagePath.trim();
             }
             if(path.startsWith(storageDir + "/")) {
                 // Check if is root dir itself
@@ -165,7 +178,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
                 File fURI = new File(URI.create(fPath.toURI().toString()
                         .replaceFirst("/lantian", "")
-                ));
+                ).normalize());
                 //XposedBridge.log(fPath.toURI().toString());
 
                 // Old method: does not support Chinese

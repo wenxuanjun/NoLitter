@@ -24,6 +24,19 @@
     <string name="toast_whitelist_add">added to whitelist</string>
     <string name="toast_whitelist_remove">removed from whitelist</string>
 
-    <string name="settings_sdcard">/storage/emulated/0\n/sdcard\n/storage/sdcard0</string>
+    <string name="settings_sdcard">/data/media/0\n
+/mnt/runtime/default/emulated/0\n
+/mnt/runtime/default/sdcard0\n
+/mnt/runtime/default/self/primary\n
+/mnt/runtime/read/emulated/0\n
+/mnt/runtime/write/emulated/0\n
+/mnt/sdcard\n
+/mnt/shell/emulated/0\n
+/mnt/user/0/primary\n
+/sdcard\n
+/storage/emulated/0\n
+/storage/emulated/legacy\n
+/storage/sdcard0\n
+/storage/self/primary</string>
     <string name="settings_banned">pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus</string>
 </resources>

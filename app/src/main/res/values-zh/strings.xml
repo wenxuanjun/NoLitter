@@ -24,6 +24,19 @@
     <string name="toast_whitelist_add">加入白名单</string>
     <string name="toast_whitelist_remove">从白名单删除</string>
 
-    <string name="settings_sdcard">/storage/emulated/0\n/sdcard\n/storage/sdcard0</string>
+    <string name="settings_sdcard">/data/media/0
+/mnt/runtime/default/emulated/0
+/mnt/runtime/default/sdcard0
+/mnt/runtime/default/self/primary
+/mnt/runtime/read/emulated/0
+/mnt/runtime/write/emulated/0
+/mnt/sdcard
+/mnt/shell/emulated/0
+/mnt/user/0/primary
+/sdcard
+/storage/emulated/0
+/storage/emulated/legacy
+/storage/sdcard0
+/storage/self/primary</string>
     <string name="settings_banned">pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus</string>
 </resources>
