@@ -10,6 +10,10 @@
     <string name="ui_storageDirs_description">你的内置存储和存储卡的路径，一行一个</string>
     <string name="ui_chooseApp">白名单应用</string>
     <string name="ui_chooseApp_description">不受限制的应用程序，例如文件管理器</string>
+    <string name="ui_manageSystemApp">对系统应用启用</string>
+    <string name="ui_manageSystemApp_description">可能会造成某些功能异常！重启生效</string>
+    <string name="ui_showIcon">在启动器显示图标</string>
+    <string name="ui_showIcon_description">你仍然可以从 Xposed 安装器进入模块设置</string>
 
     <string name="ui_cat_about">关于</string>
     <string name="ui_author">作者</string>

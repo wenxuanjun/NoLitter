@@ -1,5 +1,6 @@
 package lantian.nolitter;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,6 +52,22 @@ public class SettingsFragment extends PreferenceFragment {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/xddxdd/lantian-nolitter"));
                 startActivity(browserIntent);
                 return false;
+            }
+        });
+        findPreference("showicon").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Boolean isVisible = (Boolean) newValue;
+                if (isVisible) {
+                    getActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(getActivity(), MainActivity.class),
+                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                            PackageManager.DONT_KILL_APP);
+                } else {
+                    getActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(getActivity(), MainActivity.class),
+                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                            PackageManager.DONT_KILL_APP);
+                }
+                return true;
             }
         });
     }

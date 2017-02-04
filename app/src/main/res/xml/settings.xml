@@ -10,6 +10,16 @@
             android:key="banned_ui"
             android:summary="@string/ui_chooseApp_description"
             android:title="@string/ui_chooseApp" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_system"
+            android:summary="@string/ui_manageSystemApp_description"
+            android:title="@string/ui_manageSystemApp" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showicon"
+            android:summary="@string/ui_showIcon_description"
+            android:title="@string/ui_showIcon" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/ui_cat_about">
         <Preference

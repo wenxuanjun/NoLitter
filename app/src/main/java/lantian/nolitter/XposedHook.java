@@ -1,5 +1,7 @@
 package lantian.nolitter;
 
+import android.content.pm.ApplicationInfo;
+
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -126,9 +128,20 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
         prefs.reload();
         ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", "pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus").split(",")));
         if (!(lpparam.packageName.equals("lantian.nolitter") || banned.contains(lpparam.packageName))) {
-            XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
-            XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
-            XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
+            if (prefs.getBoolean("enable_system", false)) {
+                // User allows to hook system apps
+                XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
+                XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
+                XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
+            } else {
+                // User don't want to hook system apps
+                if ((lpparam.appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    // Not system app
+                    XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
+                    XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
+                    XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
+                }
+            }
         }
     }
 
@@ -150,7 +163,10 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
                 // File to URI: Create a mock file, get its URI, and replace the mock part
                 File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
-                File fURI = new File(URI.create(fPath.toURI().toString().replace("file:/lantian/", "file:/")));
+                File fURI = new File(URI.create(fPath.toURI().toString()
+                        .replace("file:///lantian/", "file:///")
+                        .replace("file:/lantian/", "file:/")
+                ));
                 //XposedBridge.log(fPath.toURI().toString());
 
                 // Old method: does not support Chinese
