@@ -3,15 +3,12 @@
     <string name="xposed_description">Stops apps from littering in storage.</string>
 
     <string name="ui_cat_config">Configuration</string>
-    <string name="ui_log">Show log in Xposed Installer</string>
-    <string name="ui_log_on">You can see logs in Xposed Installer</string>
-    <string name="ui_log_off">You cannot see logs in Xposed Installer</string>
     <string name="ui_storageDirs">Storage Paths</string>
     <string name="ui_storageDirs_description">The path of your Internal Storage and SDCard, one per line</string>
     <string name="ui_chooseApp">Whitelist apps</string>
-    <string name="ui_chooseApp_description">Apps that should not be restricted, like File Mangers</string>
+    <string name="ui_chooseApp_description">Apps that should not be restricted, like File Mangers. Takes effect after restarting the app</string>
     <string name="ui_manageSystemApp">Apply to system apps</string>
-    <string name="ui_manageSystemApp_description">This may break some system function! Reboot to take effect</string>
+    <string name="ui_manageSystemApp_description">This may break some system function! Flyme users don\'t turn it on! Reboot to take effect.</string>
     <string name="ui_showIcon">Show icon in launcher</string>
     <string name="ui_showIcon_description">You can still open this page from Xposed Installer</string>
 
