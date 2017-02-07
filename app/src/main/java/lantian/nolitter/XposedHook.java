@@ -1,6 +1,8 @@
 package lantian.nolitter;
 
 import android.content.pm.ApplicationInfo;
+import android.os.Build;
+import android.os.Environment;
 
 import java.io.File;
 import java.net.URI;
@@ -45,8 +47,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
     public void initZygote(StartupParam startupParam) throws Throwable {
         prefs = new XSharedPreferences("lantian.nolitter");
         prefs.makeWorldReadable();
-        String banned = prefs.getString("banned", "");
-        if (banned.isEmpty()) {
+        if (prefs.getString("banned", "").isEmpty()) {
             XposedBridge.log("[NoLitter] Failed to load config, running with defaults");
         } else {
             XposedBridge.log("[NoLitter] Config loaded");
@@ -65,7 +66,12 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 if (path.startsWith("/proc/")) return;
                 if (path.startsWith("/sys/")) return;
                 if (path.startsWith("/vendor/")) return;
-                String newPath = doReplace(path);
+                String newPath;
+                if (prefs.getBoolean("separate_app", false)) {
+                    newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                } else {
+                    newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                }
                 if (!path.equals(newPath)) {
                     param.args[0] = newPath;
                     //XposedBridge.log("[NoLitter] " + lpparam.packageName + ": Redirecting " + path + " -> " + newPath);
@@ -83,7 +89,12 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/proc/")) return;
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
-                    String newPath = doReplace(path);
+                    String newPath;
+                    if (prefs.getBoolean("separate_app", false)) {
+                        newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    } else {
+                        newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    }
                     if (!path.equals(newPath)) {
                         param.args[1] = newPath;
                         //XposedBridge.log("[NoLitter] " + lpparam.packageName + ": Redirecting " + path + " -> " + newPath);
@@ -97,7 +108,12 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/proc/")) return;
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
-                    String newPath = doReplace(path);
+                    String newPath;
+                    if (prefs.getBoolean("separate_app", false)) {
+                        newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    } else {
+                        newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    }
                     if (!path.equals(newPath)) {
                         param.args[0] = null;
                         param.args[1] = newPath;
@@ -117,7 +133,12 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/proc/")) return;
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
-                    String newPath = doReplace(path);
+                    String newPath;
+                    if (prefs.getBoolean("separate_app", false)) {
+                        newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    } else {
+                        newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    }
                     if (!path.equals(newPath)) {
                         param.args[1] = newPath;
                         //XposedBridge.log("[NoLitter] " + lpparam.packageName + ": Redirecting " + path + " -> " + newPath);
@@ -131,7 +152,12 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/proc/")) return;
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
-                    String newPath = doReplace(path);
+                    String newPath;
+                    if (prefs.getBoolean("separate_app", false)) {
+                        newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    } else {
+                        newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    }
                     if (!path.equals(newPath)) {
                         param.args[0] = null;
                         param.args[1] = newPath;
@@ -140,14 +166,79 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 }
             }
         };
+        // XInternalSD Hook
+        XC_MethodHook changeDirHook = new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                File oldFile = (File) param.getResult();
+                if (oldFile == null) return;
+                String oldDir = oldFile.getAbsolutePath() + "/";
+                String newDir;
+                if (prefs.getBoolean("separate_app", false)) {
+                    newDir = doReplace(oldDir, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                } else {
+                    newDir = doReplace(oldDir, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                }
+                File newDirPath = new File(newDir);
+                param.setResult(newDirPath);
+            }
+        };
+        XC_MethodHook changeDirsHook = new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                // https://github.com/pylerSM/XInternalSD/issues/15
+                File[] oldDirPaths = (File[]) param.getResult();
+                ArrayList<File> newDirPaths = new ArrayList<File>();
+
+                for (int i = 0; i < oldDirPaths.length; ++i) {
+                    String oldDir = oldDirPaths[i].getPath() + "/";
+                    String newDir;
+                    if (prefs.getBoolean("separate_app", false)) {
+                        newDir = doReplace(oldDir, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    } else {
+                        newDir = doReplace(oldDir, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
+                    }
+
+                    File newDirPath = new File(newDir);
+                    newDirPaths.add(newDirPath);
+                }
+
+                File[] appendedDirPaths = newDirPaths.toArray(new File[newDirPaths.size()]);
+                param.setResult(appendedDirPaths);
+            }
+        };
         prefs.reload();
-        ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", "pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus").split(",")));
+        ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", Constants.banned).split(",")));
         if (!(lpparam.packageName.equals("lantian.nolitter") || banned.contains(lpparam.packageName))) {
             if (prefs.getBoolean("enable_system", false)) {
                 // User allows to hook system apps
                 XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
                 XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
                 XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
+                if (prefs.getBoolean("xinternalsd", false)) {
+                    // Copied from XInternalSD
+                    XposedHelpers.findAndHookMethod(Environment.class,
+                            "getExternalStorageDirectory", changeDirHook);
+                    XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                            "android.app.ContextImpl", lpparam.classLoader),
+                            "getExternalFilesDir", String.class, changeDirHook);
+                    XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                            "android.app.ContextImpl", lpparam.classLoader), "getObbDir",
+                            changeDirHook);
+                    XposedHelpers.findAndHookMethod(Environment.class,
+                            "getExternalStoragePublicDirectory", String.class,
+                            changeDirHook);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                "android.app.ContextImpl", lpparam.classLoader),
+                                "getExternalFilesDirs", String.class,
+                                changeDirsHook);
+                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                "android.app.ContextImpl", lpparam.classLoader),
+                                "getObbDirs", changeDirsHook);
+                    }
+                }
             } else {
                 // User don't want to hook system apps
                 if ((lpparam.appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -155,53 +246,88 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
                     XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
                     XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
+                    if (prefs.getBoolean("xinternalsd", false)) {
+                        // Copied from XInternalSD
+                        XposedHelpers.findAndHookMethod(Environment.class,
+                                "getExternalStorageDirectory", changeDirHook);
+                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                "android.app.ContextImpl", lpparam.classLoader),
+                                "getExternalFilesDir", String.class, changeDirHook);
+                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                "android.app.ContextImpl", lpparam.classLoader), "getObbDir",
+                                changeDirHook);
+                        XposedHelpers.findAndHookMethod(Environment.class,
+                                "getExternalStoragePublicDirectory", String.class,
+                                changeDirHook);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                    "android.app.ContextImpl", lpparam.classLoader),
+                                    "getExternalFilesDirs", String.class,
+                                    changeDirsHook);
+                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                    "android.app.ContextImpl", lpparam.classLoader),
+                                    "getObbDirs", changeDirsHook);
+                        }
+                    }
                 }
             }
         }
     }
 
-    private String doReplace(String path) {
+    private String doReplace(String path, String pkgName, Boolean forceMode) {
         String storageDir;
-        for (String storagePath : prefs.getString("sdcard", "/data/media/0\n" +
-                "/mnt/runtime/default/emulated/0\n" +
-                "/mnt/runtime/default/sdcard0\n" +
-                "/mnt/runtime/default/self/primary\n" +
-                "/mnt/runtime/read/emulated/0\n" +
-                "/mnt/runtime/write/emulated/0\n" +
-                "/mnt/sdcard\n" +
-                "/mnt/shell/emulated/0\n" +
-                "/mnt/user/0/primary\n" +
-                "/sdcard\n" +
-                "/storage/emulated/0\n" +
-                "/storage/emulated/legacy\n" +
-                "/storage/sdcard0\n" +
-                "/storage/self/primary").split("\n")) {
+        for (String storagePath : prefs.getString("sdcard", Constants.sdcard).split("\n")) {
             if(storagePath.isEmpty()) continue;
-            if(storagePath.endsWith("/")) {
-                storageDir = storagePath.substring(0, storagePath.length() - 1).trim();
+            if (storagePath.trim().endsWith("/")) {
+                storageDir = storagePath.trim().substring(0, storagePath.length() - 1);
             } else {
                 storageDir = storagePath.trim();
             }
-            if(path.startsWith(storageDir + "/")) {
+            if (path.startsWith(storageDir)) {
                 // Check if is root dir itself
-                if(path.equals(storageDir + "/")) return path;
+                if (path.equals(storageDir + "/") || path.equals(storageDir)) {
+                    if (forceMode) {
+                        if (pkgName.isEmpty()) {
+                            return storageDir + "/Android/files/";
+                        } else {
+                            return storageDir + "/Android/files/" + pkgName + "/";
+                        }
+                    } else {
+                        return storageDir;
+                    }
+                }
                 if(path.startsWith(storageDir + "/Android")) return path;
                 // Split out path after storage dir
                 String newPath = path.substring(storageDir.length() + 1, path.length());
 
-                // File to URI: Create a mock file, get its URI, and replace the mock part
-                File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
-                File fURI = new File(URI.create(fPath.toURI().toString()
-                        .replaceFirst("/lantian", "")
-                ).normalize());
-                //XposedBridge.log(fPath.toURI().toString());
-
-                // Old method: does not support Chinese
-                //File fURI = new File(URI.create("file://" + urlEncode(storageDir + "/" + newPath.split("/")[0])));
-                if (fURI.exists()) {
-                    return path;
+                Boolean fExists;
+                if (forceMode) {
+                    // Extra check: if folder present in isolate folder, then force redirect
+                    File fInside;
+                    if (pkgName.isEmpty()) {
+                        fInside = new File(storageDir + "/Android/files/" + newPath.split("/")[0]);
+                    } else {
+                        fInside = new File(storageDir + "/Android/files/" + pkgName + "/" + newPath.split("/")[0]);
+                    }
+                    if (fInside.exists()) {
+                        fExists = false;
+                    } else {
+                        // File to URI: Create a mock file, get its URI, and replace the mock part
+                        File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
+                        fExists = new File(URI.create(fPath.toURI().toString().replaceFirst("/lantian", "")).normalize()).exists();
+                    }
                 } else {
+                    // File to URI: Create a mock file, get its URI, and replace the mock part
+                    File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
+                    fExists = new File(URI.create(fPath.toURI().toString().replaceFirst("/lantian", "")).normalize()).exists();
+                }
+                if (fExists) {
+                    return path;
+                } else if (pkgName.isEmpty()) {
                     return storageDir + "/Android/files/" + newPath;
+                } else {
+                    return storageDir + "/Android/files/" + pkgName + "/" + newPath;
                 }
             }
         }
