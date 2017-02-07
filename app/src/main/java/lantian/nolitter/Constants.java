@@ -16,5 +16,6 @@ class Constants {
             "/storage/sdcard0\n" +
             "/storage/self/primary";
     static final String banned = "pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus";
-    static final String forced = "com.baidu.BaiduMap,com.sdu.didi.psnger";
+    static final String forced = "com.baidu.BaiduMap,com.sdu.didi.psnger,com.tencent.mm,com.autonavi.minimap";
+    static final String chsdpath = "com.tencent.mm,com.autonavi.minimap";
 }

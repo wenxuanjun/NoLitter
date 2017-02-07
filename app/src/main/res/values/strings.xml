@@ -15,8 +15,8 @@
     <string name="ui_showIcon_description">You can still open this page from Xposed Installer</string>
     <string name="ui_forceMode">Force mode apps</string>
     <string name="ui_forceMode_description">In Force mode, access to folder is moved if folder exists in Android/files.\nWithout Force mode, access is moved if folder doesn\'t exist in SDCard root.</string>
-    <string name="ui_XInternalSD">XInternalSD mode (experimental)</string>
-    <string name="ui_XInternalSD_description">Change the path of SDCard apps get, same as what XInternalSD does.</string>
+    <string name="ui_chSDPath">Change SDCard path apps get</string>
+    <string name="ui_chSDPath_description">Same as what XInternalSD does. The code of this feature is also from XInternalSD.</string>
 
     <string name="ui_cat_about">About</string>
     <string name="ui_author">Author</string>

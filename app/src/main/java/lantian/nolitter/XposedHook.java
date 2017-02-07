@@ -188,7 +188,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 // https://github.com/pylerSM/XInternalSD/issues/15
                 File[] oldDirPaths = (File[]) param.getResult();
-                ArrayList<File> newDirPaths = new ArrayList<File>();
+                ArrayList<File> newDirPaths = new ArrayList<>();
 
                 for (int i = 0; i < oldDirPaths.length; ++i) {
                     String oldDir = oldDirPaths[i].getPath() + "/";
@@ -215,7 +215,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
                 XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
                 XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
-                if (prefs.getBoolean("xinternalsd", false)) {
+                if (Arrays.asList(prefs.getString("chsdpath", Constants.chsdpath).split(",")).contains(lpparam.packageName)) {
                     // Copied from XInternalSD
                     XposedHelpers.findAndHookMethod(Environment.class,
                             "getExternalStorageDirectory", changeDirHook);
@@ -246,7 +246,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
                     XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
                     XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
-                    if (prefs.getBoolean("xinternalsd", false)) {
+                    if (Arrays.asList(prefs.getString("chsdpath", Constants.chsdpath).split(",")).contains(lpparam.packageName)) {
                         // Copied from XInternalSD
                         XposedHelpers.findAndHookMethod(Environment.class,
                                 "getExternalStorageDirectory", changeDirHook);

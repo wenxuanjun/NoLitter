@@ -44,6 +44,13 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
+        findPreference("chsdpath_ui").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ltChooseApp("chsdpath", Constants.chsdpath);
+                return false;
+            }
+        });
         findPreference("author").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
