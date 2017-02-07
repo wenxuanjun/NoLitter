@@ -2,14 +2,41 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/ui_cat_config">
         <EditTextPreference
-            android:defaultValue="@string/settings_sdcard"
+            android:defaultValue="/data/media/0\n
+/mnt/runtime/default/emulated/0\n
+/mnt/runtime/default/sdcard0\n
+/mnt/runtime/default/self/primary\n
+/mnt/runtime/read/emulated/0\n
+/mnt/runtime/write/emulated/0\n
+/mnt/sdcard\n
+/mnt/shell/emulated/0\n
+/mnt/user/0/primary\n
+/sdcard\n
+/storage/emulated/0\n
+/storage/emulated/legacy\n
+/storage/sdcard0\n
+/storage/self/primary"
             android:key="sdcard"
             android:summary="@string/ui_storageDirs_description"
             android:title="@string/ui_storageDirs" />
         <Preference
             android:key="banned_ui"
-            android:summary="@string/ui_chooseApp_description"
-            android:title="@string/ui_chooseApp" />
+            android:summary="@string/ui_whitelistApp_description"
+            android:title="@string/ui_whitelistApp" />
+        <Preference
+            android:key="forced_ui"
+            android:summary="@string/ui_forceMode_description"
+            android:title="@string/ui_forceMode" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="separate_app"
+            android:summary="@string/ui_separateApp_description"
+            android:title="@string/ui_separateApp" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="xinternalsd"
+            android:summary="@string/ui_XInternalSD_description"
+            android:title="@string/ui_XInternalSD" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enable_system"
@@ -33,7 +60,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:key="hidden">
         <EditTextPreference
-            android:defaultValue="@string/settings_banned"
             android:key="banned" />
+        <EditTextPreference android:key="forced" />
     </PreferenceCategory>
 </PreferenceScreen>

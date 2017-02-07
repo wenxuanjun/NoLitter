@@ -13,7 +13,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +33,14 @@ public class SettingsFragment extends PreferenceFragment {
         findPreference("banned_ui").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                ltChooseApp();
+                ltChooseApp("banned", Constants.banned);
+                return false;
+            }
+        });
+        findPreference("forced_ui").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ltChooseApp("forced", Constants.forced);
                 return false;
             }
         });
@@ -72,7 +78,7 @@ public class SettingsFragment extends PreferenceFragment {
         });
     }
 
-    public boolean ltChooseApp() {
+    public boolean ltChooseApp(final String key, final String defaults) {
         // Get app info
         final List<ApplicationInfo> appInfo;
         if (prefs.getBoolean("enable_system", false)) {
@@ -88,7 +94,7 @@ public class SettingsFragment extends PreferenceFragment {
         Collections.sort(appInfo, new ApplicationInfo.DisplayNameComparator(getActivity().getPackageManager()));
 
         // Get current settings
-        ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", getString(R.string.settings_banned)).split(",")));
+        ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString(key, defaults).split(",")));
 
         // Form arrays
         final String[] appTitles = new String[appInfo.size()];
@@ -104,19 +110,17 @@ public class SettingsFragment extends PreferenceFragment {
         dialog.setMultiChoiceItems(appTitles, appCared, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", getString(R.string.settings_banned)).split(",")));
+                ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString(key, defaults).split(",")));
                 if (isChecked) {
                     banned.add(appInfo.get(which).packageName);
-                    Toast.makeText(getActivity(), appTitles[which] + " " + getString(R.string.toast_whitelist_add), Toast.LENGTH_SHORT).show();
                 } else {
                     banned.remove(appInfo.get(which).packageName);
-                    Toast.makeText(getActivity(), appTitles[which] + " " + getString(R.string.toast_whitelist_remove), Toast.LENGTH_SHORT).show();
                 }
                 String newBanned = "";
                 for (String bannedFragment : banned) {
                     if (!bannedFragment.trim().isEmpty()) newBanned += bannedFragment.trim() + ",";
                 }
-                prefs.edit().putString("banned", newBanned).apply();
+                prefs.edit().putString(key, newBanned).apply();
             }
         });
         dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

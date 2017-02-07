@@ -1,16 +1,22 @@
 <resources>
-    <string name="app_name">LT 铲屎官</string>
+    <string name="app_name">LT NoLitter</string>
     <string name="xposed_description">阻止应用在存储空间里乱建文件夹。</string>
 
     <string name="ui_cat_config">设置</string>
     <string name="ui_storageDirs">存储路径</string>
     <string name="ui_storageDirs_description">你的内置存储和存储卡的路径，一行一个</string>
-    <string name="ui_chooseApp">白名单应用</string>
-    <string name="ui_chooseApp_description">不受限制的应用程序，例如文件管理器，重启应用后生效</string>
+    <string name="ui_whitelistApp">白名单应用</string>
+    <string name="ui_whitelistApp_description">不受限制的应用程序，例如文件管理器，重启应用后生效</string>
+    <string name="ui_separateApp">分别创建文件夹</string>
+    <string name="ui_separateApp_description">为每个应用分别在 Android/files 下创建文件夹</string>
     <string name="ui_manageSystemApp">对系统应用启用</string>
     <string name="ui_manageSystemApp_description">可能会造成某些功能异常！Flyme 用户不要开启！重启生效。</string>
     <string name="ui_showIcon">在启动器显示图标</string>
     <string name="ui_showIcon_description">你仍然可以从 Xposed 安装器进入模块设置</string>
+    <string name="ui_forceMode">强力模式应用</string>
+    <string name="ui_forceMode_description">当强力模式开启，只要 Android/files 中有要访问的文件夹，操作就会移动到该处。\n当强力模式关闭，只有存储卡根目录下没有这个文件夹，操作才会被移动。</string>
+    <string name="ui_XInternalSD">XInternalSD 模式（实验性）</string>
+    <string name="ui_XInternalSD_description">修改应用获得的存储卡路径，和 XInternalSD 原理相同。</string>
 
     <string name="ui_cat_about">关于</string>
     <string name="ui_author">作者</string>
@@ -18,22 +24,5 @@
     <string name="ui_source">源代码</string>
     <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
 
-    <string name="toast_whitelist_add">加入白名单</string>
-    <string name="toast_whitelist_remove">从白名单删除</string>
-
-    <string name="settings_sdcard">/data/media/0
-/mnt/runtime/default/emulated/0
-/mnt/runtime/default/sdcard0
-/mnt/runtime/default/self/primary
-/mnt/runtime/read/emulated/0
-/mnt/runtime/write/emulated/0
-/mnt/sdcard
-/mnt/shell/emulated/0
-/mnt/user/0/primary
-/sdcard
-/storage/emulated/0
-/storage/emulated/legacy
-/storage/sdcard0
-/storage/self/primary</string>
-    <string name="settings_banned">pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus</string>
+    <string name="ui_chooseApp">选择应用</string>
 </resources>
