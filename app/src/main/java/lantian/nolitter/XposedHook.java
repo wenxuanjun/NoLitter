@@ -190,8 +190,8 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 File[] oldDirPaths = (File[]) param.getResult();
                 ArrayList<File> newDirPaths = new ArrayList<>();
 
-                for (int i = 0; i < oldDirPaths.length; ++i) {
-                    String oldDir = oldDirPaths[i].getPath() + "/";
+                for (File oldFile : oldDirPaths) {
+                    String oldDir = oldFile.getPath() + "/";
                     String newDir;
                     if (prefs.getBoolean("separate_app", false)) {
                         newDir = doReplace(oldDir, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
@@ -301,7 +301,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 // Split out path after storage dir
                 String newPath = path.substring(storageDir.length() + 1, path.length());
 
-                Boolean fExists;
+                /*Boolean fExists;
                 if (forceMode) {
                     // Extra check: if folder present in isolate folder, then force redirect
                     File fInside;
@@ -321,7 +321,9 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     // File to URI: Create a mock file, get its URI, and replace the mock part
                     File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
                     fExists = new File(URI.create(fPath.toURI().toString().replaceFirst("/lantian", "")).normalize()).exists();
-                }
+                }*/
+                File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
+                Boolean fExists = new File(URI.create(fPath.toURI().toString().replaceFirst("/lantian", "")).normalize()).exists();
                 if (fExists) {
                     return path;
                 } else if (pkgName.isEmpty()) {
