@@ -47,7 +47,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
     public void initZygote(StartupParam startupParam) throws Throwable {
         prefs = new XSharedPreferences("lantian.nolitter");
         prefs.makeWorldReadable();
-        if (prefs.getString("banned", "").isEmpty()) {
+        if (prefs.getString("sdcard", "").isEmpty()) {
             XposedBridge.log("[NoLitter] Failed to load config, running with defaults");
         } else {
             XposedBridge.log("[NoLitter] Config loaded");
