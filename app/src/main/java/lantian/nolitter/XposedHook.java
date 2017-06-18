@@ -241,35 +241,40 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 }
             } else {
                 // User don't want to hook system apps
-                if ((lpparam.appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                    // Not system app
-                    XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
-                    XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
-                    XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
-                    if (Arrays.asList(prefs.getString("chsdpath", Constants.chsdpath).split(",")).contains(lpparam.packageName)) {
-                        // Copied from XInternalSD
-                        XposedHelpers.findAndHookMethod(Environment.class,
-                                "getExternalStorageDirectory", changeDirHook);
-                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                                "android.app.ContextImpl", lpparam.classLoader),
-                                "getExternalFilesDir", String.class, changeDirHook);
-                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                                "android.app.ContextImpl", lpparam.classLoader), "getObbDir",
-                                changeDirHook);
-                        XposedHelpers.findAndHookMethod(Environment.class,
-                                "getExternalStoragePublicDirectory", String.class,
-                                changeDirHook);
+                try {
+                    if ((lpparam.appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                        // Not system app
+                        XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
+                        XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
+                        XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
+                        if (Arrays.asList(prefs.getString("chsdpath", Constants.chsdpath).split(",")).contains(lpparam.packageName)) {
+                            // Copied from XInternalSD
+                            XposedHelpers.findAndHookMethod(Environment.class,
+                                    "getExternalStorageDirectory", changeDirHook);
+                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                    "android.app.ContextImpl", lpparam.classLoader),
+                                    "getExternalFilesDir", String.class, changeDirHook);
+                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                    "android.app.ContextImpl", lpparam.classLoader), "getObbDir",
+                                    changeDirHook);
+                            XposedHelpers.findAndHookMethod(Environment.class,
+                                    "getExternalStoragePublicDirectory", String.class,
+                                    changeDirHook);
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                                    "android.app.ContextImpl", lpparam.classLoader),
-                                    "getExternalFilesDirs", String.class,
-                                    changeDirsHook);
-                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                                    "android.app.ContextImpl", lpparam.classLoader),
-                                    "getObbDirs", changeDirsHook);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                        "android.app.ContextImpl", lpparam.classLoader),
+                                        "getExternalFilesDirs", String.class,
+                                        changeDirsHook);
+                                XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                        "android.app.ContextImpl", lpparam.classLoader),
+                                        "getObbDirs", changeDirsHook);
+                            }
                         }
                     }
+                } catch (NullPointerException npe) {
+                    /* Avoid spamming Xposed log */
+                    return;
                 }
             }
         }
