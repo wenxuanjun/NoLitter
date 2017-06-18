@@ -17,6 +17,8 @@
     <string name="ui_forceMode_description">当强力模式开启，只要 Android/files 中有要访问的文件夹，操作就会移动到该处。\n当强力模式关闭，只有存储卡根目录下没有这个文件夹，操作才会被移动。</string>
     <string name="ui_chSDPath">修改应用获得的存储路径</string>
     <string name="ui_chSDPath_description">和 XInternalSD 原理相同，代码也来自 XInternalSD。</string>
+    <string name="ui_removeAfterUninstall">应用卸载后删除残留文件夹（测试）</string>
+    <string name="ui_removeAfterUninstall_description">在应用卸载后，删除对应的 Android/files/[包名] 和 Android/files/Android/data/[包名]。</string>
 
     <string name="ui_cat_about">关于</string>
     <string name="ui_author">作者</string>
@@ -25,4 +27,8 @@
     <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
 
     <string name="ui_chooseApp">选择应用</string>
+    <string name="ui_isUninstalled"> 的存储残留正在清理……</string>
+    <string name="ui_isCleared"> 的存储残留清理完成。</string>
+    <string name="ui_failClear"> 的存储残留清理失败，请手工清理。</string>
+    <string name="ui_failPermission">需要存储权限以自动清理卸载残留！</string>
 </resources>

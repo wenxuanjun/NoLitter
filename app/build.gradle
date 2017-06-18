@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "lantian.nolitter"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 23
         versionCode 5
         versionName "1.2.2"
     }
@@ -28,6 +28,6 @@ android {
 
 dependencies {
     provided fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     provided files('libs/api-53.jar')
 }

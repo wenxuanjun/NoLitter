@@ -17,6 +17,8 @@
     <string name="ui_forceMode_description">In Force mode, access to folder is moved if folder exists in Android/files.\nWithout Force mode, access is moved if folder doesn\'t exist in SDCard root.</string>
     <string name="ui_chSDPath">Change SDCard path apps get</string>
     <string name="ui_chSDPath_description">Same as what XInternalSD does. The code of this feature is also from XInternalSD.</string>
+    <string name="ui_removeAfterUninstall">Remove folder after app uninstall (beta)</string>
+    <string name="ui_removeAfterUninstall_description">Remove Android/files/[pkg] and Android/files/Android/data/[pkg] after uninstallation.</string>
 
     <string name="ui_cat_about">About</string>
     <string name="ui_author">Author</string>
@@ -25,4 +27,8 @@
     <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
 
     <string name="ui_chooseApp">Choose apps</string>
+    <string name="ui_isUninstalled">\'s sdcard data is being cleared.</string>
+    <string name="ui_isCleared">\'s sdcard data is cleared.</string>
+    <string name="ui_failClear">\'s sdcard data cannot be cleared, please clean it manually.</string>
+    <string name="ui_failPermission">File access is needed to clean garbage after uninstall!</string>
 </resources>

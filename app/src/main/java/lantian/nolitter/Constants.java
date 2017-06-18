@@ -15,7 +15,7 @@ class Constants {
             "/storage/emulated/legacy\n" +
             "/storage/sdcard0\n" +
             "/storage/self/primary";
-    static final String banned = "com.android.systemui,pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus";
-    static final String forced = "com.baidu.BaiduMap,com.sdu.didi.psnger,com.tencent.mm,com.autonavi.minimap";
+    static final String banned = "com.android.systemui,pl.solidexplorer2,com.mixplorer,com.cyanogenmod.filemanager,nextapp.fx,pl.mkexplorer.kormateusz,com.lonelycatgames.Xplore,bin.mt,com.estrongs.android.pop,com.speedsoftware.rootexplorer,bin.mt.plus,com.fooview.android.fooview";
+    static final String forced = "com.baidu.BaiduMap,com.sdu.didi.psnger,com.tencent.mm,com.autonavi.minimap,com.netease.pris";
     static final String chsdpath = "com.tencent.mm,com.autonavi.minimap";
 }
