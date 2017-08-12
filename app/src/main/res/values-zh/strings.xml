@@ -2,6 +2,17 @@
     <string name="app_name">LT NoLitter</string>
     <string name="xposed_description">阻止应用在存储空间里乱建文件夹。</string>
 
+    <string name="intro">简介</string>
+    <string name="intro_functions">功能</string>
+    <string name="intro_functions_description">NoLitter 会将应用在根目录下乱建的文件夹统一移动至“SD卡/Android/files/”文件夹下，并重定向应用今后的读写请求，以保证SD卡根目录整洁，并尽可能不影响应用使用。</string>
+    <string name="intro_usage">用法</string>
+    <string name="intro_usage_description">启用 NoLitter 后一般不需要做任何事。\n
+        修改 NoLitter 配置后，需要重启对应的应用以生效。\n
+        1. 如果有应用崩溃，无法访问存储，或无法被限制住，启用强力模式。\n
+        2. 如果还是不行，请清除应用数据。\n
+        3. 如果还是不行，那么 NoLitter 无能为力，请将其加入白名单以免影响使用。
+    </string>
+
     <string name="ui_cat_config">设置</string>
     <string name="ui_storageDirs">存储路径</string>
     <string name="ui_storageDirs_description">你的内置存储和存储卡的路径，一行一个</string>
@@ -15,9 +26,7 @@
     <string name="ui_showIcon_description">你仍然可以从 Xposed 安装器进入模块设置</string>
     <string name="ui_forceMode">强力模式应用</string>
     <string name="ui_forceMode_description">当强力模式开启，只要 Android/files 中有要访问的文件夹，操作就会移动到该处。\n当强力模式关闭，只有存储卡根目录下没有这个文件夹，操作才会被移动。</string>
-    <string name="ui_chSDPath">修改应用获得的存储路径</string>
-    <string name="ui_chSDPath_description">和 XInternalSD 原理相同，代码也来自 XInternalSD。</string>
-    <string name="ui_removeAfterUninstall">应用卸载后删除残留文件夹（测试）</string>
+    <string name="ui_removeAfterUninstall">应用卸载后删除残留文件夹</string>
     <string name="ui_removeAfterUninstall_description">在应用卸载后，删除对应的 Android/files/[包名] 和 Android/files/Android/data/[包名]。</string>
 
     <string name="ui_cat_about">关于</string>
@@ -25,6 +34,8 @@
     <string name="ui_author_description">Lan Tian</string>
     <string name="ui_source">源代码</string>
     <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
+    <string name="about_xinternalsd">本应用使用了 XInternalSD 的代码</string>
+    <string name="about_xinternalsd_description">https://github.com/pylerSM/XInternalSD</string>
 
     <string name="ui_chooseApp">选择应用</string>
     <string name="ui_isUninstalled"> 的存储残留正在清理……</string>

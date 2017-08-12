@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/intro">
+        <Preference
+            android:key="intro_functions"
+            android:summary="@string/intro_functions_description"
+            android:title="@string/intro_functions" />
+        <Preference
+            android:key="intro_testing"
+            android:summary="@string/intro_usage_description"
+            android:title="@string/intro_usage" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/ui_cat_config">
         <EditTextPreference
             android:defaultValue="/data/media/0\n
@@ -27,12 +37,8 @@
             android:key="forced_ui"
             android:summary="@string/ui_forceMode_description"
             android:title="@string/ui_forceMode" />
-        <Preference
-            android:key="chsdpath_ui"
-            android:summary="@string/ui_chSDPath_description"
-            android:title="@string/ui_chSDPath" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="separate_app"
             android:summary="@string/ui_separateApp_description"
             android:title="@string/ui_separateApp" />
@@ -61,10 +67,13 @@
             android:key="source"
             android:summary="@string/ui_source_description"
             android:title="@string/ui_source" />
+        <Preference
+            android:key="about_xinternalsd"
+            android:summary="@string/about_xinternalsd_description"
+            android:title="@string/about_xinternalsd" />
     </PreferenceCategory>
     <PreferenceCategory android:key="hidden">
         <EditTextPreference android:key="banned" />
         <EditTextPreference android:key="forced" />
-        <EditTextPreference android:key="chsdpath" />
     </PreferenceCategory>
 </PreferenceScreen>

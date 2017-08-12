@@ -44,13 +44,6 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
-        findPreference("chsdpath_ui").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                ltChooseApp("chsdpath", Constants.chsdpath);
-                return false;
-            }
-        });
         findPreference("author").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -63,6 +56,14 @@ public class SettingsFragment extends PreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/xddxdd/lantian-nolitter"));
+                startActivity(browserIntent);
+                return false;
+            }
+        });
+        findPreference("about_xinternalsd").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/pylerSM/XInternalSD"));
                 startActivity(browserIntent);
                 return false;
             }
@@ -83,6 +84,10 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+    }
+
+    public boolean isXposedEnabled() {
+        return false;
     }
 
     public boolean ltChooseApp(final String key, final String defaults) {

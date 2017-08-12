@@ -20,38 +20,10 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     private XSharedPreferences prefs;
 
-    // From http://stackoverflow.com/questions/4571346/how-to-encode-url-to-avoid-special-characters-in-java
-    /*private static String urlEncode(String input) {
-        StringBuilder resultStr = new StringBuilder();
-        for (char ch : input.toCharArray()) {
-            if (isUnsafe(ch)) {
-                resultStr.append('%');
-                resultStr.append(toHex(ch / 16));
-                resultStr.append(toHex(ch % 16));
-            } else {
-                resultStr.append(ch);
-            }
-        }
-        return resultStr.toString();
-    }
-
-    private static char toHex(int ch) {
-        return (char) (ch < 10 ? '0' + ch : 'A' + ch - 10);
-    }
-
-    private static boolean isUnsafe(char ch) {
-        return ch > 128 || " %$&+,:;=?@<>#%".indexOf(ch) >= 0;
-    }*/
-
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         prefs = new XSharedPreferences("lantian.nolitter");
         prefs.makeWorldReadable();
-        if (prefs.getString("sdcard", "").isEmpty()) {
-            XposedBridge.log("[NoLitter] Failed to load config, running with defaults");
-        } else {
-            XposedBridge.log("[NoLitter] Config loaded");
-        }
     }
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -209,45 +181,18 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
         };
         prefs.reload();
         ArrayList<String> banned = new ArrayList<>(Arrays.asList(prefs.getString("banned", Constants.banned).split(",")));
-        if (!(lpparam.packageName.equals("lantian.nolitter") || banned.contains(lpparam.packageName))) {
-            if (prefs.getBoolean("enable_system", false)) {
-                // User allows to hook system apps
-                XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
-                XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
-                XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
-                if (Arrays.asList(prefs.getString("chsdpath", Constants.chsdpath).split(",")).contains(lpparam.packageName)) {
-                    // Copied from XInternalSD
-                    XposedHelpers.findAndHookMethod(Environment.class,
-                            "getExternalStorageDirectory", changeDirHook);
-                    XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                            "android.app.ContextImpl", lpparam.classLoader),
-                            "getExternalFilesDir", String.class, changeDirHook);
-                    XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                            "android.app.ContextImpl", lpparam.classLoader), "getObbDir",
-                            changeDirHook);
-                    XposedHelpers.findAndHookMethod(Environment.class,
-                            "getExternalStoragePublicDirectory", String.class,
-                            changeDirHook);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                                "android.app.ContextImpl", lpparam.classLoader),
-                                "getExternalFilesDirs", String.class,
-                                changeDirsHook);
-                        XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
-                                "android.app.ContextImpl", lpparam.classLoader),
-                                "getObbDirs", changeDirsHook);
-                    }
-                }
-            } else {
-                // User don't want to hook system apps
-                try {
-                    if ((lpparam.appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                        // Not system app
+        if (banned.contains(lpparam.packageName))
+            XposedBridge.log("[NoLitter] " + lpparam.packageName + ": ignored");
+        if (!lpparam.packageName.equals("lantian.nolitter")) {
+            if (!banned.contains(lpparam.packageName)) {
+                if (prefs.getBoolean("enable_system", false)) {
+                    try {
+                        // User allows to hook system apps
                         XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
                         XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
                         XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
-                        if (Arrays.asList(prefs.getString("chsdpath", Constants.chsdpath).split(",")).contains(lpparam.packageName)) {
+                        if (Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName)) {
+                            XposedBridge.log("[NoLitter] " + lpparam.packageName + ": forced");
                             // Copied from XInternalSD
                             XposedHelpers.findAndHookMethod(Environment.class,
                                     "getExternalStorageDirectory", changeDirHook);
@@ -270,11 +215,53 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                         "android.app.ContextImpl", lpparam.classLoader),
                                         "getObbDirs", changeDirsHook);
                             }
+                        } else {
+                            XposedBridge.log("[NoLitter] " + lpparam.packageName + ": hooked");
                         }
+                    } catch (NullPointerException npe) {
+                        /* Avoid spamming Xposed log */
                     }
-                } catch (NullPointerException npe) {
+                } else {
+                    // User don't want to hook system apps
+                    try {
+                        if ((lpparam.appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                            // Not system app
+                            XposedHelpers.findAndHookConstructor(File.class, String.class, noLitterStr);
+                            XposedHelpers.findAndHookConstructor(File.class, String.class, String.class, noLitterStrStr);
+                            XposedHelpers.findAndHookConstructor(File.class, File.class, String.class, noLitterFileStr);
+                            if (Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName)) {
+                                XposedBridge.log("[NoLitter] " + lpparam.packageName + ": forced");
+                                // Copied from XInternalSD
+                                XposedHelpers.findAndHookMethod(Environment.class,
+                                        "getExternalStorageDirectory", changeDirHook);
+                                XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                        "android.app.ContextImpl", lpparam.classLoader),
+                                        "getExternalFilesDir", String.class, changeDirHook);
+                                XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                        "android.app.ContextImpl", lpparam.classLoader), "getObbDir",
+                                        changeDirHook);
+                                XposedHelpers.findAndHookMethod(Environment.class,
+                                        "getExternalStoragePublicDirectory", String.class,
+                                        changeDirHook);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                            "android.app.ContextImpl", lpparam.classLoader),
+                                            "getExternalFilesDirs", String.class,
+                                            changeDirsHook);
+                                    XposedHelpers.findAndHookMethod(XposedHelpers.findClass(
+                                            "android.app.ContextImpl", lpparam.classLoader),
+                                            "getObbDirs", changeDirsHook);
+                                }
+                            } else {
+                                XposedBridge.log("[NoLitter] " + lpparam.packageName + ": hooked");
+                            }
+                        } else {
+                            XposedBridge.log("[NoLitter] " + lpparam.packageName + ": system, ignored");
+                        }
+                    } catch (NullPointerException npe) {
                     /* Avoid spamming Xposed log */
-                    return;
+                    }
                 }
             }
         }
@@ -303,30 +290,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     }
                 }
                 if(path.startsWith(storageDir + "/Android")) return path;
-                // Split out path after storage dir
                 String newPath = path.substring(storageDir.length() + 1, path.length());
-
-                /*Boolean fExists;
-                if (forceMode) {
-                    // Extra check: if folder present in isolate folder, then force redirect
-                    File fInside;
-                    if (pkgName.isEmpty()) {
-                        fInside = new File(storageDir + "/Android/files/" + newPath.split("/")[0]);
-                    } else {
-                        fInside = new File(storageDir + "/Android/files/" + pkgName + "/" + newPath.split("/")[0]);
-                    }
-                    if (fInside.exists()) {
-                        fExists = false;
-                    } else {
-                        // File to URI: Create a mock file, get its URI, and replace the mock part
-                        File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
-                        fExists = new File(URI.create(fPath.toURI().toString().replaceFirst("/lantian", "")).normalize()).exists();
-                    }
-                } else {
-                    // File to URI: Create a mock file, get its URI, and replace the mock part
-                    File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
-                    fExists = new File(URI.create(fPath.toURI().toString().replaceFirst("/lantian", "")).normalize()).exists();
-                }*/
                 File fPath = new File("/lantian" + storageDir + "/" + newPath.split("/")[0]);
                 Boolean fExists = new File(URI.create(fPath.toURI().toString().replaceFirst("/lantian", "")).normalize()).exists();
                 if (fExists) {
