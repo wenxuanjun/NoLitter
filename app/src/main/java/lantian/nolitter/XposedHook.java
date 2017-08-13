@@ -39,7 +39,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 if (path.startsWith("/sys/")) return;
                 if (path.startsWith("/vendor/")) return;
                 String newPath;
-                if (prefs.getBoolean("separate_app", false)) {
+                if (prefs.getBoolean("separate_app", true)) {
                     newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
                 } else {
                     newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
@@ -62,7 +62,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
                     String newPath;
-                    if (prefs.getBoolean("separate_app", false)) {
+                    if (prefs.getBoolean("separate_app", true)) {
                         newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
                     } else {
                         newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
@@ -81,7 +81,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
                     String newPath;
-                    if (prefs.getBoolean("separate_app", false)) {
+                    if (prefs.getBoolean("separate_app", true)) {
                         newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
                     } else {
                         newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
@@ -106,7 +106,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
                     String newPath;
-                    if (prefs.getBoolean("separate_app", false)) {
+                    if (prefs.getBoolean("separate_app", true)) {
                         newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
                     } else {
                         newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
@@ -125,7 +125,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (path.startsWith("/sys/")) return;
                     if (path.startsWith("/vendor/")) return;
                     String newPath;
-                    if (prefs.getBoolean("separate_app", false)) {
+                    if (prefs.getBoolean("separate_app", true)) {
                         newPath = doReplace(path, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
                     } else {
                         newPath = doReplace(path, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
@@ -146,7 +146,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 if (oldFile == null) return;
                 String oldDir = oldFile.getAbsolutePath() + "/";
                 String newDir;
-                if (prefs.getBoolean("separate_app", false)) {
+                if (prefs.getBoolean("separate_app", true)) {
                     newDir = doReplace(oldDir, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
                 } else {
                     newDir = doReplace(oldDir, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
@@ -165,7 +165,7 @@ public class XposedHook implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 for (File oldFile : oldDirPaths) {
                     String oldDir = oldFile.getPath() + "/";
                     String newDir;
-                    if (prefs.getBoolean("separate_app", false)) {
+                    if (prefs.getBoolean("separate_app", true)) {
                         newDir = doReplace(oldDir, lpparam.packageName, Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));
                     } else {
                         newDir = doReplace(oldDir, "", Arrays.asList(prefs.getString("forced", Constants.forced).split(",")).contains(lpparam.packageName));

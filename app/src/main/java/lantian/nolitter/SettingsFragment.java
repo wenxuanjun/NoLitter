@@ -1,7 +1,6 @@
 package lantian.nolitter;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +13,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +26,6 @@ public class SettingsFragment extends PreferenceFragment {
     @SuppressWarnings("deprecation")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.settings);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         getPreferenceScreen().removePreference(findPreference("hidden"));
@@ -86,8 +85,27 @@ public class SettingsFragment extends PreferenceFragment {
         });
     }
 
-    public boolean isXposedEnabled() {
-        return false;
+    @Override
+    public void onPause() {
+        // From https://forum.xda-developers.com/xposed/how-to-save-load-module-settings-t3640881
+        super.onPause();
+
+        // Set preferences permissions to be world readable
+        // Workaround for Android N and above since MODE_WORLD_READABLE will cause security exception and FC.
+        final File dataDir = new File(getActivity().getApplicationInfo().dataDir);
+        final File prefsDir = new File(dataDir, "shared_prefs");
+        final File prefsFile = new File(prefsDir, getPreferenceManager().getSharedPreferencesName() + ".xml");
+
+        if (prefsFile.exists()) {
+            dataDir.setReadable(true, false);
+            dataDir.setExecutable(true, false);
+
+            prefsDir.setReadable(true, false);
+            prefsDir.setExecutable(true, false);
+
+            prefsFile.setReadable(true, false);
+            prefsFile.setExecutable(true, false);
+        }
     }
 
     public boolean ltChooseApp(final String key, final String defaults) {
