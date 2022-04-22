@@ -6,30 +6,25 @@
     <string name="intro_functions">功能</string>
     <string name="intro_functions_description">NoLitter 会将应用在根目录下乱建的文件夹统一移动至“SD卡/Android/files/”文件夹下，并重定向应用今后的读写请求，以保证SD卡根目录整洁，并尽可能不影响应用使用。</string>
     <string name="intro_usage">用法</string>
-    <string name="intro_usage_description">启用 NoLitter 后一般不需要做任何事。\n
-        修改 NoLitter 配置后，需要重启对应的应用以生效。\n
-        1. 如果有应用崩溃，无法访问存储，或无法被限制住，启用强力模式。\n
-        2. 如果还是不行，请清除应用数据。\n
-        3. 如果还是不行，那么 NoLitter 无能为力，请将其加入白名单以免影响使用。
-    </string>
+    <string name="intro_usage_description">启用 NoLitter 后一般不需要做任何事\n修改 NoLitter 配置后，需要重启对应的应用以生效\n1. 如果有应用崩溃，无法访问存储，或无法被限制住，启用强力模式\n2. 如果还是不行，请清除应用数据\n3. 如果还是不行，那么 NoLitter 无能为力，请将其加入白名单以免影响使用</string>
 
-    <string name="ui_cat_config">设置</string>
+    <string name="ui_category_config">设置</string>
     <string name="ui_storageDirs">存储路径</string>
     <string name="ui_storageDirs_description">你的内置存储和存储卡的路径，一行一个</string>
-    <string name="ui_whitelistApp">白名单应用</string>
-    <string name="ui_whitelistApp_description">不受限制的应用程序，例如文件管理器，重启应用后生效</string>
     <string name="ui_separateApp">分别创建文件夹</string>
     <string name="ui_separateApp_description">为每个应用分别在 Android/files 下创建文件夹</string>
-    <string name="ui_manageSystemApp">对系统应用启用</string>
-    <string name="ui_manageSystemApp_description">可能会造成某些功能异常！Flyme 用户不要开启！重启生效。</string>
+    <string name="ui_forceMode">强力模式应用</string>
+    <string name="ui_forceMode_description">当强力模式开启，只要 Android/files 中有要访问的文件夹，操作就会移动到该处。\n当强力模式关闭，只有存储卡根目录下没有这个文件夹，操作才会被移动</string>
+    <string name="ui_removeAfterUninstall">应用卸载后删除残留文件夹</string>
+    <string name="ui_removeAfterUninstall_description">在应用卸载后，删除对应的 Android/files/[包名] 和 Android/files/Android/data/[包名]</string>
+
+    <string name="ui_category_others">其他</string>
     <string name="ui_showIcon">在启动器显示图标</string>
     <string name="ui_showIcon_description">你仍然可以从 Xposed 安装器进入模块设置</string>
-    <string name="ui_forceMode">强力模式应用</string>
-    <string name="ui_forceMode_description">当强力模式开启，只要 Android/files 中有要访问的文件夹，操作就会移动到该处。\n当强力模式关闭，只有存储卡根目录下没有这个文件夹，操作才会被移动。</string>
-    <string name="ui_removeAfterUninstall">应用卸载后删除残留文件夹</string>
-    <string name="ui_removeAfterUninstall_description">在应用卸载后，删除对应的 Android/files/[包名] 和 Android/files/Android/data/[包名]。</string>
+    <string name="ui_debugMode">启用调试模式</string>
+    <string name="ui_debugMode_description">启用后，会在 Xposed Manager 中打印重定向信息</string>
 
-    <string name="ui_cat_about">关于</string>
+    <string name="ui_category_about">关于</string>
     <string name="ui_author">作者</string>
     <string name="ui_author_description">Lan Tian</string>
     <string name="ui_source">源代码</string>

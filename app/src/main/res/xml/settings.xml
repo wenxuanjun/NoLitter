@@ -1,79 +1,59 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/intro">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="@string/intro">
         <Preference
-            android:key="intro_functions"
-            android:summary="@string/intro_functions_description"
-            android:title="@string/intro_functions" />
+            app:key="intro_functions"
+            app:summary="@string/intro_functions_description"
+            app:title="@string/intro_functions" />
         <Preference
-            android:key="intro_testing"
-            android:summary="@string/intro_usage_description"
-            android:title="@string/intro_usage" />
+            app:key="intro_testing"
+            app:summary="@string/intro_usage_description"
+            app:title="@string/intro_usage" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/ui_cat_config">
+    <PreferenceCategory app:title="@string/ui_category_config">
         <EditTextPreference
-            android:defaultValue="/data/media/0\n
-/mnt/runtime/default/emulated/0\n
-/mnt/runtime/default/sdcard0\n
-/mnt/runtime/default/self/primary\n
-/mnt/runtime/read/emulated/0\n
-/mnt/runtime/write/emulated/0\n
-/mnt/sdcard\n
-/mnt/shell/emulated/0\n
-/mnt/user/0/primary\n
-/sdcard\n
-/storage/emulated/0\n
-/storage/emulated/legacy\n
-/storage/sdcard0\n
-/storage/self/primary"
-            android:key="sdcard"
-            android:summary="@string/ui_storageDirs_description"
-            android:title="@string/ui_storageDirs" />
+            app:defaultValue="/sdcard\n/storage/emulated/0"
+            app:key="sdcard"
+            app:summary="@string/ui_storageDirs_description"
+            app:title="@string/ui_storageDirs" />
         <Preference
-            android:key="banned_ui"
-            android:summary="@string/ui_whitelistApp_description"
-            android:title="@string/ui_whitelistApp" />
-        <Preference
-            android:key="forced_ui"
-            android:summary="@string/ui_forceMode_description"
-            android:title="@string/ui_forceMode" />
+            app:key="forced_ui"
+            app:summary="@string/ui_forceMode_description"
+            app:title="@string/ui_forceMode" />
         <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="separate_app"
-            android:summary="@string/ui_separateApp_description"
-            android:title="@string/ui_separateApp" />
+            app:defaultValue="true"
+            app:key="separate_app"
+            app:summary="@string/ui_separateApp_description"
+            app:title="@string/ui_separateApp" />
         <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="remove_after_uninstall"
-            android:summary="@string/ui_removeAfterUninstall_description"
-            android:title="@string/ui_removeAfterUninstall" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="enable_system"
-            android:summary="@string/ui_manageSystemApp_description"
-            android:title="@string/ui_manageSystemApp" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="showicon"
-            android:summary="@string/ui_showIcon_description"
-            android:title="@string/ui_showIcon" />
+            app:defaultValue="true"
+            app:key="remove_after_uninstall"
+            app:summary="@string/ui_removeAfterUninstall_description"
+            app:title="@string/ui_removeAfterUninstall" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/ui_cat_about">
-        <Preference
-            android:key="author"
-            android:summary="@string/ui_author_description"
-            android:title="@string/ui_author" />
-        <Preference
-            android:key="source"
-            android:summary="@string/ui_source_description"
-            android:title="@string/ui_source" />
-        <Preference
-            android:key="about_xinternalsd"
-            android:summary="@string/about_xinternalsd_description"
-            android:title="@string/about_xinternalsd" />
+    <PreferenceCategory app:title="@string/ui_category_others">
+        <CheckBoxPreference
+            app:defaultValue="true"
+            app:key="show_icon"
+            app:summary="@string/ui_showIcon_description"
+            app:title="@string/ui_showIcon" />
+        <CheckBoxPreference
+            app:defaultValue="true"
+            app:key="debug_mode"
+            app:summary="@string/ui_debugMode_description"
+            app:title="@string/ui_debugMode" />
     </PreferenceCategory>
-    <PreferenceCategory android:key="hidden">
-        <EditTextPreference android:key="banned" />
-        <EditTextPreference android:key="forced" />
+    <PreferenceCategory app:title="@string/ui_category_about">
+        <Preference
+            app:key="author"
+            app:summary="@string/ui_author_description"
+            app:title="@string/ui_author" />
+        <Preference
+            app:key="source"
+            app:summary="@string/ui_source_description"
+            app:title="@string/ui_source" />
+        <Preference
+            app:key="about_xinternalsd"
+            app:summary="@string/about_xinternalsd_description"
+            app:title="@string/about_xinternalsd" />
     </PreferenceCategory>
 </PreferenceScreen>
