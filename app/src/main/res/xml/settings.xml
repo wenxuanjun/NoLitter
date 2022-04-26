@@ -10,11 +10,6 @@
             app:title="@string/intro_usage" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/ui_category_config">
-        <EditTextPreference
-            app:defaultValue="/sdcard\n/storage/emulated/0"
-            app:key="sdcard"
-            app:summary="@string/ui_storageDirs_description"
-            app:title="@string/ui_storageDirs" />
         <Preference
             app:key="forced_ui"
             app:summary="@string/ui_forceMode_description"
@@ -30,14 +25,21 @@
             app:summary="@string/ui_removeAfterUninstall_description"
             app:title="@string/ui_removeAfterUninstall" />
     </PreferenceCategory>
+    <PreferenceCategory app:title="@string/ui_category_advanced">
+        <EditTextPreference
+            app:defaultValue="/Android/files"
+            app:key="redirect_dir"
+            app:summary="@string/ui_redirectDir_description"
+            app:title="@string/ui_redirectDir" />
+    </PreferenceCategory>
     <PreferenceCategory app:title="@string/ui_category_others">
         <CheckBoxPreference
-            app:defaultValue="true"
-            app:key="show_icon"
-            app:summary="@string/ui_showIcon_description"
-            app:title="@string/ui_showIcon" />
+            app:defaultValue="false"
+            app:key="hide_icon"
+            app:summary="@string/ui_hideIcon_description"
+            app:title="@string/ui_hideIcon" />
         <CheckBoxPreference
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:key="debug_mode"
             app:summary="@string/ui_debugMode_description"
             app:title="@string/ui_debugMode" />

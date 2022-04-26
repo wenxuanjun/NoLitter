@@ -20,7 +20,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         prefs = context?.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_WORLD_READABLE)
 
         findPreference<Preference>("forced_ui")?.setOnPreferenceClickListener {
-            chooseApp("forced", Constants.forced)
+            chooseApp("forced", Constants.defaultForcedList)
             false
         }
         findPreference<Preference>("author")?.setOnPreferenceClickListener {
@@ -29,21 +29,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
             false
         }
         findPreference<Preference>("source")?.setOnPreferenceClickListener {
-            val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/xddxdd/lantian-nolitter"))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/xddxdd/lantian-nolitter"))
             startActivity(browserIntent)
             false
         }
         findPreference<Preference>("about_xinternalsd")?.setOnPreferenceClickListener {
-            val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/pylerSM/XInternalSD"))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/pylerSM/XInternalSD"))
             startActivity(browserIntent)
             false
         }
-        findPreference<Preference>("show_icon")?.setOnPreferenceChangeListener { _, newValue ->
+        findPreference<Preference>("hide_icon")?.setOnPreferenceChangeListener { _, newValue ->
             requireActivity().packageManager.setComponentEnabledSetting(
                 ComponentName(requireActivity(), MainActivity::class.java),
-                if(newValue as Boolean) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                if(newValue as Boolean) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP
             )
             true
@@ -65,7 +63,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         Collections.sort(appInfo, ApplicationInfo.DisplayNameComparator(requireActivity().packageManager))
 
         // Get current settings
-        val currentIgnored = ArrayList(listOf(*prefs!!.getString(key, defaults)!!.split(",".toRegex()).toTypedArray()))
+        val currentIgnored = ArrayList(prefs!!.getString(key, defaults)!!.split(","))
 
         // Form arrays
         val appTitles = arrayOfNulls<String>(appInfo.size)
@@ -79,7 +77,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val alertDialog = AlertDialog.Builder(requireContext())
         alertDialog.setTitle(R.string.ui_chooseApp)
         alertDialog.setMultiChoiceItems(appTitles,appCared) { _, which: Int, isChecked: Boolean ->
-            val ignored = ArrayList(listOf(*prefs!!.getString(key, defaults)!!.split(",".toRegex()).toTypedArray()))
+            val ignored = ArrayList(prefs!!.getString(key, defaults)!!.split(","))
             if (isChecked) {
                 ignored.add(appInfo[which].packageName)
             } else {

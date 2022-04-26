@@ -20,101 +20,76 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     @Throws(Throwable::class)
     override fun handleLoadPackage(lpparam: LoadPackageParam) {
-        val noLitterStr: XC_MethodHook = object : XC_MethodHook() {
+        val hookFileWithString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
-                val path = param.args[0].toString()
-                val newPath = getNewPath(path, lpparam.packageName)
-                if (path != newPath) {
+                val oldPath = param.args[0].toString()
+                val newPath = doReplace(param.args[0].toString(), lpparam.packageName)
+                if (oldPath != newPath) {
                     param.args[0] = newPath
-                    printDebugLogs(lpparam.packageName, "Redirecting", "$path -> $newPath")
+                    printDebugLogs(lpparam.packageName, "Redirecting", "$oldPath -> $newPath")
                 }
             }
         }
-        val noLitterStrStr: XC_MethodHook = object : XC_MethodHook() {
+        val hookFileWithStringAndString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
-                if (param.args[0] == null || param.args[0].toString().isEmpty()) {
-                    val path = param.args[1].toString()
-                    val newPath = getNewPath(path, lpparam.packageName)
-                    if (path != newPath) {
-                        param.args[1] = newPath
-                        printDebugLogs(lpparam.packageName, "Redirecting", "$path -> $newPath")
-                    }
-                } else {
-                    var path = param.args[0].toString() + "/" + param.args[1].toString()
-                    path = path.replace("//", "/")
-                    val newPath = getNewPath(path, lpparam.packageName)
-                    if (path != newPath) {
-                        param.args[0] = null
-                        param.args[1] = newPath
-                        printDebugLogs(lpparam.packageName, "Redirecting", "$path -> $newPath")
-                    }
+                val oldPath = (param.args[0].toString() + "/" + param.args[1].toString()).replace("//", "/")
+                val newPath = doReplace(oldPath, lpparam.packageName)
+                if (oldPath != newPath) {
+                    param.args[0] = null
+                    param.args[1] = newPath
+                    printDebugLogs(lpparam.packageName, "Redirecting", "$oldPath -> $newPath")
                 }
             }
         }
-        val noLitterFileStr: XC_MethodHook = object : XC_MethodHook() {
+        val hookFileWithFileAndString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
-                if (param.args[0] == null || (param.args[0] as File).absolutePath.isEmpty()) {
-                    val path = param.args[1].toString()
-                    val newPath = getNewPath(path, lpparam.packageName)
-                    if (path != newPath) {
-                        param.args[1] = newPath
-                        printDebugLogs(lpparam.packageName, "Redirecting", "$path -> $newPath")
-                    }
-                } else {
-                    var path = (param.args[0] as File).absolutePath + "/" + param.args[1].toString()
-                    path = path.replace("//", "/")
-                    val newPath = getNewPath(path, lpparam.packageName)
-                    if (path != newPath) {
-                        param.args[0] = null
-                        param.args[1] = newPath
-                        printDebugLogs(lpparam.packageName, "Redirecting", "$path -> $newPath")
-                    }
+                val oldPath = (param.args[0] as File).absolutePath + "/" + param.args[1].toString()
+                val newPath = doReplace(oldPath, lpparam.packageName)
+                if (oldPath != newPath) {
+                    param.args[0] = null
+                    param.args[1] = newPath
+                    printDebugLogs(lpparam.packageName, "Redirecting", "$oldPath -> $newPath")
                 }
             }
         }
-        // XInternalSD Hook
         val changeDirHook: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun afterHookedMethod(param: MethodHookParam) {
-                val oldFile = param.result as File
-                val oldDir = oldFile.absolutePath + "/"
-                val newDir = getNewPath(oldDir, lpparam.packageName)
-                val newDirPath = File(newDir)
+                val oldDirPath = (param.result as File).absolutePath
+                val newDirPath = File(doReplace(oldDirPath, lpparam.packageName))
                 param.result = newDirPath
             }
         }
         val changeDirsHook: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun afterHookedMethod(param: MethodHookParam) {
-                // https://github.com/pylerSM/XInternalSD/issues/15
                 val oldDirPaths = param.result as Array<File>
                 val newDirPaths = ArrayList<File>()
-                for (oldFile in oldDirPaths) {
-                    val oldDir = oldFile.path + "/"
-                    val newDir = getNewPath(oldDir, lpparam.packageName)
-                    val newDirPath = File(newDir)
-                    newDirPaths.add(newDirPath)
+                for (oldDirPath in oldDirPaths) {
+                    newDirPaths.add(File(doReplace(oldDirPath.absolutePath, lpparam.packageName)))
                 }
-                val appendedDirPaths = newDirPaths.toTypedArray()
-                param.result = appendedDirPaths
+                param.result = newDirPaths.toTypedArray()
             }
         }
 
+        // Reload the preference when loading the package
+        prefs!!.reload()
+
         try {
-            XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, noLitterStr)
-            XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, String::class.java, noLitterStrStr)
-            XposedHelpers.findAndHookConstructor(File::class.java, File::class.java, String::class.java, noLitterFileStr)
-            if (isForceMode(lpparam.packageName)) {
+            XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, hookFileWithString)
+            XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, String::class.java, hookFileWithStringAndString)
+            XposedHelpers.findAndHookConstructor(File::class.java, File::class.java, String::class.java, hookFileWithFileAndString)
+            if (prefs!!.getString("forced", Constants.defaultForcedList)!!.split(",").contains(lpparam.packageName)) {
                 printDebugLogs(lpparam.packageName, "Forced", "in forcelist")
                 XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStorageDirectory", changeDirHook)
-                XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDir", String::class.java, changeDirHook)
-                XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getObbDir", changeDirHook)
                 XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStoragePublicDirectory", String::class.java, changeDirHook)
-                XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDirs", String::class.java, changeDirsHook)
+                XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getObbDir", changeDirHook)
                 XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getObbDirs", changeDirsHook)
+                XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDir", String::class.java, changeDirHook)
+                XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDirs", String::class.java, changeDirsHook)
             }
         } catch (npe: NullPointerException) {
             // Prevent too much log spawn
@@ -122,36 +97,34 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     // Return the real path of redirection
-    private fun doReplace(path: String, pkgName: String, forceMode: Boolean): String {
-        var storageDir: String
-        for (storagePath in prefs!!.getString("sdcard", Constants.sdcard)!!.split("\n".toRegex()).toTypedArray()) {
-            if (storagePath.isEmpty()) continue
-            storageDir = if (storagePath.trim { it <= ' ' }.endsWith("/")) storagePath.trim { it <= ' ' }.substring(0, storagePath.length - 1) else storagePath.trim { it <= ' ' }
-            if (path.startsWith(storageDir)) {
-                // Check if is root dir itself
-                if (path == "$storageDir/" || path == storageDir) {
-                    return if (forceMode) if (pkgName.isEmpty()) "$storageDir/Android/files/" else "$storageDir/Android/files/$pkgName/" else storageDir
+    private fun doReplace(oldPath: String, packageName: String): String {
+        val storageDirs = Constants.defaultStorageDirs.split(",")
+        val redirectDir = prefs!!.getString("redirect_dir", Constants.defaultRedirectDir)
+        val forceMode = prefs!!.getString("forced", Constants.defaultForcedList)!!.split(",").contains(packageName)
+        val separateApp = prefs!!.getBoolean("separate_app", true)
+
+        for (storageDir in storageDirs) {
+            if (oldPath.startsWith(storageDir)) {
+                var absoluteRedirectPath = storageDir + redirectDir
+                if (separateApp) absoluteRedirectPath += "/$packageName"
+
+                // If it's just the root directory
+                if (oldPath == storageDir || oldPath == "$storageDir/") {
+                    return if (forceMode) absoluteRedirectPath else storageDir
                 }
-                if (path.startsWith("$storageDir/Android")) return path
-                val newPath = path.substring(storageDir.length + 1)
-                val filePath = File("/lantian" + storageDir + "/" + newPath.split("/".toRegex()).toTypedArray()[0])
-                val fileExists = File(URI.create(filePath.toURI().toString().replaceFirst("/lantian".toRegex(), "")).normalize()).exists()
-                return when {
-                    fileExists -> path
-                    pkgName.isEmpty() -> "$storageDir/Android/files/$newPath"
-                    else -> "$storageDir/Android/files/$pkgName/$newPath"
-                }
+
+                // Use the origin path if it's in the "Android" directory
+                if (oldPath.startsWith("$storageDir/Android")) return oldPath
+
+                // If it's in a directory that already exists in the root directory
+                val relativePath = oldPath.substring(storageDir.length)
+                val firstDirectoryPath = relativePath.substring(0, relativePath.indexOf("/", 1))
+                val fileExists = File(URI.create(File(storageDir + firstDirectoryPath).toURI().toString()).normalize()).exists()
+
+                return if (fileExists) oldPath else absoluteRedirectPath + relativePath
             }
         }
-        return path
-    }
-
-    private fun getNewPath(oldPath: String, packageName: String): String {
-        return if (prefs!!.getBoolean("separate_app", true)) doReplace(oldPath, packageName, isForceMode(packageName)) else doReplace(oldPath, "", isForceMode(packageName))
-    }
-
-    private fun isForceMode(packageName: String): Boolean {
-        return listOf(*prefs!!.getString("forced", Constants.forced)!!.split(",".toRegex()).toTypedArray()).contains(packageName)
+        return oldPath
     }
 
     private fun printDebugLogs(packageName: String, operation: String, info: String) {
