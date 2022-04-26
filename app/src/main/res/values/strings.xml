@@ -12,9 +12,9 @@
     <string name="ui_separateApp">Create dirs individually</string>
     <string name="ui_separateApp_description">Create separate folder for each app under Android/files</string>
     <string name="ui_forceMode">Force mode apps</string>
-    <string name="ui_forceMode_description">When force mode is enabled, it will be redirected to the redirected directory regardless of whether the directory exists in the root directory</string>
+    <string name="ui_forceMode_description">When force mode is enabled, it will be redirected to the redirect directory regardless of whether the directory exists in the root directory</string>
     <string name="ui_removeAfterUninstall">Remove folder after app uninstall</string>
-    <string name="ui_removeAfterUninstall_description">Remove Android/files/[pkg] and Android/files/Android/data/[pkg] after uninstallation</string>
+    <string name="ui_removeAfterUninstall_description">Remove residual files in the redirect directory after the application has been uninstalled</string>
 
     <string name="ui_category_advanced">Advanced</string>
     <string name="ui_redirectDir">Custom redirect directory</string>

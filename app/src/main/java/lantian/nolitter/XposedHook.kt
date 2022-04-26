@@ -1,10 +1,12 @@
 package lantian.nolitter
 
 import android.os.Environment
+import android.provider.MediaStore
 import de.robv.android.xposed.*
 import de.robv.android.xposed.IXposedHookZygoteInit.StartupParam
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
 import java.io.File
+import java.lang.Exception
 import java.net.URI
 import java.util.*
 
@@ -34,7 +36,8 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         val hookFileWithStringAndString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
-                val oldPath = (param.args[0].toString() + "/" + param.args[1].toString()).replace("//", "/")
+                if (param.args[0] == null) param.args[0] = ""
+                val oldPath = param.args[0].toString() + "/" + param.args[1].toString().replace("//", "/")
                 val newPath = doReplace(oldPath, lpparam.packageName)
                 if (oldPath != newPath) {
                     param.args[0] = null
@@ -46,7 +49,8 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         val hookFileWithFileAndString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
-                val oldPath = (param.args[0] as File).absolutePath + "/" + param.args[1].toString()
+                if (param.args[0] == null) param.args[0] = File("")
+                val oldPath = ((param.args[0] as File).absolutePath + "/" + param.args[1].toString()).replace("//", "/")
                 val newPath = doReplace(oldPath, lpparam.packageName)
                 if (oldPath != newPath) {
                     param.args[0] = null
@@ -98,6 +102,14 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     // Return the real path of redirection
     private fun doReplace(oldPath: String, packageName: String): String {
+
+        // Ignore if it's the NoLitter itself
+        if (packageName == BuildConfig.APPLICATION_ID) return oldPath
+
+        // Ignore if it's in the blacklist (e.g. /data)
+        val blacklistDirs = Constants.defaultBlacklistDirs.split(",")
+        for (blacklistDir in blacklistDirs) if (oldPath.startsWith(blacklistDir)) return oldPath
+
         val storageDirs = Constants.defaultStorageDirs.split(",")
         val redirectDir = prefs!!.getString("redirect_dir", Constants.defaultRedirectDir)
         val forceMode = prefs!!.getString("forced", Constants.defaultForcedList)!!.split(",").contains(packageName)
@@ -118,12 +130,14 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
 
                 // If it's in a directory that already exists in the root directory
                 val relativePath = oldPath.substring(storageDir.length)
-                val firstDirectoryPath = relativePath.substring(0, relativePath.indexOf("/", 1))
-                val fileExists = File(URI.create(File(storageDir + firstDirectoryPath).toURI().toString()).normalize()).exists()
-
+                val secondSlash = relativePath.indexOf("/", 1)
+                val firstDirectoryPath = if (secondSlash == -1) relativePath else relativePath.substring(0, secondSlash)
+                val fileExists = File(URI.create("file://$storageDir$firstDirectoryPath").normalize()).exists()
                 return if (fileExists) oldPath else absoluteRedirectPath + relativePath
             }
         }
+
+        // Ignore if it's not in the storage directories
         return oldPath
     }
 

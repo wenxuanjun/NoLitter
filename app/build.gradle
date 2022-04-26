@@ -9,8 +9,8 @@ android {
         applicationId "lantian.nolitter"
         minSdk 27
         targetSdk 32
-        versionCode 12
-        versionName "1.4.1"
+        versionCode 13
+        versionName "1.4.2"
     }
     buildTypes {
         release {

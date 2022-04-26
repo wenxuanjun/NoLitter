@@ -4,7 +4,7 @@
 
     <string name="intro">简介</string>
     <string name="intro_functions">功能</string>
-    <string name="intro_functions_description">NoLitter 会将应用在根目录下乱建的文件夹统一移动至“SD卡/Android/files/”文件夹下，并重定向应用今后的读写请求，以保证SD卡根目录整洁，并尽可能不影响应用使用。</string>
+    <string name="intro_functions_description">NoLitter 会将应用在根目录下乱建的文件夹统一移动至重定向目录下，并重定向应用今后的读写请求，以保证SD卡根目录整洁，并尽可能不影响应用使用。</string>
     <string name="intro_usage">用法</string>
     <string name="intro_usage_description">启用 NoLitter 后一般不需要做任何事\n修改 NoLitter 配置后，需要重启对应的应用以生效\n1. 如果有应用崩溃，无法访问存储，或无法被限制住，启用强力模式\n2. 如果还是不行，请清除应用数据\n3. 如果还是不行，那么 NoLitter 无能为力，请将其加入白名单以免影响使用</string>
 
@@ -14,7 +14,7 @@
     <string name="ui_forceMode">强力模式应用</string>
     <string name="ui_forceMode_description">强力模式开启后，无论存储卡根目录下是否有该目录，都会被重定向到重定向目录</string>
     <string name="ui_removeAfterUninstall">应用卸载后删除残留文件夹</string>
-    <string name="ui_removeAfterUninstall_description">在应用卸载后，删除对应的 /Android/files/[包名] 和 /Android/files/Android/data/[包名]</string>
+    <string name="ui_removeAfterUninstall_description">在应用卸载后，删除重定向目录下的残留文件</string>
 
     <string name="ui_category_advanced">高级</string>
     <string name="ui_redirectDir">自定义重定向目录</string>
