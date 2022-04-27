@@ -8,7 +8,9 @@ import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.preference.PreferenceManager
+import java.io.File
 import java.io.IOException
+import java.net.URI
 
 class CleanFolderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -35,14 +37,16 @@ class CleanFolderReceiver : BroadcastReceiver() {
             if (existingpackageName.packageName == packageName) return
         }
 
-        // Delete files and folders
-        try {
-            Toast.makeText(context, packageName + context.getString(R.string.ui_isUninstalled), Toast.LENGTH_SHORT).show()
-            val redirectDir = prefs.getString("redirect_dir", Constants.defaultRedirectDir)
-            Runtime.getRuntime().exec("rm -r /sdcard" + redirectDir + "/" + packageName)
-            Toast.makeText(context, packageName + context.getString(R.string.ui_isCleared), Toast.LENGTH_SHORT).show()
-        } catch (e: IOException) {
-            Toast.makeText(context, packageName + context.getString(R.string.ui_failClear), Toast.LENGTH_SHORT).show()
+        // Delete files and folders if exist
+        val directoryPath = "/sdcard" + prefs.getString("redirect_dir", Constants.defaultRedirectDir) + "/" + packageName
+        if (File(URI.create("file://$directoryPath")).exists()) {
+            try {
+                Toast.makeText(context, packageName + context.getString(R.string.ui_isClearing), Toast.LENGTH_SHORT).show()
+                Runtime.getRuntime().exec("rm -r $directoryPath")
+                Toast.makeText(context, packageName + context.getString(R.string.ui_isCleared), Toast.LENGTH_SHORT).show()
+            } catch (e: IOException) {
+                Toast.makeText(context, packageName + context.getString(R.string.ui_failClear), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

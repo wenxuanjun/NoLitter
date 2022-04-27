@@ -55,7 +55,7 @@
             app:title="@string/ui_source" />
         <Preference
             app:key="about_xinternalsd"
-            app:summary="@string/about_xinternalsd_description"
-            app:title="@string/about_xinternalsd" />
+            app:summary="@string/ui_about_xinternalsd_description"
+            app:title="@string/ui_about_xinternalsd" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -132,7 +132,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
                 val relativePath = oldPath.substring(storageDir.length)
                 val secondSlash = relativePath.indexOf("/", 1)
                 val firstDirectoryPath = if (secondSlash == -1) relativePath else relativePath.substring(0, secondSlash)
-                val fileExists = File(URI.create("file://$storageDir$firstDirectoryPath").normalize()).exists()
+                val fileExists = File(URI.create("file://$storageDir$firstDirectoryPath")).exists()
                 return if (fileExists) oldPath else absoluteRedirectPath + relativePath
             }
         }

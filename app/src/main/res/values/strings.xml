@@ -6,14 +6,14 @@
     <string name="intro_functions">Functions</string>
     <string name="intro_functions_description">NoLitter prevents apps from creating folders in SDCard root folder by moving them away. It cleans up the root folder while ensuring that apps still function.</string>
     <string name="intro_usage">Usage</string>
-    <string name="intro_usage_description">Usually after enabling the module, you don\'t have to do anything.\nChanging configuration requires restarting corresponding app.\n1. If an app crashes, fails to access SDCard, or cannot be limited, enable force mode.\n2. If it still doesn\'t work, try cleaning the app\'s data.\n3. If it still doesn\'t work, NoLitter isn\'t compatible with the app. Please add it to whitelist if you need the app.</string>
+    <string name="intro_usage_description">Usually after enabling the module, you don\'t have to do anything.\nChanging configuration requires restarting corresponding app.\n1. If an app crashes, fails to access SDCard, or cannot be limited, enable force mode.\n2. If it still doesn\'t work, try cleaning the app\'s data.\n3. If it still doesn\'t work, NoLitter isn\'t compatible with the app. Please move it out of scope if you need the app.</string>
 
     <string name="ui_category_config">Configuration</string>
     <string name="ui_separateApp">Create dirs individually</string>
     <string name="ui_separateApp_description">Create separate folder for each app under Android/files</string>
     <string name="ui_forceMode">Force mode apps</string>
     <string name="ui_forceMode_description">When force mode is enabled, it will be redirected to the redirect directory regardless of whether the directory exists in the root directory</string>
-    <string name="ui_removeAfterUninstall">Remove folder after app uninstall</string>
+    <string name="ui_removeAfterUninstall">Remove residual files after app uninstalled</string>
     <string name="ui_removeAfterUninstall_description">Remove residual files in the redirect directory after the application has been uninstalled</string>
 
     <string name="ui_category_advanced">Advanced</string>
@@ -31,12 +31,12 @@
     <string name="ui_author_description">Lan Tian</string>
     <string name="ui_source">Source Code</string>
     <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
-    <string name="about_xinternalsd">This app used code from XInternalSD</string>
-    <string name="about_xinternalsd_description">https://github.com/pylerSM/XInternalSD</string>
+    <string name="ui_about_xinternalsd">This app used code from XInternalSD</string>
+    <string name="ui_about_xinternalsd_description">https://github.com/pylerSM/XInternalSD</string>
 
     <string name="ui_chooseApp">Choose apps</string>
-    <string name="ui_isUninstalled">\'s sdcard data is being cleared.</string>
-    <string name="ui_isCleared">\'s sdcard data is cleared.</string>
-    <string name="ui_failClear">\'s sdcard data cannot be cleared, please clean it manually.</string>
-    <string name="ui_failPermission">Storage permission is needed to clean garbage after uninstall!</string>
+    <string name="ui_isClearing">\'s sdcard data is being cleared</string>
+    <string name="ui_isCleared">\'s sdcard data is cleared successfully</string>
+    <string name="ui_failClear">\'s sdcard data cannot be cleared, please clean it manually</string>
+    <string name="ui_failPermission">Storage permission is needed to clean garbage after uninstall</string>
 </resources>
