@@ -20,7 +20,7 @@ class CleanFolderReceiver : BroadcastReceiver() {
         if (packageName.isEmpty()) return
 
         // Get the preference
-        val prefs = context?.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_WORLD_READABLE)
+        val prefs = context.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_WORLD_READABLE)
 
         // Check if is enabled
         if (!prefs.getBoolean("remove_after_uninstall", true)) return
@@ -38,7 +38,9 @@ class CleanFolderReceiver : BroadcastReceiver() {
         }
 
         // Delete files and folders if exist
-        val directoryPath = "/sdcard" + prefs.getString("redirect_dir", Constants.defaultRedirectDir) + "/" + packageName
+        val directoryPath = "/sdcard" + prefs.getString("redirect_dir",
+            Constants.defaultRedirectDir
+        ) + "/" + packageName
         if (File(URI.create("file://$directoryPath")).exists()) {
             try {
                 Toast.makeText(context, packageName + context.getString(R.string.ui_isClearing), Toast.LENGTH_SHORT).show()

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/NoLitter.iml" filepath="$PROJECT_DIR$/.idea/modules/NoLitter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/NoLitter.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/NoLitter.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Nolitter.iml" filepath="$PROJECT_DIR$/.idea/modules/Nolitter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Nolitter.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Nolitter.app.iml" />
     </modules>
   </component>
 </project>

@@ -62,6 +62,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         val changeDirHook: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun afterHookedMethod(param: MethodHookParam) {
+                if (param.result == null) return
                 val oldDirPath = (param.result as File).absolutePath
                 val newDirPath = File(doReplace(oldDirPath, lpparam.packageName))
                 param.result = newDirPath
@@ -70,6 +71,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         val changeDirsHook: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun afterHookedMethod(param: MethodHookParam) {
+                if (param.result == null) return
                 val oldDirPaths = param.result as Array<File>
                 val newDirPaths = ArrayList<File>()
                 for (oldDirPath in oldDirPaths) {
