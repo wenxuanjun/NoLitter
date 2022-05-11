@@ -1,18 +1,20 @@
-package lantian.nolitter
+package lantian.nolitter.receiver
 
 import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
 import android.widget.Toast
-import androidx.preference.PreferenceManager
+import androidx.core.content.ContextCompat
+import lantian.nolitter.BuildConfig
+import lantian.nolitter.Constants
+import lantian.nolitter.R
 import java.io.File
 import java.io.IOException
 import java.net.URI
 
-class CleanFolderReceiver : BroadcastReceiver() {
+class CleanFolder: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         // Decode package name
         var packageName = intent.dataString
@@ -25,7 +27,7 @@ class CleanFolderReceiver : BroadcastReceiver() {
         // Check if is enabled
         if (!prefs.getBoolean("remove_after_uninstall", true)) return
 
-        /* Check if have sdcard access permission */
+        // Check if have sdcard access permission
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, packageName + context.getString(R.string.ui_failClear), Toast.LENGTH_SHORT).show()
             return
@@ -38,9 +40,7 @@ class CleanFolderReceiver : BroadcastReceiver() {
         }
 
         // Delete files and folders if exist
-        val directoryPath = "/sdcard" + prefs.getString("redirect_dir",
-            Constants.defaultRedirectDir
-        ) + "/" + packageName
+        val directoryPath = "/sdcard" + prefs.getString("redirect_dir", Constants.defaultRedirectDir) + "/" + packageName
         if (File(URI.create("file://$directoryPath")).exists()) {
             try {
                 Toast.makeText(context, packageName + context.getString(R.string.ui_isClearing), Toast.LENGTH_SHORT).show()

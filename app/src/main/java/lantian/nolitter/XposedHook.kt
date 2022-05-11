@@ -1,14 +1,11 @@
 package lantian.nolitter
 
 import android.os.Environment
-import android.provider.MediaStore
 import de.robv.android.xposed.*
 import de.robv.android.xposed.IXposedHookZygoteInit.StartupParam
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
 import java.io.File
-import java.lang.Exception
 import java.net.URI
-import java.util.*
 
 class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
 
@@ -20,6 +17,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         prefs!!.makeWorldReadable()
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Throws(Throwable::class)
     override fun handleLoadPackage(lpparam: LoadPackageParam) {
         val hookFileWithString: XC_MethodHook = object : XC_MethodHook() {
@@ -72,7 +70,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
             @Throws(Throwable::class)
             override fun afterHookedMethod(param: MethodHookParam) {
                 if (param.result == null) return
-                val oldDirPaths = param.result as Array<File>
+                val oldDirPaths = param.result as? Array<File> ?: arrayOf()
                 val newDirPaths = ArrayList<File>()
                 for (oldDirPath in oldDirPaths) {
                     newDirPaths.add(File(doReplace(oldDirPath.absolutePath, lpparam.packageName)))
