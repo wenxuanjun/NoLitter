@@ -1,4 +1,4 @@
-package lantian.nolitter
+package lantian.nolitter.models
 
 import android.app.Application
 import android.content.ComponentName
@@ -8,10 +8,17 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import lantian.nolitter.BuildConfig
+import lantian.nolitter.Constants
+import lantian.nolitter.MainActivity
+import lantian.nolitter.R
 
+data class TopAppBarStatus (var title: String, var actions: @Composable RowScope.() -> Unit)
 data class InstalledPackageInfo (val appName: String, val appIcon: Drawable, val isSystem: Boolean, val isModule: Boolean, val isForced: Boolean, val packageName: String)
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,9 +26,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var sharedPreferences: SharedPreferences? = try {
         activity.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_WORLD_READABLE)
     } catch (e: SecurityException) { null }
-
-    var appTheme: MutableState<String?> = mutableStateOf(getStringPreference("theme", "default"))
+    var appTheme: MutableState<String> = mutableStateOf(getStringPreference("theme", "default"))
     var topAppBarTitle: MutableState<String> = mutableStateOf(activity.resources.getString(R.string.app_name))
+    var topAppBarActions: MutableState<@Composable RowScope.() -> Unit> = mutableStateOf({})
     fun isAvailable(): Boolean { return sharedPreferences != null }
     fun getBooleanPreference(key: String, defaultValue: Boolean): Boolean { return sharedPreferences?.getBoolean(key, defaultValue) ?: defaultValue }
     fun getStringPreference(key: String, defaultValue: String): String { return sharedPreferences?.getString(key, defaultValue) ?: defaultValue }
@@ -46,8 +53,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllInstalledPackages(): ArrayList<InstalledPackageInfo> {
         val packageManager = activity.packageManager
         val installedPackages: List<PackageInfo> = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
-        var allPackageInfo: ArrayList<InstalledPackageInfo> = ArrayList()
-        val forcedApps = getStringPreference("forced", "").split(",")
+        val allPackageInfo: ArrayList<InstalledPackageInfo> = ArrayList()
+        val forcedApps = getStringPreference("forced", Constants.defaultForcedList).split(",")
         for (installedPackage in installedPackages) {
             val applicationInfo = installedPackage.applicationInfo
             val applicationFlag = installedPackage.applicationInfo.flags
@@ -63,7 +70,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return allPackageInfo
     }
     fun onChangeForcedApps(packageName: String, newValue: Boolean) {
-        val forcedApps = getStringPreference("forced", "").split(",").toMutableList()
+        val forcedApps = getStringPreference("forced", Constants.defaultForcedList).split(",").toMutableList()
         if (newValue) forcedApps.add(packageName) else forcedApps.remove(packageName)
         var newForcedApps = ""
         for (forcedApp in forcedApps) {

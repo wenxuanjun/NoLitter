@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -24,9 +23,9 @@ import lantian.nolitter.R
 
 @Composable
 fun EditTextPreference(
-    text: String, modifier: Modifier = Modifier, icon: (@Composable () -> Unit)? = null,
-    secondaryText: String? = null, onSubmit: ((String) -> Unit)? = null,
-    dialogTitle: String, dialogDefaultContent: String? = "",
+    text: String, modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null, secondaryText: String? = null,
+    onSubmit: ((String) -> Unit)? = null, dialogTitle: String, dialogDefaultContent: String? = "",
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var textValue by remember { mutableStateOf(dialogDefaultContent ?: "") }

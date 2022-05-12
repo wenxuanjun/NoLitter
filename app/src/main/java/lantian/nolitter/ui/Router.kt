@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import lantian.nolitter.MainViewModel
+import lantian.nolitter.models.MainViewModel
 import lantian.nolitter.ui.screens.*
 
 @Composable

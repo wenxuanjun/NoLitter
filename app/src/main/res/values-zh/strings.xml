@@ -14,6 +14,8 @@
 
     <string name="ui_settings_forceMode">强力模式应用</string>
     <string name="ui_settings_forceMode_description">强力模式开启后，无论存储卡根目录下是否有该目录，都会被重定向到重定向目录</string>
+    <string name="ui_settings_forceMode_showSystem">系统应用</string>
+    <string name="ui_settings_forceMode_showModule">模块</string>
     <string name="ui_settings_separateApp">分别创建文件夹</string>
     <string name="ui_settings_separateApp_description">为每个应用分别在 Android/files 下创建文件夹</string>
     <string name="ui_settings_removeAfterUninstall">卸载后删除残留文件</string>

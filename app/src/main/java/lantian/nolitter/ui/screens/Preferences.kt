@@ -1,16 +1,15 @@
 package lantian.nolitter.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FormatPaint
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import lantian.nolitter.Constants
-import lantian.nolitter.MainViewModel
 import lantian.nolitter.R
+import lantian.nolitter.models.MainViewModel
 import lantian.nolitter.ui.composables.*
 
 @Composable
@@ -125,11 +124,23 @@ fun PreferenceAdvanced(viewModel: MainViewModel) {
 
 @Composable
 fun PreferenceSelectApps(viewModel: MainViewModel) {
-    val filteredInstalledPackages = remember { viewModel.getAllInstalledPackages().filter { !it.isSystem } }
+    var showSystem by remember { mutableStateOf(viewModel.getBooleanPreference("select_apps_showSystem", false)) }
+    var showModule by remember { mutableStateOf(viewModel.getBooleanPreference("select_apps_showModule", false)) }
+    val installedPackages = remember { viewModel.getAllInstalledPackages().sortedBy { it.appName }.sortedBy { !it.isForced } }
+    viewModel.topAppBarActions.value = {
+        SelectAppsToolbarAction(
+            showSystem = showSystem, showModule = showModule,
+            onChangeShowSystem = { showSystem = it; viewModel.setBooleanPreference("select_apps_showSystem", it) },
+            onChangeShowModule = { showModule = it; viewModel.setBooleanPreference("select_apps_showSystem", it) }
+        )
+    }
+    DisposableEffect(key1 = viewModel) {
+        onDispose { viewModel.topAppBarActions.value = {} }
+    }
     LazyColumn {
         items(
             key = { it.packageName },
-            items = filteredInstalledPackages,
+            items = installedPackages.filter { (showSystem or !it.isSystem) and (showModule or !it.isModule) },
         ) { item ->
             CheckBoxPreference(
                 text = item.appName,
