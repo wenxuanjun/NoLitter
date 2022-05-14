@@ -2,24 +2,32 @@
     <string name="app_name">NoLitter</string>
     <string name="xposed_description">Prevents apps from littering in storage.</string>
 
+    <string name="ui_loading">Loading</string>
+    <string name="ui_dialogAccept">OK</string>
     <string name="ui_moduleNotEnabled">The module is not enabled, settings will not be usable</string>
+
+    <string name="ui_cleanFolder_isClearing">\'s sdcard data is being cleared</string>
+    <string name="ui_cleanFolder_isCleared">\'s sdcard data is cleared successfully</string>
+    <string name="ui_cleanFolder_failClear">\'s sdcard data cannot be cleared, please clean it manually</string>
+    <string name="ui_cleanFolder_failPermission">Storage permission is needed to clean garbage after uninstall</string>
 
     <string name="ui_settings_general">General</string>
     <string name="ui_settings_general_description">Several commonly used settings</string>
-    <string name="ui_settings_interface">Interface</string>
-    <string name="ui_settings_interface_description">Language, themes, etc</string>
-    <string name="ui_settings_advanced">Advanced</string>
-    <string name="ui_settings_advanced_description">Some experimental features</string>
-
     <string name="ui_settings_separateApp">Create dirs individually</string>
     <string name="ui_settings_separateApp_description">Create separate folder for each app under Android/files</string>
     <string name="ui_settings_forceMode">Force mode apps</string>
-    <string name="ui_settings_forceMode_description">When force mode is enabled, it will be redirected to the redirect directory regardless of whether the directory exists in the root directory</string>
-    <string name="ui_settings_forceMode_showSystem">System apps</string>
-    <string name="ui_settings_forceMode_showModule">Modules</string>
+    <string name="ui_settings_forceMode_description">It will be redirected to the redirect directory regardless of whether the directory exists in the root of the storage directory</string>
+    <string name="ui_settings_forceMode_hide">Hide</string>
+    <string name="ui_settings_forceMode_hide_system">System apps</string>
+    <string name="ui_settings_forceMode_hide_module">Modules</string>
+    <string name="ui_settings_forceMode_sort">Sorting</string>
+    <string name="ui_settings_forceMode_sort_appName">App name</string>
+    <string name="ui_settings_forceMode_sort_firstInstallTime">Last update</string>
     <string name="ui_settings_removeAfterUninstall">Remove residual files after app uninstalled</string>
     <string name="ui_settings_removeAfterUninstall_description">Remove residual files in the redirect directory after the application has been uninstalled</string>
 
+    <string name="ui_settings_interface">Interface</string>
+    <string name="ui_settings_interface_description">Language, themes, etc</string>
     <string name="ui_settings_theme">Theme</string>
     <string name="ui_settings_theme_default">Follow system</string>
     <string name="ui_settings_theme_light">Light</string>
@@ -27,28 +35,24 @@
     <string name="ui_settings_hideIcon">Show icon in launcher</string>
     <string name="ui_settings_hideIcon_description">You can still open this page from Xposed Installer</string>
 
-    <string name="ui_settings_redirectDir">Custom redirect directory</string>
-    <string name="ui_settings_redirectDir_description">Redirect to the specified directory, which may disable the adaptation of NoLitter for some applications such as Qingzhuo, the default value is /Android/files</string>
-    <string name="ui_settings_debugMode">Enable debug mode</string>
-    <string name="ui_settings_debugMode_description">When enabled, redirect information will be printed in Xposed Manager</string>
+    <string name="ui_settings_miscellaneous">Miscellaneous</string>
+    <string name="ui_settings_miscellaneous_advanced">Advanced</string>
+    <string name="ui_settings_miscellaneous_description">Some experimental features</string>
+    <string name="ui_settings_miscellaneous_redirectDir">Custom redirect directory</string>
+    <string name="ui_settings_miscellaneous_redirectDir_description">Redirect to the specified directory, which may disable the adaptation of NoLitter for some applications such as Qingzhuo, the default value is /Android/files</string>
+    <string name="ui_settings_miscellaneous_debugMode">Enable debug mode</string>
+    <string name="ui_settings_miscellaneous_debugMode_description">When enabled, redirect information will be printed in Xposed Manager</string>
+    <string name="ui_settings_miscellaneous_about">About</string>
+    <string name="ui_settings_miscellaneous_source">Source Code</string>
+    <string name="ui_settings_miscellaneous_source_description">https://github.com/wenxuanjun/NoLitter</string>
+    <string name="ui_settings_miscellaneous_lantian">This app is developed from Lantian NoLitter</string>
+    <string name="ui_settings_miscellaneous_lantian_description">https://github.com/xddxdd/lantian-nolitter</string>
+    <string name="ui_settings_miscellaneous_xinternalsd">This app uses code from XInternalSD</string>
+    <string name="ui_settings_miscellaneous_xinternalsd_description">https://github.com/pylerSM/XInternalSD</string>
 
     <string name="ui_intro_functions">Functions</string>
     <string name="ui_intro_functions_description">NoLitter prevents apps from creating folders in SDCard root folder by moving them away. It cleans up the root folder while ensuring that apps still function.</string>
     <string name="ui_intro_usage">Usage</string>
     <string name="ui_intro_usage_description">Usually after enabling the module, you don\'t have to do anything.\nChanging configuration requires restarting corresponding app.\n1. If an app crashes, fails to access SDCard, or cannot be limited, enable force mode.\n2. If it still doesn\'t work, try cleaning the app\'s data.\n3. If it still doesn\'t work, NoLitter isn\'t compatible with the app. Please move it out of scope if you need the app.</string>
 
-    <string name="ui_author">Author</string>
-    <string name="ui_author_description">Lan Tian</string>
-    <string name="ui_source">Source Code</string>
-    <string name="ui_source_description">https://github.com/xddxdd/lantian-nolitter</string>
-    <string name="ui_about_xinternalsd">This app used code from XInternalSD</string>
-    <string name="ui_about_xinternalsd_description">https://github.com/pylerSM/XInternalSD</string>
-
-    <string name="ui_chooseApp">Choose apps</string>
-    <string name="ui_isClearing">\'s sdcard data is being cleared</string>
-    <string name="ui_isCleared">\'s sdcard data is cleared successfully</string>
-    <string name="ui_failClear">\'s sdcard data cannot be cleared, please clean it manually</string>
-    <string name="ui_failPermission">Storage permission is needed to clean garbage after uninstall</string>
-
-    <string name="ui_dialogAccept">OK</string>
 </resources>

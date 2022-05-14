@@ -23,6 +23,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         val hookFileWithString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
+                if (param.args[0] == null) return
                 val oldPath = param.args[0].toString()
                 val newPath = doReplace(param.args[0].toString(), lpparam.packageName)
                 if (oldPath != newPath) {
@@ -34,8 +35,9 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         val hookFileWithStringAndString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
+                if (param.args[1] == null) return
                 if (param.args[0] == null) param.args[0] = ""
-                val oldPath = param.args[0].toString() + "/" + param.args[1].toString().replace("//", "/")
+                val oldPath = (param.args[0].toString() + "/" + param.args[1].toString()).replace("//", "/")
                 val newPath = doReplace(oldPath, lpparam.packageName)
                 if (oldPath != newPath) {
                     param.args[0] = null
@@ -47,6 +49,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
         val hookFileWithFileAndString: XC_MethodHook = object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
+                if (param.args[1] == null) return
                 if (param.args[0] == null) param.args[0] = File("")
                 val oldPath = ((param.args[0] as File).absolutePath + "/" + param.args[1].toString()).replace("//", "/")
                 val newPath = doReplace(oldPath, lpparam.packageName)
@@ -86,7 +89,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
             XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, hookFileWithString)
             XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, String::class.java, hookFileWithStringAndString)
             XposedHelpers.findAndHookConstructor(File::class.java, File::class.java, String::class.java, hookFileWithFileAndString)
-            if (prefs!!.getString("forced", Constants.defaultForcedList)!!.split(",").contains(lpparam.packageName)) {
+            if (prefs!!.getString("forced_apps", Constants.defaultForcedList)!!.split(",").contains(lpparam.packageName)) {
                 printDebugLogs(lpparam.packageName, "Forced", "in forcelist")
                 XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStorageDirectory", changeDirHook)
                 XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStoragePublicDirectory", String::class.java, changeDirHook)
@@ -112,7 +115,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
 
         val storageDirs = Constants.defaultStorageDirs.split(",")
         val redirectDir = prefs!!.getString("redirect_dir", Constants.defaultRedirectDir)
-        val forceMode = prefs!!.getString("forced", Constants.defaultForcedList)!!.split(",").contains(packageName)
+        val forceMode = prefs!!.getString("forced_apps", Constants.defaultForcedList)!!.split(",").contains(packageName)
         val separateApp = prefs!!.getBoolean("separate_app", true)
 
         for (storageDir in storageDirs) {

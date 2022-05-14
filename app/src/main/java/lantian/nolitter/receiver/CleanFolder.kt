@@ -29,7 +29,7 @@ class CleanFolder: BroadcastReceiver() {
 
         // Check if have sdcard access permission
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, packageName + context.getString(R.string.ui_failClear), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, packageName + context.getString(R.string.ui_cleanFolder_failClear), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -43,11 +43,11 @@ class CleanFolder: BroadcastReceiver() {
         val directoryPath = "/sdcard" + prefs.getString("redirect_dir", Constants.defaultRedirectDir) + "/" + packageName
         if (File(URI.create("file://$directoryPath")).exists()) {
             try {
-                Toast.makeText(context, packageName + context.getString(R.string.ui_isClearing), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, packageName + context.getString(R.string.ui_cleanFolder_isClearing), Toast.LENGTH_SHORT).show()
                 Runtime.getRuntime().exec("rm -r $directoryPath")
-                Toast.makeText(context, packageName + context.getString(R.string.ui_isCleared), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, packageName + context.getString(R.string.ui_cleanFolder_isCleared), Toast.LENGTH_SHORT).show()
             } catch (e: IOException) {
-                Toast.makeText(context, packageName + context.getString(R.string.ui_failClear), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, packageName + context.getString(R.string.ui_cleanFolder_failClear), Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -1,4 +1,4 @@
-package lantian.nolitter.ui.composables
+package lantian.nolitter.ui.widgets
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.TextFieldDefaults.indicatorLine
+import androidx.compose.material3.*
+import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,14 +22,14 @@ import androidx.compose.ui.unit.dp
 import lantian.nolitter.R
 
 @Composable
-fun EditTextPreference(
+fun PreferenceEditText(
     text: String, modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null, secondaryText: String? = null,
     onSubmit: ((String) -> Unit)? = null, dialogTitle: String, dialogDefaultContent: String? = "",
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var textValue by remember { mutableStateOf(dialogDefaultContent ?: "") }
-    DialogPreference(
+    PreferenceDialog(
         text = text, icon = icon, showDialog = showDialog,
         secondaryText = secondaryText, modifier = modifier,
         onShowDialogChange = { showDialog = it }, dialogTitle = dialogTitle,
@@ -38,14 +38,11 @@ fun EditTextPreference(
                 value = textValue, singleLine = true,
                 onValueChange = { textValue = it },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent)
+                colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
             )
         },
         dialogActions = {
-            TextButton(onClick = {
-                showDialog = false
-                if (onSubmit != null) onSubmit(textValue)
-            }) {
+            TextButton(onClick = { showDialog = false; if (onSubmit != null) onSubmit(textValue) }) {
                 Text(stringResource(R.string.ui_dialogAccept))
             }
         }
@@ -53,7 +50,7 @@ fun EditTextPreference(
 }
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun EmptyTextField(
     value: String, onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier, enabled: Boolean = true,

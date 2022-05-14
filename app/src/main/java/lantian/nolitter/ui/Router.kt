@@ -16,7 +16,7 @@ fun Router(innerPadding: PaddingValues, viewModel: MainViewModel, navController:
         composable("PreferenceHome") { PreferenceHome(viewModel, navController) }
         composable("PreferenceGeneral") { PreferenceGeneral(viewModel, navController) }
         composable("PreferenceInterface") { PreferenceInterface(viewModel) }
-        composable("PreferenceAdvanced") { PreferenceAdvanced(viewModel) }
+        composable("PreferenceMiscellaneous") { PreferenceMiscellaneous(viewModel) }
         composable("PreferenceSelectApps") { PreferenceSelectApps(viewModel) }
     }
 }
