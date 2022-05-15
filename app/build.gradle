@@ -7,13 +7,15 @@ android {
     compileSdk 32
     buildFeatures.compose true
     composeOptions.kotlinCompilerExtensionVersion compose_version
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 
     defaultConfig {
         applicationId "lantian.nolitter"
         minSdk 27
         targetSdk 32
-        versionCode 16
-        versionName "1.5.0"
+        versionCode 17
+        versionName "1.5.1"
+        resConfigs "en-rUS", "zh-rCN"
     }
     buildTypes {
         release {

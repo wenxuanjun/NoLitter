@@ -13,7 +13,7 @@ import lantian.nolitter.ui.screens.*
 @Composable
 fun Router(innerPadding: PaddingValues, viewModel: MainViewModel, navController: NavHostController) {
     NavHost(navController = navController, startDestination = "PreferenceHome", modifier = Modifier.padding(innerPadding)) {
-        composable("PreferenceHome") { PreferenceHome(viewModel, navController) }
+        composable("PreferenceHome") { PreferenceHome(navController) }
         composable("PreferenceGeneral") { PreferenceGeneral(viewModel, navController) }
         composable("PreferenceInterface") { PreferenceInterface(viewModel) }
         composable("PreferenceMiscellaneous") { PreferenceMiscellaneous(viewModel) }

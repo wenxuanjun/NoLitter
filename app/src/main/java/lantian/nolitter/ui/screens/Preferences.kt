@@ -27,7 +27,7 @@ import lantian.nolitter.models.MainViewModel
 import lantian.nolitter.ui.widgets.*
 
 @Composable
-fun PreferenceHome( viewModel: MainViewModel, navController: NavHostController) {
+fun PreferenceHome(navController: NavHostController) {
     Column {
         ClickablePreferenceItem(
             text = stringResource(R.string.ui_settings_general),
@@ -52,6 +52,8 @@ fun PreferenceHome( viewModel: MainViewModel, navController: NavHostController) 
 
 @Composable
 fun PreferenceGeneral(viewModel: MainViewModel, navController: NavHostController) {
+    val defaultSeparateApp = viewModel.getBooleanPreference("separate_app", true)
+    var isRemoveAfterUninstallDisabled by remember { mutableStateOf(!defaultSeparateApp) }
     Column {
         ClickablePreferenceItem(
             text = stringResource(R.string.ui_settings_forceMode),
@@ -61,14 +63,15 @@ fun PreferenceGeneral(viewModel: MainViewModel, navController: NavHostController
         PreferenceCheckBox(
             text = stringResource(R.string.ui_settings_separateApp),
             secondaryText = stringResource(R.string.ui_settings_separateApp_description),
-            onChange = { viewModel.setBooleanPreference("separate_app", it) },
-            defaultValue = viewModel.getBooleanPreference("separate_app", true)
+            onChange = { viewModel.setBooleanPreference("separate_app", it); isRemoveAfterUninstallDisabled = !it },
+            defaultValue = defaultSeparateApp
         )
         PreferenceCheckBox(
             text = stringResource(R.string.ui_settings_removeAfterUninstall),
             secondaryText = stringResource(R.string.ui_settings_removeAfterUninstall_description),
             onChange = { viewModel.setBooleanPreference("remove_after_uninstall", it) },
-            defaultValue = viewModel.getBooleanPreference("remove_after_uninstall", true)
+            defaultValue = viewModel.getBooleanPreference("remove_after_uninstall", true),
+            disabled = isRemoveAfterUninstallDisabled
         )
     }
 }

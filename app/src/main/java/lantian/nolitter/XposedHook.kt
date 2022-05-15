@@ -25,7 +25,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
             override fun beforeHookedMethod(param: MethodHookParam) {
                 if (param.args[0] == null) return
                 val oldPath = param.args[0].toString()
-                val newPath = doReplace(param.args[0].toString(), lpparam.packageName)
+                val newPath = getReplacedPath(param.args[0].toString(), lpparam.packageName)
                 if (oldPath != newPath) {
                     param.args[0] = newPath
                     printDebugLogs(lpparam.packageName, "Redirecting", "$oldPath -> $newPath")
@@ -38,7 +38,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
                 if (param.args[1] == null) return
                 if (param.args[0] == null) param.args[0] = ""
                 val oldPath = (param.args[0].toString() + "/" + param.args[1].toString()).replace("//", "/")
-                val newPath = doReplace(oldPath, lpparam.packageName)
+                val newPath = getReplacedPath(oldPath, lpparam.packageName)
                 if (oldPath != newPath) {
                     param.args[0] = null
                     param.args[1] = newPath
@@ -52,7 +52,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
                 if (param.args[1] == null) return
                 if (param.args[0] == null) param.args[0] = File("")
                 val oldPath = ((param.args[0] as File).absolutePath + "/" + param.args[1].toString()).replace("//", "/")
-                val newPath = doReplace(oldPath, lpparam.packageName)
+                val newPath = getReplacedPath(oldPath, lpparam.packageName)
                 if (oldPath != newPath) {
                     param.args[0] = null
                     param.args[1] = newPath
@@ -65,7 +65,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
             override fun afterHookedMethod(param: MethodHookParam) {
                 if (param.result == null) return
                 val oldDirPath = (param.result as File).absolutePath
-                val newDirPath = File(doReplace(oldDirPath, lpparam.packageName))
+                val newDirPath = File(getReplacedPath(oldDirPath, lpparam.packageName))
                 param.result = newDirPath
             }
         }
@@ -73,10 +73,11 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
             @Throws(Throwable::class)
             override fun afterHookedMethod(param: MethodHookParam) {
                 if (param.result == null) return
-                val oldDirPaths = param.result as? Array<File> ?: arrayOf()
+                val oldDirPaths = param.result as Array<File?>
                 val newDirPaths = ArrayList<File>()
                 for (oldDirPath in oldDirPaths) {
-                    newDirPaths.add(File(doReplace(oldDirPath.absolutePath, lpparam.packageName)))
+                    if (oldDirPath == null) continue
+                    newDirPaths.add(File(getReplacedPath(oldDirPath.absolutePath, lpparam.packageName)))
                 }
                 param.result = newDirPaths.toTypedArray()
             }
@@ -104,7 +105,7 @@ class XposedHook : IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     // Return the real path of redirection
-    private fun doReplace(oldPath: String, packageName: String): String {
+    private fun getReplacedPath(oldPath: String, packageName: String): String {
 
         // Ignore if it's the NoLitter itself
         if (packageName == BuildConfig.APPLICATION_ID) return oldPath

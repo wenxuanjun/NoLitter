@@ -21,14 +21,6 @@ fun AppUi(viewModel: MainViewModel) {
         val navController = rememberNavController()
         var canNavigationPop by remember { mutableStateOf(false) }
         val navigateUpIcon: @Composable () -> Unit = { Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null) }
-        val toolbarController = object {
-            fun setTitle(title: String){
-                viewModel.topAppBarTitle.value = title
-            }
-            fun setAction(actions: @Composable RowScope.() -> Unit) {
-                viewModel.topAppBarActions.value = actions
-            }
-        }
 
         DisposableEffect(navController) {
             val listener = NavController.OnDestinationChangedListener { controller, destination, _ ->
@@ -43,7 +35,7 @@ fun AppUi(viewModel: MainViewModel) {
             topBar = {
                 SmallTopAppBar(
                     title = { Text(viewModel.topAppBarTitle.value) },
-                    navigationIcon = { if (canNavigationPop) { IconButton(content = navigateUpIcon, onClick = { navController.navigateUp() }) } else null },
+                    navigationIcon = { if (canNavigationPop) { IconButton(content = navigateUpIcon, onClick = { navController.navigateUp() }) } },
                     actions = viewModel.topAppBarActions.value
                 )
             },
