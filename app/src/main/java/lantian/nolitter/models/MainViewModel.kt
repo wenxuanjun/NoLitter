@@ -32,42 +32,38 @@ data class InstalledPackageInfo (
     val firstInstallTime: Long
 )
 
+data class ProcessPackageInfoPreference(
+    val sortedBy: String, val hideSystem: Boolean,
+    val hideModule: Boolean
+)
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var activity: Application = application
-    private var sharedPreferences: SharedPreferences? = try {
-        activity.getSharedPreferences(BuildConfig.APPLICATION_ID + "_preferences", Context.MODE_WORLD_READABLE)
-    } catch (e: SecurityException) { null }
+    private val preferencesName = BuildConfig.APPLICATION_ID + "_preferences"
+    private var sharedPreferences: SharedPreferences = activity.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
 
     // Several states of the view
-    var appTheme: MutableState<String> = mutableStateOf(getStringPreference("theme", "default"))
     var topAppBarTitle: MutableState<String> = mutableStateOf(activity.resources.getString(R.string.app_name))
     var topAppBarActions: MutableState<@Composable RowScope.() -> Unit> = mutableStateOf({})
     val installedPackages: MutableState<List<InstalledPackageInfo>> = mutableStateOf(listOf())
-
-    // Return if the module is enabld
-    fun isModuleEnabled(): Boolean { return sharedPreferences != null }
+    var appTheme: MutableState<String> = mutableStateOf(getStringPreference("theme", "default"))
 
     // Intent to some webpages
-    fun intentToWebsite(link: String) { startActivity(activity, Intent(Intent.ACTION_VIEW, Uri.parse(link)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null) }
+    fun intentToWebsite(link: String) = startActivity(activity, Intent(Intent.ACTION_VIEW, Uri.parse(link)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null)
 
     // Functions of handling preferences
-    fun getBooleanPreference(key: String, defaultValue: Boolean): Boolean { return sharedPreferences?.getBoolean(key, defaultValue) ?: defaultValue }
-    fun getStringPreference(key: String, defaultValue: String): String { return sharedPreferences?.getString(key, defaultValue) ?: defaultValue }
-    fun setBooleanPreference(key: String, value: Boolean) { sharedPreferences!!.edit().putBoolean(key, value).apply() }
-    fun setStringPreference(key: String, value: String) { sharedPreferences!!.edit().putString(key, value).apply() }
+    fun getBooleanPreference(key: String, defaultValue: Boolean): Boolean { return sharedPreferences.getBoolean(key, defaultValue) }
+    fun getStringPreference(key: String, defaultValue: String): String { return sharedPreferences.getString(key, defaultValue) ?: defaultValue }
+    fun setBooleanPreference(key: String, value: Boolean) { sharedPreferences.edit().putBoolean(key, value).apply() }
+    fun setStringPreference(key: String, value: String) { sharedPreferences.edit().putString(key, value).apply() }
 
     // Other useful utils
     fun hideAppIcon(value: Boolean) {
-        activity.packageManager.setComponentEnabledSetting(
-            ComponentName(activity, MainActivity::class.java),
-            if (value) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
+        val componentState = if (value) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        activity.packageManager.setComponentEnabledSetting(ComponentName(activity, MainActivity::class.java), componentState, PackageManager.DONT_KILL_APP)
     }
     fun initAllInstalledPackages() {
-        viewModelScope.launch {
-            installedPackages.value = getAllInstalledPackages()
-        }
+        viewModelScope.launch { installedPackages.value = getAllInstalledPackages() }
     }
     fun getNavigationTitle(key: String?): String {
         return when (key) {
@@ -78,21 +74,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             else -> activity.resources.getString(R.string.app_name)
         }
     }
+    fun getDefaultProcessPreference(): ProcessPackageInfoPreference = ProcessPackageInfoPreference(
+        sortedBy = getStringPreference("select_sortedBy", "app_name"),
+        hideSystem = getBooleanPreference("select_hideSystem", true),
+        hideModule = getBooleanPreference("select_hideModule", true)
+    )
     fun onChangeForcedApps(packageName: String, newValue: Boolean) {
-        val forcedApps = getStringPreference("forced_apps", Constants.defaultForcedList).split(",").toMutableList()
+        val forcedApps = getStringPreference("forced_apps", Constants.defaultForcedList).split(":").toMutableList()
         if (newValue) forcedApps.add(packageName) else forcedApps.remove(packageName)
-        var newForcedApps = ""
-        for (forcedApp in forcedApps) {
-            if (forcedApp.trim().isNotEmpty()) newForcedApps += forcedApp.trim() + ","
-        }
-        setStringPreference("forced_apps", newForcedApps)
+        setStringPreference("forced_apps", forcedApps.joinToString(":"))
     }
 
     // Private functions
     private suspend fun getAllInstalledPackages(): ArrayList<InstalledPackageInfo> = withContext(Dispatchers.IO) {
         val packageManager = activity.packageManager
         val allPackageInfo: ArrayList<InstalledPackageInfo> = ArrayList()
-        val forcedApps = getStringPreference("forced_apps", Constants.defaultForcedList).split(",")
+        val forcedApps = getStringPreference("forced_apps", Constants.defaultForcedList).split(":")
         val installedPackages: List<PackageInfo> = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
         for (installedPackage in installedPackages) {
             val applicationInfo = installedPackage.applicationInfo

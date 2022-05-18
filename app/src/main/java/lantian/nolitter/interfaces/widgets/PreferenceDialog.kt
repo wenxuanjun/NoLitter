@@ -1,4 +1,4 @@
-package lantian.nolitter.ui.widgets
+package lantian.nolitter.interfaces.widgets
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable

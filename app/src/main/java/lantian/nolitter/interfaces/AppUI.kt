@@ -1,18 +1,13 @@
-package lantian.nolitter.ui
+package lantian.nolitter.interfaces
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import lantian.nolitter.R
+import lantian.nolitter.interfaces.theme.ApplicationTheme
 import lantian.nolitter.models.MainViewModel
-import lantian.nolitter.ui.theme.ApplicationTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,20 +34,7 @@ fun AppUi(viewModel: MainViewModel) {
                     actions = viewModel.topAppBarActions.value
                 )
             },
-            content = { innerPadding ->
-                if (viewModel.isModuleEnabled()) Router(innerPadding, viewModel, navController)
-                else ModuleNotEnabled(innerPadding)
-            }
+            content = { innerPadding -> Router(innerPadding, viewModel, navController) }
         )
     }
-}
-
-@Composable
-fun ModuleNotEnabled(innerPadding: PaddingValues) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(innerPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        content = { Text(stringResource(R.string.ui_moduleNotEnabled)) }
-    )
 }

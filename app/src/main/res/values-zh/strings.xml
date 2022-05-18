@@ -4,7 +4,6 @@
 
     <string name="ui_loading">加载中</string>
     <string name="ui_dialogAccept">确认</string>
-    <string name="ui_moduleNotEnabled">模块尚未启用，设置将不可用</string>
 
     <string name="ui_cleanFolder_isClearing"> 的存储残留正在清理……</string>
     <string name="ui_cleanFolder_isCleared"> 的存储残留清理完成</string>
@@ -21,10 +20,6 @@
     <string name="ui_settings_forceMode_sort">排序</string>
     <string name="ui_settings_forceMode_sort_appName">应用名</string>
     <string name="ui_settings_forceMode_sort_firstInstallTime">最近安装</string>
-    <string name="ui_settings_separateApp">分别创建文件夹</string>
-    <string name="ui_settings_separateApp_description">为每个应用分别在重定向目录下以包名创建独立的文件夹</string>
-    <string name="ui_settings_removeAfterUninstall">卸载后删除残留文件</string>
-    <string name="ui_settings_removeAfterUninstall_description">在应用卸载后，删除重定向目录下的残留文件，需要启用分别创建文件夹</string>
 
     <string name="ui_settings_interface">界面</string>
     <string name="ui_settings_interface_description">语言、主题等</string>
@@ -38,8 +33,6 @@
     <string name="ui_settings_miscellaneous">杂项</string>
     <string name="ui_settings_miscellaneous_advanced">高级</string>
     <string name="ui_settings_miscellaneous_description">一些实验性功能</string>
-    <string name="ui_settings_miscellaneous_redirectDir">自定义重定向目录</string>
-    <string name="ui_settings_miscellaneous_redirectDir_description">重定向至指定目录，这可能导致未知的错误，并使清浊等应用对于 NoLitter 的适配失效，默认值为 /Android/files</string>
     <string name="ui_settings_miscellaneous_debugMode">启用调试模式</string>
     <string name="ui_settings_miscellaneous_debugMode_description">启用后，会在 Xposed Manager 中打印重定向信息</string>
     <string name="ui_settings_miscellaneous_about">关于</string>

@@ -4,7 +4,6 @@
 
     <string name="ui_loading">Loading</string>
     <string name="ui_dialogAccept">OK</string>
-    <string name="ui_moduleNotEnabled">The module is not enabled, settings will not be usable</string>
 
     <string name="ui_cleanFolder_isClearing">\'s sdcard data is being cleared</string>
     <string name="ui_cleanFolder_isCleared">\'s sdcard data is cleared successfully</string>
@@ -21,10 +20,6 @@
     <string name="ui_settings_forceMode_sort">Sorting</string>
     <string name="ui_settings_forceMode_sort_appName">App name</string>
     <string name="ui_settings_forceMode_sort_firstInstallTime">Last update</string>
-    <string name="ui_settings_separateApp">Create dirs individually</string>
-    <string name="ui_settings_separateApp_description">Create separate folders with package names in the redirect directory for each application</string>
-    <string name="ui_settings_removeAfterUninstall">Remove residual files after app uninstalled</string>
-    <string name="ui_settings_removeAfterUninstall_description">Remove residual files in the redirect directory after the application has been uninstalled with the option "Create dirs individually" enabled</string>
 
     <string name="ui_settings_interface">Interface</string>
     <string name="ui_settings_interface_description">Language, themes, etc</string>
@@ -38,8 +33,6 @@
     <string name="ui_settings_miscellaneous">Miscellaneous</string>
     <string name="ui_settings_miscellaneous_advanced">Advanced</string>
     <string name="ui_settings_miscellaneous_description">Some experimental features</string>
-    <string name="ui_settings_miscellaneous_redirectDir">Custom redirect directory</string>
-    <string name="ui_settings_miscellaneous_redirectDir_description">Redirect to the specified directory, which may disable the adaptation of NoLitter for some applications such as Qingzhuo, the default value is /Android/files</string>
     <string name="ui_settings_miscellaneous_debugMode">Enable debug mode</string>
     <string name="ui_settings_miscellaneous_debugMode_description">When enabled, redirect information will be printed in Xposed Manager</string>
     <string name="ui_settings_miscellaneous_about">About</string>

@@ -1,4 +1,4 @@
-package lantian.nolitter.ui.widgets
+package lantian.nolitter.interfaces.widgets
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

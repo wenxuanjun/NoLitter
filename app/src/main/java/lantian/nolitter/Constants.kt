@@ -1,8 +1,9 @@
 package lantian.nolitter
 
-internal object Constants {
-    const val defaultRedirectDir = "/Android/files"
-    const val defaultStorageDirs = "/sdcard,/storage/emulated/0,/mnt/sdcard"
-    const val defaultBlacklistDirs = "/data,/system,/vendor,/cache,/proc,/sys"
-    const val defaultForcedList = "com.tencent.mm,com.tencent.mobileqq,com.bilibili.app.in,com.taobao.taobao,com.taobao.idlefish,com.jingdong.app.mall"
+import android.annotation.SuppressLint
+
+@SuppressLint("SdCardPath")
+object Constants {
+    const val defaultStorageDirs = "/storage/emulated/0:/sdcard:/mnt/sdcard"
+    const val defaultForcedList = "com.tencent.mm:com.tencent.mobileqq:com.bilibili.app.in:com.taobao.taobao"
 }
