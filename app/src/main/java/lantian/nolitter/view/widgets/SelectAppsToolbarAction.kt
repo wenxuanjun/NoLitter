@@ -1,4 +1,4 @@
-package lantian.nolitter.interfaces.widgets
+package lantian.nolitter.view.widgets
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding

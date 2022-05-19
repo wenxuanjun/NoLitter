@@ -14,7 +14,7 @@ android {
         applicationId "lantian.nolitter"
         minSdk 27
         targetSdk 32
-        versionCode 18
+        versionCode 19
         versionName "1.6.0"
         resConfigs "en-rUS", "zh-rCN"
     }

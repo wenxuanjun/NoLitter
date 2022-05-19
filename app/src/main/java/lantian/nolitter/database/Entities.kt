@@ -1,4 +1,4 @@
-package lantian.nolitter.databases
+package lantian.nolitter.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -10,5 +10,6 @@ data class ApplicationEntity(
     @ColumnInfo(name = "app_name") val appName: String,
     @ColumnInfo(name = "package_name") val packageName: String,
     @ColumnInfo(name = "forced_mode") val forcedMode: Boolean,
-    @ColumnInfo(name = "additional_hooks") val additionalHooks: Boolean
+    @ColumnInfo(name = "additional_hooks") val additionalHooks: Boolean,
+    @ColumnInfo(name = "redirect_style") val redirectStyle: String
 )

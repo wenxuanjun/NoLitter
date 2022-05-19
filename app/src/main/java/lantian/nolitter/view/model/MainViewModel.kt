@@ -1,10 +1,8 @@
-package lantian.nolitter.models
+package lantian.nolitter.view.model
 
 import android.app.Application
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -20,10 +18,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import lantian.nolitter.BuildConfig
 import lantian.nolitter.Constants
 import lantian.nolitter.MainActivity
 import lantian.nolitter.R
+import lantian.nolitter.utilitiy.DataStoreUtil
 
 data class InstalledPackageInfo (
     val appName: String, val appIcon: Drawable,
@@ -39,23 +37,16 @@ data class ProcessPackageInfoPreference(
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var activity: Application = application
-    private val preferencesName = BuildConfig.APPLICATION_ID + "_preferences"
-    private var sharedPreferences: SharedPreferences = activity.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+    var dataStore: DataStoreUtil = DataStoreUtil.apply { initialize(activity) }
 
     // Several states of the view
     var topAppBarTitle: MutableState<String> = mutableStateOf(activity.resources.getString(R.string.app_name))
     var topAppBarActions: MutableState<@Composable RowScope.() -> Unit> = mutableStateOf({})
     val installedPackages: MutableState<List<InstalledPackageInfo>> = mutableStateOf(listOf())
-    var appTheme: MutableState<String> = mutableStateOf(getStringPreference("theme", "default"))
+    var appTheme: MutableState<String> = mutableStateOf(dataStore.getPreference("theme", "default"))
 
     // Intent to some webpages
     fun intentToWebsite(link: String) = startActivity(activity, Intent(Intent.ACTION_VIEW, Uri.parse(link)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null)
-
-    // Functions of handling preferences
-    fun getBooleanPreference(key: String, defaultValue: Boolean): Boolean { return sharedPreferences.getBoolean(key, defaultValue) }
-    fun getStringPreference(key: String, defaultValue: String): String { return sharedPreferences.getString(key, defaultValue) ?: defaultValue }
-    fun setBooleanPreference(key: String, value: Boolean) { sharedPreferences.edit().putBoolean(key, value).apply() }
-    fun setStringPreference(key: String, value: String) { sharedPreferences.edit().putString(key, value).apply() }
 
     // Other useful utils
     fun hideAppIcon(value: Boolean) {
@@ -75,21 +66,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     fun getDefaultProcessPreference(): ProcessPackageInfoPreference = ProcessPackageInfoPreference(
-        sortedBy = getStringPreference("select_sortedBy", "app_name"),
-        hideSystem = getBooleanPreference("select_hideSystem", true),
-        hideModule = getBooleanPreference("select_hideModule", true)
+        sortedBy = dataStore.getPreference("select_sortedBy", "app_name"),
+        hideSystem = dataStore.getPreference("select_hideSystem", true),
+        hideModule = dataStore.getPreference("select_hideModule", true)
     )
     fun onChangeForcedApps(packageName: String, newValue: Boolean) {
-        val forcedApps = getStringPreference("forced_apps", Constants.defaultForcedList).split(":").toMutableList()
+        val forcedApps = dataStore.getPreference("forced_apps", Constants.defaultForcedList).split(":").toMutableList()
         if (newValue) forcedApps.add(packageName) else forcedApps.remove(packageName)
-        setStringPreference("forced_apps", forcedApps.joinToString(":"))
+        dataStore.setPreference("forced_apps", forcedApps.joinToString(":"))
     }
 
     // Private functions
     private suspend fun getAllInstalledPackages(): ArrayList<InstalledPackageInfo> = withContext(Dispatchers.IO) {
         val packageManager = activity.packageManager
         val allPackageInfo: ArrayList<InstalledPackageInfo> = ArrayList()
-        val forcedApps = getStringPreference("forced_apps", Constants.defaultForcedList).split(":")
+        val forcedApps = dataStore.getPreference("forced_apps", Constants.defaultForcedList).split(":")
         val installedPackages: List<PackageInfo> = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
         for (installedPackage in installedPackages) {
             val applicationInfo = installedPackage.applicationInfo

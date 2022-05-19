@@ -40,7 +40,4 @@
     <string name="ui_settings_miscellaneous_source_description">https://github.com/wenxuanjun/NoLitter</string>
     <string name="ui_settings_miscellaneous_lantian">本应用从 Lantian NoLitter 开发而来</string>
     <string name="ui_settings_miscellaneous_lantian_description">https://github.com/xddxdd/lantian-nolitter</string>
-    <string name="ui_settings_miscellaneous_xinternalsd">本应用使用了 XInternalSD 的代码</string>
-    <string name="ui_settings_miscellaneous_xinternalsd_description">https://github.com/pylerSM/XInternalSD</string>
-
 </resources>

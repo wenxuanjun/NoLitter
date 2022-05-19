@@ -17,9 +17,9 @@
         <meta-data android:name="xposedminversion" android:value="93" />
 
         <provider
-            android:name=".providers.MainProvider"
+            android:name=".provider.MainProvider"
             android:exported="true"
-            android:authorities="lantian.nolitter.providers" />
+            android:authorities="lantian.nolitter.provider" />
 
         <activity
             android:name=".MainActivity"

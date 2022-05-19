@@ -1,13 +1,16 @@
-package lantian.nolitter.providers
+package lantian.nolitter.provider
 
-import android.content.*
+import android.content.ContentProvider
+import android.content.ContentValues
+import android.content.UriMatcher
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import androidx.room.Room
 import lantian.nolitter.BuildConfig
-import lantian.nolitter.databases.ApplicationDao
-import lantian.nolitter.databases.MainDatabase
+import lantian.nolitter.database.ApplicationDao
+import lantian.nolitter.database.MainDatabase
+import lantian.nolitter.utilitiy.DataStoreUtil
 
 private const val AUTHORITY = "lantian.nolitter.provider"
 
@@ -17,13 +20,13 @@ private const val URI_DATABASE = 1
 
 class MainProvider : ContentProvider() {
 
-    private lateinit var database: MainDatabase
-    private lateinit var preferences: SharedPreferences
+    private lateinit var dataStore: DataStoreUtil
+    private lateinit var appDatabase: MainDatabase
     private var applicationDao: ApplicationDao? = null
     private val uriMatcher: UriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
     init {
-        uriMatcher.addURI(AUTHORITY, "preference/*", URI_PREFERENCE)
+        uriMatcher.addURI(AUTHORITY, "datastore/*", URI_PREFERENCE)
         uriMatcher.addURI(AUTHORITY, "database/*", URI_DATABASE)
     }
 
@@ -33,26 +36,25 @@ class MainProvider : ContentProvider() {
 
     private fun handleOnDataStore(uri: Uri, projection: Array<String>): Cursor {
         return when (uri.pathSegments[1]) {
-            "string" -> generateCursor(preferences.getString(projection[0], projection[1]) ?: projection[1])
-            "boolean" -> generateCursor(preferences.getBoolean(projection[0], projection[1].toBoolean()).toString())
+            "string" -> generateCursor(dataStore.getPreference(projection[0], projection[1]))
+            "boolean" -> generateCursor(dataStore.getPreference(projection[0], projection[1].toBoolean()).toString())
             else -> throw RuntimeException("[NoLitter] No matching value type, with uri: ${uri.path}, with projection: $projection")
         }
     }
 
     private fun handleOnDataBase(uri: Uri, projection: Array<String>): Cursor {
         return when (uri.pathSegments[1]) {
-            "string" -> generateCursor(preferences.getString(projection[0], projection[1]) ?: projection[1])
-            "boolean" -> generateCursor(preferences.getBoolean(projection[0], projection[1].toBoolean()).toString())
+            "string" -> generateCursor(dataStore.getPreference(projection[0], projection[1]))
+            "boolean" -> generateCursor(dataStore.getPreference(projection[0], projection[1].toBoolean()).toString())
             else -> throw RuntimeException("[NoLitter] No matching value type, with uri: ${uri.path}, with projection: $projection")
         }
     }
 
     override fun onCreate(): Boolean {
         context?.let {
-            val preferencesName = BuildConfig.APPLICATION_ID + "_preferences"
-            preferences = it.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
-            database = Room.databaseBuilder(it, MainDatabase::class.java, BuildConfig.APPLICATION_ID).build()
-            applicationDao = database.applicationDao()
+            dataStore = DataStoreUtil.apply { initialize(it) }
+            appDatabase = Room.databaseBuilder(it, MainDatabase::class.java, BuildConfig.APPLICATION_ID).build()
+            applicationDao = appDatabase.applicationDao()
             return true
         }
         return false

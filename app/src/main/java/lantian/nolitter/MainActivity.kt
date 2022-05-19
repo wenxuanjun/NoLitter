@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
-import lantian.nolitter.interfaces.AppUi
-import lantian.nolitter.models.MainViewModel
+import lantian.nolitter.view.AppUi
+import lantian.nolitter.view.model.MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

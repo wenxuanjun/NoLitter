@@ -1,4 +1,4 @@
-package lantian.nolitter.interfaces.screens
+package lantian.nolitter.view.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import lantian.nolitter.R
-import lantian.nolitter.interfaces.widgets.*
-import lantian.nolitter.models.InstalledPackageInfo
-import lantian.nolitter.models.MainViewModel
+import lantian.nolitter.view.model.InstalledPackageInfo
+import lantian.nolitter.view.model.MainViewModel
+import lantian.nolitter.view.widgets.*
 
 @Composable
 fun PreferenceHome(navController: NavHostController) {
@@ -67,7 +67,7 @@ fun PreferenceInterface(viewModel: MainViewModel) {
             Pair("light", stringResource(R.string.ui_settings_theme_light)),
             Pair("dark", stringResource(R.string.ui_settings_theme_dark))
         )
-        val selectedThemeKey = viewModel.getStringPreference("theme", "default")
+        val selectedThemeKey = viewModel.dataStore.getPreference("theme", "default")
         var selectedTheme by remember { mutableStateOf(themeOptions[selectedThemeKey]) }
         PreferenceList(
             text = stringResource(R.string.ui_settings_theme),
@@ -76,16 +76,16 @@ fun PreferenceInterface(viewModel: MainViewModel) {
             defaultValue = selectedThemeKey,
             options = themeOptions
         ) {
-            viewModel.setStringPreference("theme", it)
+            viewModel.dataStore.setPreference("theme", it)
             selectedTheme = themeOptions[it]
             viewModel.appTheme.value = it
         }
         PreferenceCheckBox(
             text = stringResource(R.string.ui_settings_hideIcon),
             secondaryText = stringResource(R.string.ui_settings_hideIcon_description),
-            defaultValue = viewModel.getBooleanPreference("hide_icon", false),
+            defaultValue = viewModel.dataStore.getPreference("hide_icon", false),
             onChange = {
-                viewModel.setBooleanPreference("hide_icon", it)
+                viewModel.dataStore.setPreference("hide_icon", it)
                 viewModel.hideAppIcon(it)
             }
         )
@@ -99,14 +99,13 @@ fun PreferenceMiscellaneous(viewModel: MainViewModel) {
             PreferenceCheckBox(
                 text = stringResource(R.string.ui_settings_miscellaneous_debugMode),
                 secondaryText = stringResource(R.string.ui_settings_miscellaneous_debugMode_description),
-                onChange = { viewModel.setBooleanPreference("debug_mode", it) },
-                defaultValue = viewModel.getBooleanPreference("debug_mode", false)
+                onChange = { viewModel.dataStore.setPreference("debug_mode", it) },
+                defaultValue = viewModel.dataStore.getPreference("debug_mode", false)
             )
         }
         PreferenceGroup(stringResource(R.string.ui_settings_miscellaneous_about)) {
             val sourceLink = stringResource(R.string.ui_settings_miscellaneous_source_description)
             val lantianLink = stringResource(R.string.ui_settings_miscellaneous_lantian_description)
-            val xinternalsdLink = stringResource(R.string.ui_settings_miscellaneous_xinternalsd_description)
             ClickablePreferenceItem(
                 text = stringResource(R.string.ui_settings_miscellaneous_source),
                 secondaryText = sourceLink,
@@ -116,11 +115,6 @@ fun PreferenceMiscellaneous(viewModel: MainViewModel) {
                 text = stringResource(R.string.ui_settings_miscellaneous_lantian),
                 secondaryText = lantianLink,
                 onClick = { viewModel.intentToWebsite(lantianLink) }
-            )
-            ClickablePreferenceItem(
-                text = stringResource(R.string.ui_settings_miscellaneous_xinternalsd),
-                secondaryText = xinternalsdLink,
-                onClick = { viewModel.intentToWebsite(xinternalsdLink) }
             )
         }
     }
@@ -141,9 +135,9 @@ fun PreferenceSelectApps(viewModel: MainViewModel) {
     if (viewModel.installedPackages.value.isEmpty()) { LoadingScreen() } else {
         viewModel.topAppBarActions.value = { SelectAppsToolbarAction(
             hideSystem = hideSystem, hideModule = hideModule, sortedBy = sortedBy,
-            onChangeHideSystem = { hideSystem = it; viewModel.setBooleanPreference("select_hideSystem", it) },
-            onChangeHideModule = { hideModule = it; viewModel.setBooleanPreference("select_hideModule", it) },
-            onChangeSortedBy =  { sortedBy = it; viewModel.setStringPreference("select_sortedBy", it) }
+            onChangeHideSystem = { hideSystem = it; viewModel.dataStore.setPreference("select_hideSystem", it) },
+            onChangeHideModule = { hideModule = it; viewModel.dataStore.setPreference("select_hideModule", it) },
+            onChangeSortedBy =  { sortedBy = it; viewModel.dataStore.setPreference("select_sortedBy", it) }
         ) }
         LazyColumn {
             val filteredItems = viewModel.installedPackages.value

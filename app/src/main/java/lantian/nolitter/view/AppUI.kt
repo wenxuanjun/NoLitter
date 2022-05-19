@@ -1,4 +1,4 @@
-package lantian.nolitter.interfaces
+package lantian.nolitter.view
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -6,8 +6,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import lantian.nolitter.interfaces.theme.ApplicationTheme
-import lantian.nolitter.models.MainViewModel
+import lantian.nolitter.view.model.MainViewModel
+import lantian.nolitter.view.theme.ApplicationTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

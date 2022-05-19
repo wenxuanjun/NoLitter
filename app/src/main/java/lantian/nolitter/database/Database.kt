@@ -1,4 +1,4 @@
-package lantian.nolitter.databases
+package lantian.nolitter.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

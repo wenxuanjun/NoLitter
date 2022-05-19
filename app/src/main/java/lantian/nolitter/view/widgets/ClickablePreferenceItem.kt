@@ -1,4 +1,4 @@
-package lantian.nolitter.interfaces.widgets
+package lantian.nolitter.view.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable

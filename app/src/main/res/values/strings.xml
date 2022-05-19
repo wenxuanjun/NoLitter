@@ -40,7 +40,4 @@
     <string name="ui_settings_miscellaneous_source_description">https://github.com/wenxuanjun/NoLitter</string>
     <string name="ui_settings_miscellaneous_lantian">This app is developed from Lantian NoLitter</string>
     <string name="ui_settings_miscellaneous_lantian_description">https://github.com/xddxdd/lantian-nolitter</string>
-    <string name="ui_settings_miscellaneous_xinternalsd">This app uses code from XInternalSD</string>
-    <string name="ui_settings_miscellaneous_xinternalsd_description">https://github.com/pylerSM/XInternalSD</string>
-
 </resources>

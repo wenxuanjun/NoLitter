@@ -6,11 +6,18 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
+import lantian.nolitter.utilitiy.DataStoreUtil
 import java.io.File
 import java.net.URI
 
@@ -114,8 +121,6 @@ class XposedHook : IXposedHookLoadPackage {
                             printDebugLogs(lpparam.packageName, "Forced", "in force list")
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStorageDirectory", changeDirHook)
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStoragePublicDirectory", String::class.java, changeDirHook)
-                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getObbDir", changeDirHook)
-                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getObbDirs", changeDirsHook)
                             XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDir", String::class.java, changeDirHook)
                             XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDirs", String::class.java, changeDirsHook)
                         }
@@ -169,26 +174,24 @@ class XposedHook : IXposedHookLoadPackage {
     }
 
     private fun initPreferences(packageName: String) = XposedPreference(
-        debugMode = getBooleanPreference("debug_mode", false),
-        redirectStyle = getStringPreference("redirect_style", "lantian"),
-        isForced = getStringPreference("forced_apps", Constants.defaultForcedList).split(":").contains(packageName)
+        debugMode = getPreference("datastore", "debug_mode", false),
+        redirectStyle = getPreference("datastore", "redirect_style", "lantian"),
+        isForced = getPreference("datastore", "forced_apps", Constants.defaultForcedList).split(":").contains(packageName)
     )
 
+    @SuppressLint("Recycle")
     private fun resolveContent(uriString: String, projection: Array<String>): Cursor {
         val resolver = applicationContext.contentResolver
         resolver.query(Uri.parse(uriString), projection, null, null, null)?.let { while (it.moveToNext()) { return it } }
         throw RuntimeException("Unable to fetch the content")
     }
 
-    private fun getStringPreference(key: String, defaultValue: String): String {
-        return resolveContent(getContentUri("preference", "string"), arrayOf(key, defaultValue)).getString(0)
-    }
-
-    private fun getBooleanPreference(key: String, defaultValue: Boolean): Boolean {
-        return resolveContent(getContentUri("preference", "boolean"), arrayOf(key, defaultValue.toString())).getString(0).toBoolean()
-    }
-
-    private fun getContentUri(source: String, valueType: String): String {
-        return "content://$AUTHORITY/$source/$valueType"
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> getPreference(source: String, key: String, defaultValue: T): T {
+        return when (defaultValue) {
+            is String -> resolveContent("content://$AUTHORITY/$source/string", arrayOf(key, defaultValue)).getString(0)
+            is Boolean -> resolveContent("content://$AUTHORITY/$source/boolean", arrayOf(key, defaultValue.toString())).getString(0).toBoolean()
+            else -> throw IllegalArgumentException("Wrong value provided with invalid value type")
+        } as T
     }
 }
