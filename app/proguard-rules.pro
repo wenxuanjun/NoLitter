@@ -1,4 +1,4 @@
--keep class lantian.nolitter.XposedHook
+-keep class lantian.nolitter.xposed.XposedHook
 
 -repackageclasses
 -allowaccessmodification

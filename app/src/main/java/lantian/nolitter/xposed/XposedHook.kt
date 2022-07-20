@@ -1,4 +1,4 @@
-package lantian.nolitter
+package lantian.nolitter.xposed
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -6,18 +6,13 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
-import lantian.nolitter.utilitiy.DataStoreUtil
+import lantian.nolitter.BuildConfig
+import lantian.nolitter.Constants
 import java.io.File
 import java.net.URI
 
@@ -118,7 +113,6 @@ class XposedHook : IXposedHookLoadPackage {
                         XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, String::class.java, hookFileWithStringAndString)
                         XposedHelpers.findAndHookConstructor(File::class.java, File::class.java, String::class.java, hookFileWithFileAndString)
                         if (xposedPreference.isForced) {
-                            printDebugLogs(lpparam.packageName, "Forced", "in force list")
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStorageDirectory", changeDirHook)
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStoragePublicDirectory", String::class.java, changeDirHook)
                             XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDir", String::class.java, changeDirHook)
@@ -143,16 +137,21 @@ class XposedHook : IXposedHookLoadPackage {
             else -> "$storageDir/Android/data/$packageName/sdcard"
         }
 
-        // If it's just the root directory
+        // Ignore if it's just the root directory
         if (oldPath == storageDir || oldPath == "$storageDir/") {
             return if (xposedPreference.isForced) absoluteRedirectPath else storageDir
         }
 
-        // Use the origin path if it's in the "Android" directory
+        // Ignore if it's in the "Android" directory
         if (oldPath.startsWith("$storageDir/Android")) return oldPath
 
-        // If it's in a directory that already exists in the root directory
+        // The relative path in the storage directory
         val relativePath = oldPath.substring(storageDir.length)
+
+        // Force mode: Redirect whether or not the directory exists
+        if (xposedPreference.isForced) return absoluteRedirectPath + relativePath
+
+        // Normal mode: Ignore if the first level directory exists in the root directory already
         val secondSlash = relativePath.indexOf("/", 1)
         val firstDirectoryPath = if (secondSlash == -1) relativePath else relativePath.substring(0, secondSlash)
         val fileExists = File(URI.create("file://$storageDir$firstDirectoryPath")).exists()
@@ -176,7 +175,7 @@ class XposedHook : IXposedHookLoadPackage {
     private fun initPreferences(packageName: String) = XposedPreference(
         debugMode = getPreference("datastore", "debug_mode", false),
         redirectStyle = getPreference("datastore", "redirect_style", "lantian"),
-        isForced = getPreference("datastore", "forced_apps", Constants.defaultForcedList).split(":").contains(packageName)
+        isForced = getPreference("datastore", "forced_apps", "").split(":").contains(packageName)
     )
 
     @SuppressLint("Recycle")

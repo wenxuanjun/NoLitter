@@ -1,4 +1,4 @@
-package lantian.nolitter.view.widgets
+package lantian.nolitter.views.widgets
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import lantian.nolitter.R
 
 @Composable
-fun PreferenceEditText(
+fun PreferenceTextField(
     text: String, modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null, secondaryText: String? = null,
     onSubmit: ((String) -> Unit)? = null, dialogTitle: String, dialogDefaultContent: String? = "",
@@ -43,7 +43,7 @@ fun PreferenceEditText(
         },
         dialogActions = {
             TextButton(onClick = { showDialog = false; if (onSubmit != null) onSubmit(textValue) }) {
-                Text(stringResource(R.string.ui_dialogAccept))
+                Text(stringResource(R.string.ui_dialog_confirm))
             }
         }
     )

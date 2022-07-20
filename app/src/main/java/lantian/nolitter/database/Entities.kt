@@ -4,12 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-data class ApplicationEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "app_name") val appName: String,
-    @ColumnInfo(name = "package_name") val packageName: String,
-    @ColumnInfo(name = "forced_mode") val forcedMode: Boolean,
-    @ColumnInfo(name = "additional_hooks") val additionalHooks: Boolean,
-    @ColumnInfo(name = "redirect_style") val redirectStyle: String
+@Entity(tableName = "package_preference")
+data class PackagePreference (
+    @PrimaryKey @ColumnInfo(name = "package_name") val packageName: String = "",
+    @ColumnInfo(name = "forced_mode") val forcedMode: Boolean = false,
+    @ColumnInfo(name = "allow_standard_dirs") val allowStandardDirs: Boolean = true,
+    @ColumnInfo(name = "additional_hooks") val additionalHooks: Boolean = false,
+    @ColumnInfo(name = "redirect_style") val redirectStyle: String = "external"
 )

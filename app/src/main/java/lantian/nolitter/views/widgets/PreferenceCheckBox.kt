@@ -1,4 +1,4 @@
-package lantian.nolitter.view.widgets
+package lantian.nolitter.views.widgets
 
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Checkbox

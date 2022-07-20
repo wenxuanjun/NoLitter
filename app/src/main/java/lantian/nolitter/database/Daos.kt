@@ -3,17 +3,17 @@ package lantian.nolitter.database
 import androidx.room.*
 
 @Dao
-interface ApplicationDao {
+interface PackagePreferenceDao {
 
-    @Query("SELECT * FROM ApplicationEntity WHERE package_name = :packageName")
-    fun queryApplication(packageName: String): List<ApplicationEntity>
+    @Query("SELECT * FROM package_preference WHERE package_name = :packageName")
+    suspend fun queryPackage(packageName: String): PackagePreference
 
     @Insert
-    fun insertApplication(application: ApplicationEntity)
+    suspend fun insertPackage(installedPackage: PackagePreference)
 
     @Update
-    fun updateApplication(application: ApplicationEntity)
+    suspend fun updatePackage(installedPackage: PackagePreference)
 
     @Delete
-    fun deleteApplication(application: ApplicationEntity)
+    suspend fun deletePackage(installedPackage: PackagePreference)
 }

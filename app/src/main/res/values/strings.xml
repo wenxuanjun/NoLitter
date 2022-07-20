@@ -3,7 +3,7 @@
     <string name="xposed_description">Prevents apps from littering in storage.</string>
 
     <string name="ui_loading">Loading</string>
-    <string name="ui_dialogAccept">OK</string>
+    <string name="ui_dialog_confirm">OK</string>
 
     <string name="ui_cleanFolder_isClearing">\'s sdcard data is being cleared</string>
     <string name="ui_cleanFolder_isCleared">\'s sdcard data is cleared successfully</string>

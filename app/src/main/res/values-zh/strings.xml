@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name"> NoLitter</string>
+    <string name="app_name">NoLitter</string>
     <string name="xposed_description">阻止应用在存储空间里乱建文件夹</string>
 
     <string name="ui_loading">加载中</string>
-    <string name="ui_dialogAccept">确认</string>
+    <string name="ui_dialog_confirm">确认</string>
 
     <string name="ui_cleanFolder_isClearing"> 的存储残留正在清理……</string>
     <string name="ui_cleanFolder_isCleared"> 的存储残留清理完成</string>
