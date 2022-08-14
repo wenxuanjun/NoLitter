@@ -12,6 +12,7 @@ import lantian.nolitter.database.PackagePreference
 import lantian.nolitter.database.PackagePreferenceDao
 import lantian.nolitter.modules.DataStoreManager
 import javax.inject.Inject
+import javax.inject.Singleton
 
 data class InstalledPackageInfo (
     val appName: String, val appIcon: Drawable,
@@ -24,6 +25,7 @@ data class ProcessPackageInfoPreference(
     val hideModule: Boolean
 )
 
+@Singleton
 class PreferenceRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dataStoreDataSource: DataStoreManager,
@@ -39,17 +41,13 @@ class PreferenceRepository @Inject constructor(
     }
 
     suspend fun getPackagePreference(packageName: String): PackagePreference {
-        return if (isCustomizedPackages(packageName)) { databaseDataSource.queryPackage(packageName) }
-        else throw RuntimeException("$packageName is not customized so it will not be in database")
+        return databaseDataSource.queryPackage(packageName) ?: PackagePreference(packageName = packageName)
     }
 
     suspend fun setPackagePreference(packagePreference: PackagePreference) {
-        databaseDataSource.updatePackage(packagePreference)
-    }
-
-    suspend fun isCustomizedPackages(packageName: String): Boolean {
-        val customizedPackages = dataStoreDataSource.getPreference("customized_packages", "")
-        return customizedPackages.split(":").contains(packageName)
+        val isPreferenceExist = databaseDataSource.queryPackage(packagePreference.packageName) != null
+        if (isPreferenceExist) databaseDataSource.updatePackage(packagePreference)
+        else databaseDataSource.insertPackage(packagePreference)
     }
 
     suspend fun onChangeCustomizedPackages(packageName: String, newValue: Boolean) {

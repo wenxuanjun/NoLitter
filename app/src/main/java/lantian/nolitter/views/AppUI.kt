@@ -8,8 +8,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import lantian.nolitter.views.model.MainViewModel
-import lantian.nolitter.views.theme.ApplicationTheme
+import lantian.nolitter.views.models.MainViewModel
+import lantian.nolitter.views.themes.ApplicationTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

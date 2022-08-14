@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import lantian.nolitter.R
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun PreferenceTextField(
     text: String, modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null, secondaryText: String? = null,

@@ -1,7 +1,7 @@
-package lantian.nolitter.views.model
+package lantian.nolitter.views.models
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,18 +18,22 @@ import javax.inject.Inject
 class PackageViewModel @Inject constructor(private val preferenceRepository : PreferenceRepository) : ViewModel() {
 
     var packageInfo by mutableStateOf(listOf<InstalledPackageInfo>())
-    var currentPackagePreference by mutableStateOf(PackagePreference())
-    init { viewModelScope.launch { packageInfo = preferenceRepository.getInstalledPackageInfo() } }
+    var currentPackagePreference: PackagePreference? by mutableStateOf(null)
+    init {
+        viewModelScope.launch { packageInfo = preferenceRepository.getInstalledPackageInfo() }
+    }
 
     fun getPackageInfo(packageName: String): InstalledPackageInfo {
         return packageInfo.first { it.packageName == packageName }
     }
 
     fun getPackagePreference(packageName: String) {
+        currentPackagePreference = null
         viewModelScope.launch { currentPackagePreference = preferenceRepository.getPackagePreference(packageName) }
     }
 
     fun setPackagePreference(preference: PackagePreference) {
+        currentPackagePreference = preference
         viewModelScope.launch { preferenceRepository.setPackagePreference(preference) }
     }
 

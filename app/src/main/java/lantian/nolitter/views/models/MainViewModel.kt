@@ -1,4 +1,4 @@
-package lantian.nolitter.views.model
+package lantian.nolitter.views.models
 
 import android.content.ComponentName
 import android.content.Context

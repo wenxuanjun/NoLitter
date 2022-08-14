@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import lantian.nolitter.R
-import lantian.nolitter.views.model.MainViewModel
+import lantian.nolitter.views.models.MainViewModel
 import lantian.nolitter.views.widgets.PreferenceCheckBox
 import lantian.nolitter.views.widgets.PreferenceClickableItem
 import lantian.nolitter.views.widgets.PreferenceGroup

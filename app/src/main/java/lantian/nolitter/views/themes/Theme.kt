@@ -1,4 +1,4 @@
-package lantian.nolitter.views.theme
+package lantian.nolitter.views.themes
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

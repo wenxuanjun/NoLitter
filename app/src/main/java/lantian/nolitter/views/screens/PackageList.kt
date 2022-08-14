@@ -13,8 +13,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import lantian.nolitter.repository.InstalledPackageInfo
-import lantian.nolitter.views.model.MainViewModel
-import lantian.nolitter.views.model.PackageViewModel
+import lantian.nolitter.views.models.MainViewModel
+import lantian.nolitter.views.models.PackageViewModel
 import lantian.nolitter.views.widgets.LoadingScreen
 import lantian.nolitter.views.widgets.PreferenceClickableItem
 import lantian.nolitter.views.widgets.SelectAppsToolbarAction
