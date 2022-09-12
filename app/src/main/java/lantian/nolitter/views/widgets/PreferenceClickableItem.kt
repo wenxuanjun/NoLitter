@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun PreferenceClickableItem(
-    text: String, secondaryText: String? = null, modifier: Modifier = Modifier,
+    text: String, modifier: Modifier = Modifier, secondaryText: String? = null,
     onClick: (() -> Unit)? = null, icon: (@Composable () -> Unit)? = null
 ) {
     PreferenceBase(

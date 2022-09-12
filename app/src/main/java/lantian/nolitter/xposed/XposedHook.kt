@@ -6,19 +6,24 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
+import app.softwork.serialization.csv.CSVFormat
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
 import lantian.nolitter.BuildConfig
 import lantian.nolitter.Constants
 import java.io.File
 import java.net.URI
 
+@Serializable
 data class XposedPreference(
-    val isForced: Boolean, val debugMode: Boolean,
-    val redirectStyle: String
+    val forcedMode: Boolean, val allowPublicDirs: Boolean,
+    val additionalHooks: Boolean, val redirectStyle: String, val debugMode: Boolean
 )
 
 // The authority of the content resolver
@@ -103,6 +108,7 @@ class XposedHook : IXposedHookLoadPackage {
 
         // Get the context of package hooked which is used in resolving content
         XposedHelpers.findAndHookMethod(Application::class.java, "attach", Context::class.java, object : XC_MethodHook() {
+            @ExperimentalSerializationApi
             override fun beforeHookedMethod(param: MethodHookParam) {
                 // This hook may be called more than one time
                 if (!this@XposedHook::applicationContext.isInitialized) {
@@ -112,7 +118,7 @@ class XposedHook : IXposedHookLoadPackage {
                         XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, hookFileWithString)
                         XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, String::class.java, hookFileWithStringAndString)
                         XposedHelpers.findAndHookConstructor(File::class.java, File::class.java, String::class.java, hookFileWithFileAndString)
-                        if (xposedPreference.isForced) {
+                        if (xposedPreference.additionalHooks) {
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStorageDirectory", changeDirHook)
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStoragePublicDirectory", String::class.java, changeDirHook)
                             XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDir", String::class.java, changeDirHook)
@@ -126,30 +132,35 @@ class XposedHook : IXposedHookLoadPackage {
         })
     }
 
-    // Return the path after redirection
     @SuppressLint("SdCardPath")
     private fun getReplacedPath(oldPath: String, storageDir: String, packageName: String): String {
 
         // Where the basic redirect path should be
         val absoluteRedirectPath = when (xposedPreference.redirectStyle) {
-            "rikka" -> "$storageDir/Android/data/$packageName/sdcard"
-            "lantian" -> "$storageDir/Android/files/$packageName"
-            else -> "$storageDir/Android/data/$packageName/sdcard"
+            "data" -> "$storageDir/Android/data/$packageName/sdcard"
+            "cache" -> "$storageDir/Android/data/$packageName/cache/sdcard"
+            "external" -> "$storageDir/Android/files/$packageName"
+            else -> throw IllegalArgumentException("Invalid redirect style")
         }
 
-        // Ignore if it's just the root directory
+        // If it's just the root directory
         if (oldPath == storageDir || oldPath == "$storageDir/") {
-            return if (xposedPreference.isForced) absoluteRedirectPath else storageDir
+            return if (xposedPreference.forcedMode) absoluteRedirectPath else storageDir
         }
 
-        // Ignore if it's in the "Android" directory
-        if (oldPath.startsWith("$storageDir/Android")) return oldPath
+        // Ignore if it's already redirected
+        if (oldPath.startsWith(absoluteRedirectPath)) return oldPath
 
         // The relative path in the storage directory
         val relativePath = oldPath.substring(storageDir.length)
 
         // Force mode: Redirect whether or not the directory exists
-        if (xposedPreference.isForced) return absoluteRedirectPath + relativePath
+        if (xposedPreference.forcedMode) return absoluteRedirectPath + relativePath
+
+        // If it's in the public directory
+        for (publicDir in Constants.androidPublicDirs.split(":")) {
+            if (relativePath.startsWith(publicDir)) return if (xposedPreference.allowPublicDirs) oldPath else absoluteRedirectPath + relativePath
+        }
 
         // Normal mode: Ignore if the first level directory exists in the root directory already
         val secondSlash = relativePath.indexOf("/", 1)
@@ -160,9 +171,7 @@ class XposedHook : IXposedHookLoadPackage {
 
     // Get the storage directory of the path, ignore if matches none of them (e.g. /data)
     private fun getStorageDir(oldPath: String): String? {
-        for (storageDir in Constants.defaultStorageDirs.split(":")) {
-            if (oldPath.startsWith(storageDir)) return storageDir
-        }
+        for (storageDir in Constants.defaultStorageDirs.split(":")) if (oldPath.startsWith(storageDir)) return storageDir
         return null
     }
 
@@ -172,25 +181,17 @@ class XposedHook : IXposedHookLoadPackage {
         }
     }
 
-    private fun initPreferences(packageName: String) = XposedPreference(
-        debugMode = getPreference("datastore", "debug_mode", false),
-        redirectStyle = getPreference("datastore", "redirect_style", "lantian"),
-        isForced = getPreference("datastore", "forced_apps", "").split(":").contains(packageName)
-    )
-
-    @SuppressLint("Recycle")
-    private fun resolveContent(uriString: String, projection: Array<String>): Cursor {
-        val resolver = applicationContext.contentResolver
-        resolver.query(Uri.parse(uriString), projection, null, null, null)?.let { while (it.moveToNext()) { return it } }
-        throw RuntimeException("Unable to fetch the content")
+    @ExperimentalSerializationApi
+    private fun initPreferences(packageName: String): XposedPreference {
+        val xposedPreference = resolveContent("content://$AUTHORITY/main/${packageName}").getString(0)
+        Log.d("NoLitter", xposedPreference)
+        return CSVFormat.decodeFromString(XposedPreference.serializer(), xposedPreference)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> getPreference(source: String, key: String, defaultValue: T): T {
-        return when (defaultValue) {
-            is String -> resolveContent("content://$AUTHORITY/$source/string", arrayOf(key, defaultValue)).getString(0)
-            is Boolean -> resolveContent("content://$AUTHORITY/$source/boolean", arrayOf(key, defaultValue.toString())).getString(0).toBoolean()
-            else -> throw IllegalArgumentException("Wrong value provided with invalid value type")
-        } as T
+    @SuppressLint("Recycle")
+    private fun resolveContent(uriString: String): Cursor {
+        val resolver = applicationContext.contentResolver
+        resolver.query(Uri.parse(uriString), null, null, null, null)?.let { while (it.moveToNext()) { return it } }
+        throw RuntimeException("Unable to fetch the content, url: $uriString")
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -50,10 +49,12 @@ class PreferenceRepository @Inject constructor(
         else databaseDataSource.insertPackage(packagePreference)
     }
 
-    suspend fun onChangeCustomizedPackages(packageName: String, newValue: Boolean) {
+    suspend fun getCustomizedPackages(): List<String> {
         val customizedPackages = dataStoreDataSource.getPreference("customized_packages", "")
-        val customizedPackagesList = customizedPackages.split(":").toMutableList()
-        if (newValue) customizedPackagesList.add(packageName) else customizedPackagesList.remove(packageName)
+        return customizedPackages.split(":")
+    }
+
+    suspend fun onChangeCustomizedPackages(customizedPackagesList: List<String>) {
         dataStoreDataSource.setPreference("customized_packages", customizedPackagesList.joinToString(":"))
     }
 
@@ -68,11 +69,10 @@ class PreferenceRepository @Inject constructor(
         val allPackageInfo: ArrayList<InstalledPackageInfo> = ArrayList()
         for (installedPackage in packageManager.getInstalledPackages(PackageManager.GET_META_DATA)) {
             val applicationInfo = installedPackage.applicationInfo
-            val applicationFlag = installedPackage.applicationInfo.flags
             allPackageInfo.add(InstalledPackageInfo(
                 appName = applicationInfo.loadLabel(packageManager).toString(),
                 appIcon = applicationInfo.loadIcon(packageManager),
-                isSystem = applicationFlag and ApplicationInfo.FLAG_SYSTEM != 0,
+                isSystem = applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0,
                 isModule = applicationInfo.metaData != null && applicationInfo.metaData.containsKey("xposedminversion"),
                 packageName = applicationInfo.packageName,
                 firstInstallTime = installedPackage.firstInstallTime

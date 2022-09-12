@@ -6,103 +6,84 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
-import androidx.room.Room
+import app.softwork.serialization.csv.CSVFormat
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
-import lantian.nolitter.BuildConfig
-import lantian.nolitter.database.MainDatabase
+import kotlinx.serialization.ExperimentalSerializationApi
+import lantian.nolitter.database.PackagePreference
 import lantian.nolitter.database.PackagePreferenceDao
 import lantian.nolitter.modules.DataStoreManager
+import lantian.nolitter.xposed.XposedPreference
 
+private const val URI_MAIN = 0
 private const val AUTHORITY = "lantian.nolitter.provider"
 
-private const val URI_PREFERENCE = 0
-private const val URI_DATABASE = 1
-
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface ContentProviderEntryPoint {
+    var dataStoreDataSource: DataStoreManager
+    var databaseDataSource: PackagePreferenceDao
+}
 
 class MainProvider : ContentProvider() {
 
-    private lateinit var dataStore: DataStoreManager
-    private lateinit var appDatabase: MainDatabase
-    private var packagePreferenceDao: PackagePreferenceDao? = null
+    private lateinit var dataStoreDataSource: DataStoreManager
+    private lateinit var databaseDataSource: PackagePreferenceDao
+
     private val uriMatcher: UriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
-    init {
-        uriMatcher.addURI(AUTHORITY, "datastore/*", URI_PREFERENCE)
-        uriMatcher.addURI(AUTHORITY, "database/*", URI_DATABASE)
-    }
+    init { uriMatcher.addURI(AUTHORITY, "main/*", URI_MAIN) }
 
     private fun generateCursor(value: String): Cursor {
         return MatrixCursor(arrayOf("value"), 1).apply { addRow(arrayOf<Any?>(value)) }
     }
 
-    private fun handleOnDataStore(uri: Uri, projection: Array<String>): Cursor {
-        return runBlocking {
-            when (uri.pathSegments[1]) {
-                "string" -> generateCursor(dataStore.getPreference(projection[0], projection[1]))
-                "boolean" -> generateCursor(dataStore.getPreference(projection[0], projection[1].toBoolean()).toString())
-                else -> throw RuntimeException("[NoLitter] No matching value type, with uri: ${uri.path}, with projection: $projection")
-            }
-        }
+    private suspend fun <T> getPreference(key: String, defaultValue: T): T {
+        return dataStoreDataSource.getPreference(key, defaultValue)
     }
 
-    private fun handleOnDataBase(uri: Uri, projection: Array<String>): Cursor {
-        return runBlocking {
-            when (uri.pathSegments[1]) {
-                "string" -> generateCursor(dataStore.getPreference(projection[0], projection[1]))
-                "boolean" -> generateCursor(dataStore.getPreference(projection[0],
-                    projection[1].toBoolean()).toString())
-                else -> throw RuntimeException("[NoLitter] No matching value type, with uri: ${uri.path}, with projection: $projection")
-            }
-        }
+    private suspend fun getPackagePreference(packageName: String): PackagePreference {
+        return databaseDataSource.queryPackage(packageName) ?: PackagePreference(packageName = packageName)
+    }
+
+    private suspend fun isCustomizedPackages(packageName: String): Boolean {
+        val customizedPackages = dataStoreDataSource.getPreference("customized_packages", "")
+        return customizedPackages.split(":").contains(packageName)
+    }
+
+    @ExperimentalSerializationApi
+    private fun handleQuery(uri: Uri): Cursor {
+        val packagePreference = runBlocking { getPackagePreference(uri.pathSegments[1]) }
+        val isCustomizedPackages = runBlocking { isCustomizedPackages(uri.lastPathSegment!!) }
+        return generateCursor(runBlocking { CSVFormat.encodeToString(XposedPreference.serializer(), XposedPreference(
+            forcedMode = if (isCustomizedPackages) packagePreference.forcedMode else getPreference("forced_mode", false),
+            allowPublicDirs = if (isCustomizedPackages) packagePreference.allowPublicDirs else getPreference("allow_public_dirs", false),
+            additionalHooks = if (isCustomizedPackages) packagePreference.additionalHooks else getPreference("additional_hooks", false),
+            redirectStyle = if (isCustomizedPackages) packagePreference.redirectStyle else getPreference("redirect_style", "external"),
+            debugMode = runBlocking { getPreference("debug_mode", false) }
+        )) })
     }
 
     override fun onCreate(): Boolean {
-        context?.let {
-            appDatabase =
-                Room.databaseBuilder(it, MainDatabase::class.java, BuildConfig.APPLICATION_ID)
-                    .build()
-            packagePreferenceDao = appDatabase.packagePreferenceDao()
-            return true
-        }
-        return false
+        val appContext = context?.applicationContext ?: throw IllegalStateException()
+        val hiltEntryPoint = EntryPointAccessors.fromApplication(appContext, ContentProviderEntryPoint::class.java)
+        dataStoreDataSource = hiltEntryPoint.dataStoreDataSource; databaseDataSource = hiltEntryPoint.databaseDataSource
+        return true
     }
 
-    override fun query(
-        uri: Uri,
-        projection: Array<String>?,
-        selection: String?,
-        selectionArgs: Array<String>?,
-        sortOrder: String?,
-    ): Cursor {
-        return when (uriMatcher.match(uri)) {
-            URI_PREFERENCE -> handleOnDataStore(uri, projection as Array<String>)
-            URI_DATABASE -> handleOnDataBase(uri, projection as Array<String>)
-            else -> throw RuntimeException("[NoLitter] No matching uri, with uri: ${uri.path}")
-        }
-    }
+    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
 
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        TODO("")
-    }
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
 
-    override fun update(
-        uri: Uri,
-        values: ContentValues?,
-        selection: String?,
-        selectionArgs: Array<String>?,
-    ): Int {
-        TODO("")
-    }
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?, ): Int = 0
 
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        TODO("")
-    }
+    override fun getType(uri: Uri): String? = if (uriMatcher.match(uri) == URI_MAIN) "vnd.android.cursor.item/vnd.$AUTHORITY.main" else null
 
-    override fun getType(uri: Uri): String? {
-        when (uriMatcher.match(uri)) {
-            URI_PREFERENCE -> return "vnd.android.cursor.item/vnd.$AUTHORITY.datastore"
-            URI_DATABASE -> return "vnd.android.cursor.item/vnd.$AUTHORITY.database"
-        }
-        return null
+    @ExperimentalSerializationApi
+    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor {
+        return if (uriMatcher.match(uri) == URI_MAIN) handleQuery(uri) else throw RuntimeException("[NoLitter] Uri can not be matched, with uri: ${uri.path}")
     }
 }

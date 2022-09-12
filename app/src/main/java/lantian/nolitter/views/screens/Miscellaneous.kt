@@ -2,10 +2,9 @@ package lantian.nolitter.views.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import lantian.nolitter.R
-import lantian.nolitter.views.models.MainViewModel
+import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.widgets.PreferenceCheckBox
 import lantian.nolitter.views.widgets.PreferenceClickableItem
 import lantian.nolitter.views.widgets.PreferenceGroup
@@ -22,18 +21,17 @@ fun Miscellaneous(viewModel: MainViewModel) {
             )
         }
         PreferenceGroup(stringResource(R.string.ui_settings_miscellaneous_about)) {
-            val context = LocalContext.current
             val sourceLink = stringResource(R.string.ui_settings_miscellaneous_source_description)
             val lantianLink = stringResource(R.string.ui_settings_miscellaneous_lantian_description)
             PreferenceClickableItem(
                 text = stringResource(R.string.ui_settings_miscellaneous_source),
                 secondaryText = sourceLink,
-                onClick = { viewModel.intentToWebsite(context, sourceLink) }
+                onClick = { viewModel.intentToWebsite(sourceLink) }
             )
             PreferenceClickableItem(
                 text = stringResource(R.string.ui_settings_miscellaneous_lantian),
                 secondaryText = lantianLink,
-                onClick = { viewModel.intentToWebsite(context, lantianLink) }
+                onClick = { viewModel.intentToWebsite(lantianLink) }
             )
         }
     }

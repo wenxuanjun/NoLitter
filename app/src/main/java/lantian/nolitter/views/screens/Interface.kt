@@ -2,10 +2,9 @@ package lantian.nolitter.views.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import lantian.nolitter.R
-import lantian.nolitter.views.models.MainViewModel
+import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.widgets.PreferenceCheckBox
 import lantian.nolitter.views.widgets.PreferenceList
 
@@ -17,7 +16,6 @@ fun Interface(viewModel: MainViewModel) {
             Pair("light", stringResource(R.string.ui_settings_theme_light)),
             Pair("dark", stringResource(R.string.ui_settings_theme_dark))
         )
-        val context = LocalContext.current
         val selectedThemeKey = viewModel.getPreference("theme", "default")
         var selectedTheme by remember { mutableStateOf(themeOptions[selectedThemeKey]) }
         PreferenceList(
@@ -37,7 +35,7 @@ fun Interface(viewModel: MainViewModel) {
             defaultValue = viewModel.getPreference("hide_icon", false),
             onChange = {
                 viewModel.setPreference("hide_icon", it)
-                viewModel.hideAppIcon(context, it)
+                viewModel.hideAppIcon(it)
             }
         )
     }

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class PackagePreference (
     @PrimaryKey @ColumnInfo(name = "package_name") val packageName: String = "",
     @ColumnInfo(name = "forced_mode") val forcedMode: Boolean = false,
-    @ColumnInfo(name = "allow_standard_dirs") val allowStandardDirs: Boolean = true,
+    @ColumnInfo(name = "allow_public_dirs") val allowPublicDirs: Boolean = true,
     @ColumnInfo(name = "additional_hooks") val additionalHooks: Boolean = false,
     @ColumnInfo(name = "redirect_style") val redirectStyle: String = "external"
 )

@@ -22,29 +22,29 @@ fun SelectAppsToolbarAction(
         Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
     }
     DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-        PreferenceGroup(stringResource(R.string.ui_settings_forceMode_hide)) {
+        PreferenceGroup(stringResource(R.string.ui_settings_packageList_hide)) {
             CheckBoxDropdownMenuItem(
-                text = stringResource(R.string.ui_settings_forceMode_hide_system),
+                text = stringResource(R.string.ui_settings_packageList_hide_system),
                 checked = hideSystem,
                 onShowMenuChange = { showMenu = false },
                 onCheckedChange = { onChangeHideSystem(!hideSystem) }
             )
             CheckBoxDropdownMenuItem(
-                text = stringResource(R.string.ui_settings_forceMode_hide_module),
+                text = stringResource(R.string.ui_settings_packageList_hide_module),
                 checked = hideModule,
                 onShowMenuChange = { showMenu = false },
                 onCheckedChange = { onChangeHideModule(!hideModule) }
             )
         }
-        PreferenceGroup(stringResource(R.string.ui_settings_forceMode_sort)) {
+        PreferenceGroup(stringResource(R.string.ui_settings_packageList_sort)) {
             RadioButtonDropdownMenuItem(
-                text = stringResource(R.string.ui_settings_forceMode_sort_appName),
+                text = stringResource(R.string.ui_settings_packageList_sort_appName),
                 selected = (sortedBy == "app_name"),
                 onShowMenuChange = { showMenu = false },
                 onSelectedChange = { onChangeSortedBy("app_name") }
             )
             RadioButtonDropdownMenuItem(
-                text = stringResource(R.string.ui_settings_forceMode_sort_firstInstallTime),
+                text = stringResource(R.string.ui_settings_packageList_sort_firstInstallTime),
                 selected = (sortedBy == "first_install_time"),
                 onShowMenuChange = { showMenu = false },
                 onSelectedChange = { onChangeSortedBy("first_install_time") }

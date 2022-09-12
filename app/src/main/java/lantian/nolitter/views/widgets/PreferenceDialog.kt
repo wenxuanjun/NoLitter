@@ -12,8 +12,8 @@ import androidx.compose.ui.window.Dialog
 
 @Composable
 fun PreferenceDialog(
-    text: String, icon: (@Composable () -> Unit)? = null,
-    modifier: Modifier = Modifier, secondaryText: String? = null,
+    text: String, modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null, secondaryText: String? = null,
     showDialog: Boolean, onShowDialogChange: (Boolean) -> Unit, dialogTitle: String? = null,
     dialogContent: (@Composable () -> Unit)? = null, dialogActions: (@Composable (Boolean) -> Unit)? = null
 ) {

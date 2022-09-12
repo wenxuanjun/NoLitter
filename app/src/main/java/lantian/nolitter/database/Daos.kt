@@ -1,6 +1,5 @@
 package lantian.nolitter.database
 
-import android.util.Log
 import androidx.room.*
 
 @Dao

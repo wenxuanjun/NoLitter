@@ -11,15 +11,26 @@
     <string name="ui_cleanFolder_failPermission">需要存储权限以自动清理卸载残留</string>
 
     <string name="ui_settings_general">通用</string>
-    <string name="ui_settings_general_description">常用的几个设置</string>
-    <string name="ui_settings_forceMode">强力模式应用</string>
-    <string name="ui_settings_forceMode_description">对目标应用启用额外的钩子，使其获取的存储卡根目录也为重定向目录，请考虑对有侧漏的应用启用</string>
-    <string name="ui_settings_forceMode_hide">隐藏</string>
-    <string name="ui_settings_forceMode_hide_system">系统应用</string>
-    <string name="ui_settings_forceMode_hide_module">模块</string>
-    <string name="ui_settings_forceMode_sort">排序</string>
-    <string name="ui_settings_forceMode_sort_appName">应用名</string>
-    <string name="ui_settings_forceMode_sort_firstInstallTime">最近安装</string>
+    <string name="ui_settings_general_description">一些全局的设置</string>
+
+    <string name="ui_settings_packages">应用</string>
+    <string name="ui_settings_packages_description">对应用进行单独设置</string>
+    <string name="ui_settings_packageList_hide">隐藏</string>
+    <string name="ui_settings_packageList_hide_system">系统应用</string>
+    <string name="ui_settings_packageList_hide_module">模块</string>
+    <string name="ui_settings_packageList_sort">排序</string>
+    <string name="ui_settings_packageList_sort_appName">应用名</string>
+    <string name="ui_settings_packageList_sort_firstInstallTime">最近安装</string>
+
+    <string name="ui_settings_customization">启用自定义</string>
+    <string name="ui_settings_forcedMode">强力模式</string>
+    <string name="ui_settings_forcedMode_description">启用后，将无条件重定向任何文件请求</string>
+    <string name="ui_settings_allowPublicDirs">允许访问公共目录</string>
+    <string name="ui_settings_allowPublicDirs_description">允许应用访问 Download、Pictures 等公共目录</string>
+    <string name="ui_settings_additionalHooks">启用额外的钩子</string>
+    <string name="ui_settings_additionalHooks_description">可能解决部分侧漏问题，但有几率带来其他兼容问题</string>
+    <string name="ui_settings_redirectStyle">重定向风格</string>
+    <string name="ui_settings_redirectStyle_description">指定重定向的目标目录</string>
 
     <string name="ui_settings_interface">界面</string>
     <string name="ui_settings_interface_description">语言、主题等</string>

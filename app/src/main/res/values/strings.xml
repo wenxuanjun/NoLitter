@@ -11,15 +11,26 @@
     <string name="ui_cleanFolder_failPermission">Storage permission is needed to clean garbage after uninstall</string>
 
     <string name="ui_settings_general">General</string>
-    <string name="ui_settings_general_description">Several commonly used settings</string>
-    <string name="ui_settings_forceMode">Force mode apps</string>
-    <string name="ui_settings_forceMode_description">Enable additional hooks for the target apps so that the root directory of the storage directory it gets will also be the redirect directory. Please consider enabling it for applications with side leaks</string>
-    <string name="ui_settings_forceMode_hide">Hide</string>
-    <string name="ui_settings_forceMode_hide_system">System apps</string>
-    <string name="ui_settings_forceMode_hide_module">Modules</string>
-    <string name="ui_settings_forceMode_sort">Sorting</string>
-    <string name="ui_settings_forceMode_sort_appName">App name</string>
-    <string name="ui_settings_forceMode_sort_firstInstallTime">Last update</string>
+    <string name="ui_settings_general_description">Several global settings</string>
+
+    <string name="ui_settings_packages">General</string>
+    <string name="ui_settings_packages_description">Several commonly used settings</string>
+    <string name="ui_settings_packageList_hide">Hide</string>
+    <string name="ui_settings_packageList_hide_system">System apps</string>
+    <string name="ui_settings_packageList_hide_module">Modules</string>
+    <string name="ui_settings_packageList_sort">Sorting</string>
+    <string name="ui_settings_packageList_sort_appName">App name</string>
+    <string name="ui_settings_packageList_sort_firstInstallTime">Last update</string>
+
+    <string name="ui_settings_customization">Enable customization</string>
+    <string name="ui_settings_forcedMode">Forced mode</string>
+    <string name="ui_settings_forcedMode_description">It will unconditionally redirect any file access requests when enabled</string>
+    <string name="ui_settings_allowPublicDirs">Allow access to public directories</string>
+    <string name="ui_settings_allowPublicDirs_description">Allow accessing public directories such as Download, Pictures, etc</string>
+    <string name="ui_settings_additionalHooks">Enable additional hooks</string>
+    <string name="ui_settings_additionalHooks_description">May solve some of the side leakage problems, but enhancing chances of compatibility issues</string>
+    <string name="ui_settings_redirectStyle">Redirect style</string>
+    <string name="ui_settings_redirectStyle_description">Specify the target directory for the redirection</string>
 
     <string name="ui_settings_interface">Interface</string>
     <string name="ui_settings_interface_description">Language, themes, etc</string>
