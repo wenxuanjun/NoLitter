@@ -62,7 +62,7 @@ class MainProvider : ContentProvider() {
             forcedMode = if (isCustomizedPackages) packagePreference.forcedMode else getPreference("forced_mode", false),
             allowPublicDirs = if (isCustomizedPackages) packagePreference.allowPublicDirs else getPreference("allow_public_dirs", false),
             additionalHooks = if (isCustomizedPackages) packagePreference.additionalHooks else getPreference("additional_hooks", false),
-            redirectStyle = if (isCustomizedPackages) packagePreference.redirectStyle else getPreference("redirect_style", "external"),
+            redirectStyle = if (isCustomizedPackages) packagePreference.redirectStyle else getPreference("redirect_style", "data"),
             debugMode = runBlocking { getPreference("debug_mode", false) }
         )) })
     }

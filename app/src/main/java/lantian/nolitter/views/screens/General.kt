@@ -34,7 +34,7 @@ fun General(viewModel: MainViewModel) {
             secondaryText = stringResource(R.string.ui_settings_redirectStyle_description),
             dialogTitle = stringResource(R.string.ui_settings_redirectStyle),
             options = mapOf("data" to "Data", "cache" to "Cache", "external" to "External"),
-            defaultValue = viewModel.getPreference("redirect_style", "external"),
+            defaultValue = viewModel.getPreference("redirect_style", "data"),
             onSubmit = { viewModel.setPreference("redirect_style", it) }
         )
     }

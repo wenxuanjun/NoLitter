@@ -1,6 +1,5 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
     }
@@ -10,10 +9,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://jitpack.io" }
-        maven { url "https://jcenter.bintray.com" }
+        maven("https://jcenter.bintray.com")
     }
 }
 
+include(":app")
 rootProject.name = "NoLitter"
-include ':app'
