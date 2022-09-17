@@ -54,7 +54,6 @@ fun SelectAppsToolbarAction(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun CheckBoxDropdownMenuItem(
     text: String, checked: Boolean,
     onShowMenuChange: (Boolean) -> Unit, onCheckedChange: () -> Unit,
@@ -69,7 +68,6 @@ fun CheckBoxDropdownMenuItem(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun RadioButtonDropdownMenuItem(
     text: String, selected: Boolean,
     onShowMenuChange: (Boolean) -> Unit, onSelectedChange: () -> Unit,

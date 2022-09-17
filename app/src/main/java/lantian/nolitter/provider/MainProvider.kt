@@ -78,7 +78,7 @@ class MainProvider : ContentProvider() {
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
 
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?, ): Int = 0
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>? ): Int = 0
 
     override fun getType(uri: Uri): String? = if (uriMatcher.match(uri) == URI_MAIN) "vnd.android.cursor.item/vnd.$AUTHORITY.main" else null
 

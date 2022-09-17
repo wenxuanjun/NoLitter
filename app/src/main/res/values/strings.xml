@@ -3,18 +3,12 @@
     <string name="xposed_description">Prevents apps from littering in storage.</string>
 
     <string name="ui_loading">Loading</string>
-    <string name="ui_dialog_confirm">OK</string>
-
-    <string name="ui_cleanFolder_isClearing">\'s sdcard data is being cleared</string>
-    <string name="ui_cleanFolder_isCleared">\'s sdcard data is cleared successfully</string>
-    <string name="ui_cleanFolder_failClear">\'s sdcard data cannot be cleared, please clean it manually</string>
-    <string name="ui_cleanFolder_failPermission">Storage permission is needed to clean garbage after uninstall</string>
 
     <string name="ui_settings_general">General</string>
     <string name="ui_settings_general_description">Several global settings</string>
 
-    <string name="ui_settings_packages">General</string>
-    <string name="ui_settings_packages_description">Several commonly used settings</string>
+    <string name="ui_settings_packages">Apps</string>
+    <string name="ui_settings_packages_description">Customize settings for specific apps</string>
     <string name="ui_settings_packageList_hide">Hide</string>
     <string name="ui_settings_packageList_hide_system">System apps</string>
     <string name="ui_settings_packageList_hide_module">Modules</string>
@@ -22,7 +16,6 @@
     <string name="ui_settings_packageList_sort_appName">App name</string>
     <string name="ui_settings_packageList_sort_firstInstallTime">Last update</string>
 
-    <string name="ui_settings_customization">Enable customization</string>
     <string name="ui_settings_forcedMode">Forced mode</string>
     <string name="ui_settings_forcedMode_description">It will unconditionally redirect any file access requests when enabled</string>
     <string name="ui_settings_allowPublicDirs">Allow access to public directories</string>

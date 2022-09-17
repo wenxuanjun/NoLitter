@@ -15,7 +15,7 @@ fun PreferenceDialog(
     text: String, modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null, secondaryText: String? = null,
     showDialog: Boolean, onShowDialogChange: (Boolean) -> Unit, dialogTitle: String? = null,
-    dialogContent: (@Composable () -> Unit)? = null, dialogActions: (@Composable (Boolean) -> Unit)? = null
+    dialogContent: (@Composable () -> Unit)? = null, dialogActions: (@Composable () -> Unit)? = null
 ) {
     PreferenceBase(
         text = text, icon = icon, secondaryText = secondaryText,
@@ -35,7 +35,7 @@ fun PreferenceDialog(
                     }
                     if (dialogActions != null) {
                         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) { dialogActions(showDialog) }
+                            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) { dialogActions() }
                         }
                     }
                 }

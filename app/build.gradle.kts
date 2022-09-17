@@ -16,11 +16,11 @@ android {
 
     defaultConfig {
         applicationId = "lantian.nolitter"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 33
         versionCode = 20
         versionName = "1.6.0"
-        resourceConfigurations += listOf("en", "zh")
+        resourceConfigurations.addAll(listOf("en-rUS", "zh-rCN"))
     }
     buildTypes {
         getByName("release") {

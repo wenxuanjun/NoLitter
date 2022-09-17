@@ -1,5 +1,6 @@
 package lantian.nolitter.views.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import lantian.nolitter.views.widgets.PreferenceClickableCheckbox
 import lantian.nolitter.views.widgets.SelectAppsToolbarAction
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 fun PackageList(
     navController: NavController, viewModel: MainViewModel,
     packageViewModel: PackageViewModel
@@ -49,6 +51,7 @@ fun PackageList(
                     text = item.appName, secondaryText = item.packageName, defaultValue = packageViewModel.isCustomizedPackages(item.packageName),
                     onClick = { navController.navigate("package/${item.packageName}") },
                     onChange = { packageViewModel.onChangeCustomizedPackages(item.packageName, it) },
+                    modifier = Modifier.animateItemPlacement(),
                     icon = {
                         Image(
                             painter = rememberDrawablePainter(item.appIcon),

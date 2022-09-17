@@ -3,12 +3,6 @@
     <string name="xposed_description">阻止应用在存储空间里乱建文件夹</string>
 
     <string name="ui_loading">加载中</string>
-    <string name="ui_dialog_confirm">确认</string>
-
-    <string name="ui_cleanFolder_isClearing"> 的存储残留正在清理……</string>
-    <string name="ui_cleanFolder_isCleared"> 的存储残留清理完成</string>
-    <string name="ui_cleanFolder_failClear"> 的存储残留清理失败，请手工清理</string>
-    <string name="ui_cleanFolder_failPermission">需要存储权限以自动清理卸载残留</string>
 
     <string name="ui_settings_general">通用</string>
     <string name="ui_settings_general_description">一些全局的设置</string>
@@ -22,7 +16,6 @@
     <string name="ui_settings_packageList_sort_appName">应用名</string>
     <string name="ui_settings_packageList_sort_firstInstallTime">最近安装</string>
 
-    <string name="ui_settings_customization">启用自定义</string>
     <string name="ui_settings_forcedMode">强力模式</string>
     <string name="ui_settings_forcedMode_description">启用后，将无条件重定向任何文件请求</string>
     <string name="ui_settings_allowPublicDirs">允许访问公共目录</string>
