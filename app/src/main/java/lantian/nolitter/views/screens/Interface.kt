@@ -1,7 +1,11 @@
 package lantian.nolitter.views.screens
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
@@ -27,7 +31,7 @@ fun Interface(viewModel: MainViewModel) {
         ) {
             viewModel.setPreference("theme", it)
             selectedTheme = themeOptions[it]
-            viewModel.appTheme.value = it
+            viewModel.appTheme = it
         }
         PreferenceCheckBox(
             text = stringResource(R.string.ui_settings_hideIcon),

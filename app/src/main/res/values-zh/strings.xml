@@ -3,6 +3,7 @@
     <string name="xposed_description">阻止应用在存储空间里乱建文件夹</string>
 
     <string name="ui_loading">加载中</string>
+    <string name="ui_search">搜索...</string>
 
     <string name="ui_settings_general">通用</string>
     <string name="ui_settings_general_description">一些全局的设置</string>

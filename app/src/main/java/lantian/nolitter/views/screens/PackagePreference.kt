@@ -16,7 +16,9 @@ fun PackagePreference(
     packageViewModel: PackageViewModel
 ) {
     LaunchedEffect(true) {
-        viewModel.topAppBarTitle.value = packageViewModel.getPackageInfo(packageName).appName
+        viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+            title = packageViewModel.getPackageInfo(packageName).appName
+        )
         packageViewModel.getPackagePreference(packageName)
     }
     packageViewModel.currentPackagePreference?.let { packagePreference ->

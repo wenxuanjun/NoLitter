@@ -31,6 +31,7 @@ const val AUTHORITY = "lantian.nolitter.provider"
 
 class XposedHook : IXposedHookLoadPackage {
 
+    // The context of the application that hooked
     private lateinit var applicationContext: Context
     private lateinit var xposedPreference: XposedPreference
 
@@ -83,23 +84,11 @@ class XposedHook : IXposedHookLoadPackage {
                 if (param.result == null) return
                 val oldDirPath = (param.result as File).absolutePath
                 val storageDir = getStorageDir(oldDirPath) ?: return
-                val newDirPath = File(getReplacedPath(oldDirPath, storageDir, lpparam.packageName))
-                param.result = newDirPath
-            }
-        }
-        val changeDirsHook: XC_MethodHook = object : XC_MethodHook() {
-            @Throws(Throwable::class)
-            override fun afterHookedMethod(param: MethodHookParam) {
-                if (param.result == null) return
-                val oldDirPaths = param.result as Array<*>
-                val newDirPaths = ArrayList<File>()
-                for (oldDirPath in oldDirPaths) {
-                    if (oldDirPath == null) continue
-                    val nonNullOldDirPath = (oldDirPath as File).absolutePath
-                    val storageDir = getStorageDir(nonNullOldDirPath) ?: return
-                    newDirPaths.add(File(getReplacedPath(nonNullOldDirPath, storageDir, lpparam.packageName)))
+                val newDirPath = getReplacedPath(oldDirPath, storageDir, lpparam.packageName)
+                if (oldDirPath != newDirPath) {
+                    param.result = File(newDirPath)
+                    printDebugLogs(lpparam.packageName, "Redirecting", "$oldDirPath -> $newDirPath")
                 }
-                param.result = newDirPaths.toTypedArray()
             }
         }
 
@@ -121,8 +110,6 @@ class XposedHook : IXposedHookLoadPackage {
                         if (xposedPreference.additionalHooks) {
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStorageDirectory", changeDirHook)
                             XposedHelpers.findAndHookMethod(Environment::class.java, "getExternalStoragePublicDirectory", String::class.java, changeDirHook)
-                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDir", String::class.java, changeDirHook)
-                            XposedHelpers.findAndHookMethod(XposedHelpers.findClass("android.app.ContextImpl", lpparam.classLoader), "getExternalFilesDirs", String::class.java, changeDirsHook)
                         }
                     } catch (npe: NullPointerException) {
                         // Prevent too much log spawn in manager
@@ -184,14 +171,19 @@ class XposedHook : IXposedHookLoadPackage {
     @ExperimentalSerializationApi
     private fun initPreferences(packageName: String): XposedPreference {
         val xposedPreference = resolveContent("content://$AUTHORITY/main/${packageName}").getString(0)
-        Log.d("NoLitter", xposedPreference)
+        printDebugLogs(packageName, "Initializing", "Preferences fetched: $xposedPreference")
         return CSVFormat.decodeFromString(XposedPreference.serializer(), xposedPreference)
     }
 
     @SuppressLint("Recycle")
     private fun resolveContent(uriString: String): Cursor {
         val resolver = applicationContext.contentResolver
-        resolver.query(Uri.parse(uriString), null, null, null, null)?.let { while (it.moveToNext()) { return it } }
+        val contentCursor = resolver.query(Uri.parse(uriString), null, null, null, null)
+        Log.d("NoLitter", "Cursor: ${contentCursor?.count}, ${contentCursor?.columnNames?.contentToString()}")
+        contentCursor?.let { while (it.moveToNext()) {
+            Log.d("NoLitter", "Cursor: ${it.getString(0)}, ${it.getString(1)}, ${it.getString(2)}")
+            return it
+        } }
         throw RuntimeException("Unable to fetch the content, url: $uriString")
     }
 }

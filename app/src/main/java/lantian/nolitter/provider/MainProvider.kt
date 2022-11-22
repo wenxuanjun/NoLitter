@@ -58,19 +58,32 @@ class MainProvider : ContentProvider() {
     private fun handleQuery(uri: Uri): Cursor {
         val packagePreference = runBlocking { getPackagePreference(uri.pathSegments[1]) }
         val isCustomizedPackages = runBlocking { isCustomizedPackages(uri.lastPathSegment!!) }
-        return generateCursor(runBlocking { CSVFormat.encodeToString(XposedPreference.serializer(), XposedPreference(
-            forcedMode = if (isCustomizedPackages) packagePreference.forcedMode else getPreference("forced_mode", false),
-            allowPublicDirs = if (isCustomizedPackages) packagePreference.allowPublicDirs else getPreference("allow_public_dirs", false),
-            additionalHooks = if (isCustomizedPackages) packagePreference.additionalHooks else getPreference("additional_hooks", false),
-            redirectStyle = if (isCustomizedPackages) packagePreference.redirectStyle else getPreference("redirect_style", "data"),
-            debugMode = runBlocking { getPreference("debug_mode", false) }
-        )) })
+        return generateCursor( runBlocking {
+            CSVFormat.encodeToString(XposedPreference.serializer(),
+            if (isCustomizedPackages) XposedPreference(
+                forcedMode = packagePreference.forcedMode,
+                allowPublicDirs = packagePreference.allowPublicDirs,
+                additionalHooks = packagePreference.additionalHooks,
+                redirectStyle = packagePreference.redirectStyle,
+                debugMode = runBlocking { getPreference("debug_mode", false) }
+            )
+            else XposedPreference(
+                forcedMode = getPreference("forced_mode", false),
+                allowPublicDirs = getPreference("allow_public_dirs", false),
+                additionalHooks = getPreference("additional_hooks", false),
+                redirectStyle = getPreference("redirect_style", "data"),
+                debugMode = runBlocking { getPreference("debug_mode", false) })
+            )
+        })
     }
 
     override fun onCreate(): Boolean {
-        val appContext = context?.applicationContext ?: throw IllegalStateException()
-        val hiltEntryPoint = EntryPointAccessors.fromApplication(appContext, ContentProviderEntryPoint::class.java)
-        dataStoreDataSource = hiltEntryPoint.dataStoreDataSource; databaseDataSource = hiltEntryPoint.databaseDataSource
+        val hiltEntryPoint = EntryPointAccessors.fromApplication(
+            context?.applicationContext ?: throw IllegalStateException(),
+            ContentProviderEntryPoint::class.java
+        )
+        dataStoreDataSource = hiltEntryPoint.dataStoreDataSource
+        databaseDataSource = hiltEntryPoint.databaseDataSource
         return true
     }
 
@@ -78,12 +91,22 @@ class MainProvider : ContentProvider() {
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
 
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>? ): Int = 0
+    override fun update(
+        uri: Uri, values: ContentValues?,
+        selection: String?, selectionArgs: Array<String>?
+    ): Int = 0
 
-    override fun getType(uri: Uri): String? = if (uriMatcher.match(uri) == URI_MAIN) "vnd.android.cursor.item/vnd.$AUTHORITY.main" else null
+    override fun getType(uri: Uri): String? = when (uriMatcher.match(uri)) {
+        URI_MAIN -> "vnd.android.cursor.item/vnd.lantian.nolitter.provider.main"
+        else -> null
+    }
 
     @ExperimentalSerializationApi
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor {
-        return if (uriMatcher.match(uri) == URI_MAIN) handleQuery(uri) else throw RuntimeException("[NoLitter] Uri can not be matched, with uri: ${uri.path}")
+    override fun query(
+        uri: Uri, projection: Array<String>?, selection: String?,
+        selectionArgs: Array<String>?, sortOrder: String?
+    ): Cursor = when (uriMatcher.match(uri)) {
+        URI_MAIN -> handleQuery(uri)
+        else -> throw RuntimeException("[NoLitter] Uri can not be matched, with uri: ${uri.path}")
     }
 }

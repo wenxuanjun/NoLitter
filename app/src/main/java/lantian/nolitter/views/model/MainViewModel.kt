@@ -6,7 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,15 +22,21 @@ import lantian.nolitter.R
 import lantian.nolitter.modules.DataStoreManager
 import javax.inject.Inject
 
+data class TopAppBarContent(
+    var title: String,
+    var titleCompose: @Composable () -> Unit = {},
+    var actions: @Composable RowScope.() -> Unit = {},
+    var isTitleCompose: Boolean = false
+)
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dataStore: DataStoreManager
 ) : ViewModel() {
 
-    var topAppBarTitle: MutableState<String> = mutableStateOf("NoLitter")
-    var topAppBarActions: MutableState<@Composable RowScope.() -> Unit> = mutableStateOf({})
-    var appTheme: MutableState<String> = mutableStateOf(runBlocking { dataStore.getPreference("theme", "default") })
+    var topAppBarContent by mutableStateOf(TopAppBarContent(title = context.getString(R.string.app_name)))
+    var appTheme by mutableStateOf(runBlocking { dataStore.getPreference("theme", "default") })
 
     fun <T> getPreference(key: String, defaultValue: T): T {
         var preferenceValue by mutableStateOf(defaultValue)
@@ -42,17 +51,20 @@ class MainViewModel @Inject constructor(
     fun intentToWebsite(link: String) {
         startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(link)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null)
     }
+
     fun hideAppIcon(value: Boolean) {
-        val componentState = if (value) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-        context.packageManager.setComponentEnabledSetting(ComponentName(context, MainActivity::class.java), componentState, PackageManager.DONT_KILL_APP)
+        context.packageManager.setComponentEnabledSetting(
+            ComponentName(context, MainActivity::class.java),
+            if (value) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
     }
-    fun getNavigationTitle(key: String?): String {
-        return when (key) {
-            "PreferenceGeneral" -> context.resources.getString(R.string.ui_settings_general)
-            "PreferenceInterface" -> context.resources.getString(R.string.ui_settings_interface)
-            "PreferenceMiscellaneous" -> context.resources.getString(R.string.ui_settings_miscellaneous)
-            "PreferenceSelectApps" -> context.resources.getString(R.string.ui_settings_packages)
-            else -> context.resources.getString(R.string.app_name)
-        }
+
+    fun getNavigationTitle(key: String?) = when (key) {
+        "PreferenceGeneral" -> context.resources.getString(R.string.ui_settings_general)
+        "PreferenceInterface" -> context.resources.getString(R.string.ui_settings_interface)
+        "PreferenceMiscellaneous" -> context.resources.getString(R.string.ui_settings_miscellaneous)
+        "PreferenceSelectApps" -> context.resources.getString(R.string.ui_settings_packages)
+        else -> context.resources.getString(R.string.app_name)
     }
 }

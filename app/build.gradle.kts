@@ -12,13 +12,13 @@ android {
     namespace = "lantian.nolitter"
     buildFeatures.compose = true
     kotlinOptions.jvmTarget = "11"
-    composeOptions.kotlinCompilerExtensionVersion = "1.3.0"
+    composeOptions.kotlinCompilerExtensionVersion = "1.4.0-alpha02"
 
     defaultConfig {
         applicationId = "lantian.nolitter"
         minSdk = 24
         targetSdk = 33
-        versionCode = 20
+        versionCode = 21
         versionName = "1.6.0"
         resourceConfigurations.addAll(listOf("en-rUS", "zh-rCN"))
     }
@@ -41,18 +41,18 @@ dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
 
     // Jetpack Compose
-    implementation("androidx.compose.ui:ui:1.3.0-beta02")
-    implementation("androidx.compose.ui:ui-tooling:1.3.0-beta02")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-beta02")
-    implementation("androidx.compose.animation:animation:1.3.0-beta02")
-    implementation("androidx.compose.material3:material3:1.0.0-beta02")
-    implementation("androidx.compose.material:material-icons-extended:1.3.0-beta02")
-    implementation("androidx.activity:activity-compose:1.6.0-rc02")
+    implementation("androidx.compose.ui:ui:1.4.0-alpha02")
+    implementation("androidx.compose.ui:ui-tooling:1.4.0-alpha02")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0-alpha02")
+    implementation("androidx.compose.animation:animation:1.4.0-alpha02")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha02")
+    implementation("androidx.compose.material:material-icons-extended:1.4.0-alpha02")
+    implementation("androidx.activity:activity-compose:1.6.1")
 
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha02")
-    implementation("androidx.navigation:navigation-compose:2.5.2")
-    implementation("com.google.accompanist:accompanist-drawablepainter:0.26.2-beta")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha03")
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.27.0")
 
     // Storage
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -60,10 +60,10 @@ dependencies {
     ksp("androidx.room:room-compiler:2.4.3")
 
     // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.43.2")
+    implementation("com.google.dagger:hilt-android:2.44")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    kapt("com.google.dagger:hilt-android-compiler:2.43.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
 
     // Serialization
-    implementation("app.softwork:kotlinx-serialization-csv:0.0.6")
+    implementation("app.softwork:kotlinx-serialization-csv:0.0.7")
 }

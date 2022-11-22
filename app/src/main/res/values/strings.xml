@@ -3,6 +3,7 @@
     <string name="xposed_description">Prevents apps from littering in storage.</string>
 
     <string name="ui_loading">Loading</string>
+    <string name="ui_search">Search...</string>
 
     <string name="ui_settings_general">General</string>
     <string name="ui_settings_general_description">Several global settings</string>
