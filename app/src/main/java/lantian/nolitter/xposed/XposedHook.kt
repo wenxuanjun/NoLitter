@@ -102,7 +102,7 @@ class XposedHook : IXposedHookLoadPackage {
                 if (!this@XposedHook::applicationContext.isInitialized) {
                     if (param.args[0] == null) return
                     applicationContext = param.args[0] as Context
-                    xposedPreference = initPreferences(lpparam.packageName)
+                    initXposedPreferences(lpparam.packageName)
                     try {
                         XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, hookFileWithString)
                         XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, String::class.java, hookFileWithStringAndString)
@@ -153,7 +153,10 @@ class XposedHook : IXposedHookLoadPackage {
         // Normal mode: Ignore if the first level directory exists in the root directory already
         val secondSlash = relativePath.indexOf("/", 1)
         val firstDirectoryPath = if (secondSlash == -1) relativePath else relativePath.substring(0, secondSlash)
-        val fileExists = File(URI.create("file://$storageDir$firstDirectoryPath")).exists()
+
+        // Because the URI may contain spaces, it needs to be escaped
+        val fileFullPath = "$storageDir/$firstDirectoryPath".replace(" ", "%20")
+        val fileExists = File(URI.create("file://$fileFullPath")).exists()
         return if (fileExists) oldPath else absoluteRedirectPath + relativePath
     }
 
@@ -171,21 +174,17 @@ class XposedHook : IXposedHookLoadPackage {
     }
 
     @ExperimentalSerializationApi
-    private fun initPreferences(packageName: String): XposedPreference {
-        val xposedPreference = resolveContent("content://$AUTHORITY/main/${packageName}").getString(0)
+    private fun initXposedPreferences(packageName: String) {
+        val xposedPreferenceCsv = resolveContent("content://$AUTHORITY/main/${packageName}").getString(0)
+        xposedPreference = CSVFormat.decodeFromString(XposedPreference.serializer(), xposedPreferenceCsv)
         printDebugLogs(packageName, "Initializing", "Preferences fetched: $xposedPreference")
-        return CSVFormat.decodeFromString(XposedPreference.serializer(), xposedPreference)
     }
 
     @SuppressLint("Recycle")
     private fun resolveContent(uriString: String): Cursor {
         val resolver = applicationContext.contentResolver
         val contentCursor = resolver.query(Uri.parse(uriString), null, null, null, null)
-        Log.d("NoLitter", "Cursor: ${contentCursor?.count}, ${contentCursor?.columnNames?.contentToString()}")
-        contentCursor?.let { while (it.moveToNext()) {
-            Log.d("NoLitter", "Cursor: ${it.getString(0)}, ${it.getString(1)}, ${it.getString(2)}")
-            return it
-        } }
+        contentCursor?.let { while (it.moveToNext()) { return it } }
         throw RuntimeException("Unable to fetch the content, url: $uriString")
     }
 }

@@ -6,6 +6,7 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
+import android.util.Log
 import app.softwork.serialization.csv.CSVFormat
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -38,7 +39,7 @@ class MainProvider : ContentProvider() {
     init { uriMatcher.addURI(AUTHORITY, "main/*", URI_MAIN) }
 
     private fun generateCursor(value: String): Cursor {
-        return MatrixCursor(arrayOf("value"), 1).apply { addRow(arrayOf<Any?>(value)) }
+        return MatrixCursor(arrayOf("value"), 1).apply { addRow(arrayOf(value)) }
     }
 
     private suspend fun <T> getPreference(key: String, defaultValue: T): T {
@@ -58,23 +59,24 @@ class MainProvider : ContentProvider() {
     private fun handleContentQuery(uri: Uri): Cursor {
         val packagePreference = runBlocking { getPackagePreference(uri.pathSegments[1]) }
         val isCustomizedPackages = runBlocking { isCustomizedPackages(uri.lastPathSegment!!) }
-        return generateCursor( runBlocking {
+        val xposedPreference = runBlocking {
             CSVFormat.encodeToString(XposedPreference.serializer(),
-            if (isCustomizedPackages) XposedPreference(
-                forcedMode = packagePreference.forcedMode,
-                allowPublicDirs = packagePreference.allowPublicDirs,
-                additionalHooks = packagePreference.additionalHooks,
-                redirectStyle = packagePreference.redirectStyle,
-                debugMode = runBlocking { getPreference("debug_mode", false) }
+                if (isCustomizedPackages) XposedPreference(
+                    forcedMode = packagePreference.forcedMode,
+                    allowPublicDirs = packagePreference.allowPublicDirs,
+                    additionalHooks = packagePreference.additionalHooks,
+                    redirectStyle = packagePreference.redirectStyle,
+                    debugMode = runBlocking { getPreference("debug_mode", false) }
+                )
+                else XposedPreference(
+                    forcedMode = getPreference("forced_mode", false),
+                    allowPublicDirs = getPreference("allow_public_dirs", false),
+                    additionalHooks = getPreference("additional_hooks", false),
+                    redirectStyle = getPreference("redirect_style", "data"),
+                    debugMode = runBlocking { getPreference("debug_mode", false) })
             )
-            else XposedPreference(
-                forcedMode = getPreference("forced_mode", false),
-                allowPublicDirs = getPreference("allow_public_dirs", false),
-                additionalHooks = getPreference("additional_hooks", false),
-                redirectStyle = getPreference("redirect_style", "data"),
-                debugMode = runBlocking { getPreference("debug_mode", false) })
-            )
-        })
+        }
+        return generateCursor(xposedPreference)
     }
 
     override fun onCreate(): Boolean {
