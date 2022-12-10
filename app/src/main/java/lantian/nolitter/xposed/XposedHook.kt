@@ -15,7 +15,6 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import lantian.nolitter.BuildConfig
 import lantian.nolitter.Constants
 import java.io.File
 import java.net.URI
@@ -93,7 +92,7 @@ class XposedHook : IXposedHookLoadPackage {
         }
 
         // Ignore if it's the NoLitter itself
-        if (lpparam.packageName == BuildConfig.APPLICATION_ID) return
+        if (lpparam.packageName == "lantian.nolitter") return
 
         // Get the context of package hooked which is used in resolving content
         XposedHelpers.findAndHookMethod(Application::class.java, "attach", Context::class.java, object : XC_MethodHook() {
@@ -101,6 +100,7 @@ class XposedHook : IXposedHookLoadPackage {
             override fun beforeHookedMethod(param: MethodHookParam) {
                 // This hook may be called more than one time
                 if (!this@XposedHook::applicationContext.isInitialized) {
+                    if (param.args[0] == null) return
                     applicationContext = param.args[0] as Context
                     xposedPreference = initPreferences(lpparam.packageName)
                     try {
@@ -146,7 +146,8 @@ class XposedHook : IXposedHookLoadPackage {
 
         // If it's in the public directory
         for (publicDir in Constants.androidPublicDirs.split(":")) {
-            if (relativePath.startsWith(publicDir)) return if (xposedPreference.allowPublicDirs) oldPath else absoluteRedirectPath + relativePath
+            if (relativePath.startsWith(publicDir))
+                return if (xposedPreference.allowPublicDirs) oldPath else absoluteRedirectPath + relativePath
         }
 
         // Normal mode: Ignore if the first level directory exists in the root directory already
@@ -158,7 +159,8 @@ class XposedHook : IXposedHookLoadPackage {
 
     // Get the storage directory of the path, ignore if matches none of them (e.g. /data)
     private fun getStorageDir(oldPath: String): String? {
-        for (storageDir in Constants.defaultStorageDirs.split(":")) if (oldPath.startsWith(storageDir)) return storageDir
+        for (storageDir in Constants.defaultStorageDirs.split(":"))
+            if (oldPath.startsWith(storageDir)) return storageDir
         return null
     }
 

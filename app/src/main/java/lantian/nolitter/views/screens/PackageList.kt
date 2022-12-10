@@ -10,8 +10,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -29,16 +36,11 @@ import lantian.nolitter.views.widgets.PreferenceClickableCheckbox
 import lantian.nolitter.views.widgets.SelectAppsToolbarAction
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 fun PackageList(
     navController: NavController, viewModel: MainViewModel,
     packageViewModel: PackageViewModel
 ) {
-    // Clear the action of the app bar when navigating out
-    DisposableEffect(navController) { onDispose {
-        viewModel.topAppBarContent = viewModel.topAppBarContent.copy(actions = {}, isTitleCompose = false)
-    } }
-
     // The packageInfo will be empty until it is loaded
     if (packageViewModel.packageInfo.isEmpty()) { LoadingScreen() } else {
 
@@ -50,7 +52,7 @@ fun PackageList(
         var searchEnabled by remember { mutableStateOf(false) }
         val (searchText, setSearchText) = remember { mutableStateOf("") }
         val disableSearch = {
-            searchEnabled = false
+            searchEnabled = false; setSearchText("")
             viewModel.topAppBarContent = viewModel.topAppBarContent.copy(actions = {}, isTitleCompose = false)
         }
 
@@ -70,7 +72,7 @@ fun PackageList(
                                     value = searchText,
                                     onValueChange = setSearchText,
                                     onClose = disableSearch,
-                                    placeholder = stringResource(R.string.ui_search)
+                                    placeholder = { Text(stringResource(R.string.ui_search)) }
                                 )
                             },
                             isTitleCompose = true
@@ -79,6 +81,9 @@ fun PackageList(
                 )
             }
         )
+
+        // Remove the search text field when navigating out
+        DisposableEffect(packageViewModel) { onDispose { disableSearch() } }
 
         LazyColumn {
             val filteredItems = packageViewModel.packageInfo

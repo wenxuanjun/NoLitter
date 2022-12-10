@@ -45,7 +45,7 @@ fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
 @Composable
 fun TopAppBarTitle(topAppBarContent: TopAppBarContent) {
     if (topAppBarContent.isTitleCompose) topAppBarContent.titleCompose()
-    else Text(text = topAppBarContent.title)
+    else Text(topAppBarContent.title)
 }
 
 @Composable

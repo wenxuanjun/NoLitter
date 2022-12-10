@@ -55,7 +55,7 @@ class MainProvider : ContentProvider() {
     }
 
     @ExperimentalSerializationApi
-    private fun handleQuery(uri: Uri): Cursor {
+    private fun handleContentQuery(uri: Uri): Cursor {
         val packagePreference = runBlocking { getPackagePreference(uri.pathSegments[1]) }
         val isCustomizedPackages = runBlocking { isCustomizedPackages(uri.lastPathSegment!!) }
         return generateCursor( runBlocking {
@@ -87,26 +87,22 @@ class MainProvider : ContentProvider() {
         return true
     }
 
-    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
-
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
-
-    override fun update(
-        uri: Uri, values: ContentValues?,
-        selection: String?, selectionArgs: Array<String>?
-    ): Int = 0
-
-    override fun getType(uri: Uri): String? = when (uriMatcher.match(uri)) {
+    override fun getType(uri: Uri): String = when (uriMatcher.match(uri)) {
         URI_MAIN -> "vnd.android.cursor.item/vnd.lantian.nolitter.provider.main"
-        else -> null
+        else -> throw RuntimeException("[NoLitter] Content type can not be matched, with uri: ${uri.path}")
     }
 
     @ExperimentalSerializationApi
     override fun query(
-        uri: Uri, projection: Array<String>?, selection: String?,
-        selectionArgs: Array<String>?, sortOrder: String?
+        uri: Uri, projection: Array<String>?,
+        selection: String?, selectionArgs: Array<String>?, sortOrder: String?
     ): Cursor = when (uriMatcher.match(uri)) {
-        URI_MAIN -> handleQuery(uri)
-        else -> throw RuntimeException("[NoLitter] Uri can not be matched, with uri: ${uri.path}")
+        URI_MAIN -> handleContentQuery(uri)
+        else -> throw RuntimeException("[NoLitter] Content uri can not be matched, with uri: ${uri.path}")
     }
+
+    // These methods are not used, but must be implemented.
+    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int = 0
 }

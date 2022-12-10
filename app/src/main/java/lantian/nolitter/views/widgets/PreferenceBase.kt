@@ -24,7 +24,7 @@ fun PreferenceBase(
     PreferenceListItem(
         text = { Text(text) }, icon = icon,
         trailing = trailing, modifier = modifier,
-        secondaryText = if (secondaryText != null) {{ Text(secondaryText, Modifier.alpha(0.67f)) }} else null
+        secondaryText = if (secondaryText != null) {{ Text(text = secondaryText, modifier = Modifier.alpha(0.67f)) }} else null
     )
 }
 

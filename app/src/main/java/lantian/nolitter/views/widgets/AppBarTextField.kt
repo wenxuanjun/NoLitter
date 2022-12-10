@@ -2,7 +2,6 @@ package lantian.nolitter.views.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.BasicTextField
@@ -17,20 +16,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterial3Api
 fun AppBarTextField(
     value: String,
     onValueChange: (String) -> Unit,
     onClose: () -> Unit,
-    placeholder: String
+    placeholder: @Composable (() -> Unit)? = null
 ) {
     val textStyle = LocalTextStyle.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -46,34 +45,37 @@ fun AppBarTextField(
     val focusRequester = FocusRequester()
     SideEffect { focusRequester.requestFocus() }
 
-    // Set the correct cursor position when this composable is first initialized
+    // The mutable state of the input text value
     var inputTextValue by remember { mutableStateOf(value) }
 
+    // Combine two thing into one
+    val trueOnValueChange: (String) -> Unit = { inputTextValue = it; onValueChange(it) }
+
     CompositionLocalProvider(LocalTextSelectionColors provides LocalTextSelectionColors.current) {
+        @OptIn(ExperimentalMaterial3Api::class)
         BasicTextField(
             value = inputTextValue,
-            onValueChange = { inputTextValue = it; onValueChange(it) },
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(32.dp)
                 .focusRequester(focusRequester),
+            onValueChange = trueOnValueChange,
             textStyle = mergedTextStyle,
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            visualTransformation = VisualTransformation.None,
             keyboardOptions = KeyboardOptions.Default,
             keyboardActions = KeyboardActions.Default,
             interactionSource = interactionSource,
             singleLine = true,
             decorationBox = { innerTextField ->
                 TextFieldDefaults.TextFieldDecorationBox(
-                    value = value,
+                    value = inputTextValue,
                     visualTransformation = VisualTransformation.None,
                     innerTextField = innerTextField,
-                    placeholder = { Text(text = placeholder) },
+                    placeholder = placeholder,
                     singleLine = true,
                     enabled = true,
                     interactionSource = interactionSource,
                     colors = colors,
-                    contentPadding = PaddingValues(bottom = 4.dp),
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.Close,

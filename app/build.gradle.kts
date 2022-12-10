@@ -41,18 +41,18 @@ dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
 
     // Jetpack Compose
-    implementation("androidx.compose.ui:ui:1.4.0-alpha02")
-    implementation("androidx.compose.ui:ui-tooling:1.4.0-alpha02")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0-alpha02")
-    implementation("androidx.compose.animation:animation:1.4.0-alpha02")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha02")
-    implementation("androidx.compose.material:material-icons-extended:1.4.0-alpha02")
+    implementation("androidx.compose.ui:ui:1.4.0-alpha03")
+    implementation("androidx.compose.ui:ui-tooling:1.4.0-alpha03")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0-alpha03")
+    implementation("androidx.compose.animation:animation:1.4.0-alpha03")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha03")
+    implementation("androidx.compose.material:material-icons-extended:1.4.0-alpha03")
     implementation("androidx.activity:activity-compose:1.6.1")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha03")
     implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation("com.google.accompanist:accompanist-drawablepainter:0.27.0")
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.28.0")
 
     // Storage
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -60,10 +60,10 @@ dependencies {
     ksp("androidx.room:room-compiler:2.4.3")
 
     // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
+    implementation("com.google.dagger:hilt-android:2.44.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44.2")
 
     // Serialization
-    implementation("app.softwork:kotlinx-serialization-csv:0.0.7")
+    implementation("app.softwork:kotlinx-serialization-csv:0.0.8")
 }
