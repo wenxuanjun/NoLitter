@@ -6,7 +6,6 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
-import android.util.Log
 import app.softwork.serialization.csv.CSVFormat
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn

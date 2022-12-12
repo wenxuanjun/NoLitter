@@ -1,14 +1,16 @@
 package lantian.nolitter.views
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
-import lantian.nolitter.views.model.TopAppBarContent
 import lantian.nolitter.views.theme.ApplicationTheme
 
 @Composable
@@ -21,7 +23,8 @@ fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
         DisposableEffect(navController) {
             val listener = NavController.OnDestinationChangedListener { controller, destination, _ ->
                 viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-                    title = viewModel.getNavigationTitle(destination.route)
+                    title = { Text(viewModel.getNavigationTitle(LocalContext.current, destination.route)) },
+                    actions = {}
                 )
                 canNavigationPop = controller.previousBackStackEntry != null
             }
@@ -32,7 +35,7 @@ fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { TopAppBarTitle(viewModel.topAppBarContent) },
+                    title = viewModel.topAppBarContent.title,
                     navigationIcon = { TopAppBarNavigationIcon(canNavigationPop, navController) },
                     actions = viewModel.topAppBarContent.actions
                 )
@@ -40,12 +43,6 @@ fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
             content = { innerPadding -> Router(innerPadding, viewModel, navController) }
         )
     }
-}
-
-@Composable
-fun TopAppBarTitle(topAppBarContent: TopAppBarContent) {
-    if (topAppBarContent.isTitleCompose) topAppBarContent.titleCompose()
-    else Text(topAppBarContent.title)
 }
 
 @Composable

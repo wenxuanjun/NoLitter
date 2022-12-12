@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
@@ -20,6 +21,7 @@ fun Interface(viewModel: MainViewModel) {
             Pair("light", stringResource(R.string.ui_settings_theme_light)),
             Pair("dark", stringResource(R.string.ui_settings_theme_dark))
         )
+        val context = LocalContext.current
         val selectedThemeKey = viewModel.getPreference("theme", "default")
         var selectedTheme by remember { mutableStateOf(themeOptions[selectedThemeKey]) }
         PreferenceList(
@@ -39,7 +41,7 @@ fun Interface(viewModel: MainViewModel) {
             defaultValue = viewModel.getPreference("hide_icon", false),
             onChange = {
                 viewModel.setPreference("hide_icon", it)
-                viewModel.hideAppIcon(it)
+                viewModel.hideAppIcon(context, it)
             }
         )
     }

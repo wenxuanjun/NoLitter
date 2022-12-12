@@ -6,7 +6,6 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import app.softwork.serialization.csv.CSVFormat
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook

@@ -16,20 +16,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 @ExperimentalMaterial3Api
 fun AppBarTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    onClose: () -> Unit,
-    placeholder: @Composable (() -> Unit)? = null
+    placeholder: @Composable (() -> Unit)? = null,
+    onClose: () -> Unit
 ) {
     val textStyle = LocalTextStyle.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -61,6 +61,7 @@ fun AppBarTextField(
                 .focusRequester(focusRequester),
             onValueChange = trueOnValueChange,
             textStyle = mergedTextStyle,
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             visualTransformation = VisualTransformation.None,
             keyboardOptions = KeyboardOptions.Default,
             keyboardActions = KeyboardActions.Default,

@@ -14,7 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,39 +51,38 @@ fun PackageList(
         // Initialize the search text field
         var searchEnabled by remember { mutableStateOf(false) }
         val (searchText, setSearchText) = remember { mutableStateOf("") }
-        val disableSearch = {
-            searchEnabled = false; setSearchText("")
-            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(actions = {}, isTitleCompose = false)
-        }
 
         // Set the actions of the app bar
-        viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-            actions = {
-                PackageListTopBarActions(
-                    packageViewModel = packageViewModel,
-                    processPreference = processPreference,
-                    onProcessPreferenceChange = setProcessPreference,
-                    searchEnabled = searchEnabled,
-                    onSearchIconClick = {
-                        searchEnabled = true
-                        viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-                            titleCompose = {
-                                AppBarTextField(
-                                    value = searchText,
-                                    onValueChange = setSearchText,
-                                    onClose = disableSearch,
-                                    placeholder = { Text(stringResource(R.string.ui_search)) }
-                                )
-                            },
-                            isTitleCompose = true
-                        )
-                    }
-                )
-            }
-        )
-
-        // Remove the search text field when navigating out
-        DisposableEffect(packageViewModel) { onDispose { disableSearch() } }
+        LaunchedEffect(true) {
+            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+                actions = {
+                    PackageListTopBarActions(
+                        packageViewModel = packageViewModel,
+                        processPreference = processPreference,
+                        onProcessPreferenceChange = setProcessPreference,
+                        searchEnabled = searchEnabled,
+                        onSearchIconClick = {
+                            searchEnabled = true
+                            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+                                title = {
+                                    AppBarTextField(
+                                        value = searchText,
+                                        onValueChange = setSearchText,
+                                        placeholder = { Text(stringResource(R.string.ui_search)) },
+                                        onClose = {
+                                            searchEnabled = false; setSearchText("")
+                                            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+                                                title = { Text(stringResource(R.string.app_name)) }
+                                            )
+                                        }
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
+            )
+        }
 
         LazyColumn {
             val filteredItems = packageViewModel.packageInfo
@@ -134,7 +133,9 @@ fun PackageListTopBarActions(
         Icon(
             imageVector = Icons.Default.Search,
             contentDescription = null,
-            modifier = Modifier.padding(8.dp).clickable { onSearchIconClick() }
+            modifier = Modifier
+                .padding(8.dp)
+                .clickable { onSearchIconClick() }
         )
     }
     SelectAppsToolbarAction(
