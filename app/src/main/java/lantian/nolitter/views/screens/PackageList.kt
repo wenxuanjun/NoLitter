@@ -48,11 +48,31 @@ fun PackageList(
         val defaultProcessPreference = packageViewModel.getDefaultProcessPreference()
         val (processPreference, setProcessPreference) = remember { mutableStateOf(defaultProcessPreference) }
 
+        // Need to remember the title so that it can be restored when the search is closed
+        val rememberedTitle = remember { viewModel.topAppBarContent.title }
+
         // Initialize the search text field
         var searchEnabled by remember { mutableStateOf(false) }
         val (searchText, setSearchText) = remember { mutableStateOf("") }
+        val onSearchClosed = {
+            searchEnabled = false; setSearchText("")
+            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(title = rememberedTitle)
+        }
 
-        // Set the actions of the app bar
+        val onSearchIconClick = {
+            searchEnabled = true
+            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+                title = {
+                    AppBarTextField(
+                        value = searchText,
+                        onValueChange = setSearchText,
+                        placeholder = { Text(stringResource(R.string.ui_search)) },
+                        onClose = onSearchClosed
+                    )
+                }
+            )
+        }
+
         LaunchedEffect(true) {
             viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
                 actions = {
@@ -61,24 +81,7 @@ fun PackageList(
                         processPreference = processPreference,
                         onProcessPreferenceChange = setProcessPreference,
                         searchEnabled = searchEnabled,
-                        onSearchIconClick = {
-                            searchEnabled = true
-                            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-                                title = {
-                                    AppBarTextField(
-                                        value = searchText,
-                                        onValueChange = setSearchText,
-                                        placeholder = { Text(stringResource(R.string.ui_search)) },
-                                        onClose = {
-                                            searchEnabled = false; setSearchText("")
-                                            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-                                                title = { Text(stringResource(R.string.app_name)) }
-                                            )
-                                        }
-                                    )
-                                }
-                            )
-                        }
+                        onSearchIconClick = onSearchIconClick
                     )
                 }
             )
