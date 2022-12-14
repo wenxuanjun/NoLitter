@@ -18,7 +18,7 @@ android {
         applicationId = "lantian.nolitter"
         minSdk = 24
         targetSdk = 33
-        versionCode = 23
+        versionCode = 24
         versionName = "1.6.0"
         resourceConfigurations.addAll(listOf("en-rUS", "zh-rCN"))
     }

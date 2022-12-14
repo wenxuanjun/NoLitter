@@ -32,6 +32,7 @@ class XposedHook : IXposedHookLoadPackage {
     // The context of the application that hooked
     private lateinit var applicationContext: Context
     private lateinit var xposedPreference: XposedPreference
+    private lateinit var redirectPath: String
 
     @Throws(Throwable::class)
     override fun handleLoadPackage(lpparam: LoadPackageParam) {
@@ -118,27 +119,27 @@ class XposedHook : IXposedHookLoadPackage {
         })
     }
 
-    @SuppressLint("SdCardPath")
     private fun getReplacedPath(oldPath: String, storageDir: String, packageName: String): String {
 
         // Where the basic redirect path should be
-        val absoluteRedirectPath = when (xposedPreference.redirectStyle) {
-            "data" -> "$storageDir/Android/data/$packageName/sdcard"
-            "cache" -> "$storageDir/Android/data/$packageName/cache/sdcard"
-            "external" -> "$storageDir/Android/files/$packageName"
-            else -> throw IllegalArgumentException("Invalid redirect style")
-        }
+        val absoluteRedirectPath = storageDir + redirectPath
 
         // If it's just the root directory
         if (oldPath == storageDir || oldPath == "$storageDir/") {
             return if (xposedPreference.forcedMode) absoluteRedirectPath else storageDir
         }
 
+        // The relative path in the storage directory
+        val relativePath = oldPath.substring(storageDir.length)
+
+        // Ignore if it's in its private directory
+        if (relativePath.startsWith("/Android/data/$packageName") || relativePath.startsWith("/Android/obb/$packageName")) return oldPath
+
         // Ignore if it's already redirected
         if (oldPath.startsWith(absoluteRedirectPath)) return oldPath
 
-        // The relative path in the storage directory
-        val relativePath = oldPath.substring(storageDir.length)
+        // Although allow access to existing directory, but littering in 'Android' is still not allowed
+        if (relativePath.startsWith("/Android")) return oldPath
 
         // Force mode: Redirect whether or not the directory exists
         if (xposedPreference.forcedMode) return absoluteRedirectPath + relativePath
@@ -176,7 +177,18 @@ class XposedHook : IXposedHookLoadPackage {
     private fun initXposedPreferences(packageName: String) {
         val xposedPreferenceCsv = resolveContent("content://$AUTHORITY/main/${packageName}").getString(0)
         xposedPreference = CSVFormat.decodeFromString(XposedPreference.serializer(), xposedPreferenceCsv)
+        initRedirectPath()
         printDebugLogs(packageName, "Initializing", "Preferences fetched: $xposedPreference")
+    }
+
+    @SuppressLint("SdCardPath")
+    private fun initRedirectPath() {
+        redirectPath = when (xposedPreference.redirectStyle) {
+            "data" -> "/Android/data/${applicationContext.packageName}/sdcard"
+            "cache" -> "/Android/data/${applicationContext.packageName}/cache/sdcard"
+            "external" -> "/Android/files/${applicationContext.packageName}"
+            else -> throw IllegalArgumentException("Invalid redirect style")
+        }
     }
 
     @SuppressLint("Recycle")
@@ -185,5 +197,9 @@ class XposedHook : IXposedHookLoadPackage {
         val contentCursor = resolver.query(Uri.parse(uriString), null, null, null, null)
         contentCursor?.let { while (it.moveToNext()) { return it } }
         throw RuntimeException("Unable to fetch the content, url: $uriString")
+    }
+
+    private fun setPackageInstaller() {
+        /* TODO: Find some way to set the package installer of current app to NoLitter. */
     }
 }
