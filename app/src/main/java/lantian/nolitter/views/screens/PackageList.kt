@@ -14,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +26,6 @@ import androidx.navigation.NavController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import lantian.nolitter.R
 import lantian.nolitter.repository.InstalledPackageInfo
-import lantian.nolitter.repository.ProcessPackageInfoPreference
 import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.model.PackageViewModel
 import lantian.nolitter.views.widgets.AppBarTextField
@@ -73,24 +71,32 @@ fun PackageList(
             )
         }
 
-        LaunchedEffect(true) {
-            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-                actions = {
-                    PackageListTopBarActions(
-                        packageViewModel = packageViewModel,
-                        processPreference = processPreference,
-                        onProcessPreferenceChange = setProcessPreference,
-                        searchEnabled = searchEnabled,
-                        onSearchIconClick = onSearchIconClick
+        // Initialize the toolbar actions
+        viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+            actions = {
+                if (!searchEnabled) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable { onSearchIconClick() }
                     )
                 }
-            )
-        }
+                SelectAppsToolbarAction(
+                    packageViewModel = packageViewModel,
+                    processPreference = processPreference,
+                    onProcessPreferenceChange = setProcessPreference
+                )
+            }
+        )
 
         LazyColumn {
             val filteredItems = packageViewModel.packageInfo
                 .filter {
-                    if (searchEnabled) { it.appName.contains(searchText, true) } else true
+                    if (searchEnabled) {
+                        it.appName.contains(searchText, true) or it.packageName.contains(searchText, true)
+                    } else { true }
                 }
                 .filter {
                     (!processPreference.hideSystem or !it.isSystem) and (!processPreference.hideModule or !it.isModule)
@@ -122,40 +128,4 @@ fun PackageList(
             }
         }
     }
-}
-
-@Composable
-fun PackageListTopBarActions(
-    packageViewModel: PackageViewModel,
-    processPreference: ProcessPackageInfoPreference,
-    onProcessPreferenceChange: (ProcessPackageInfoPreference) -> Unit,
-    searchEnabled: Boolean,
-    onSearchIconClick: () -> Unit
-) {
-    if (!searchEnabled) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(8.dp)
-                .clickable { onSearchIconClick() }
-        )
-    }
-    SelectAppsToolbarAction(
-        hideSystem = processPreference.hideSystem,
-        hideModule = processPreference.hideModule,
-        sortedBy = processPreference.sortedBy,
-        onChangeHideSystem = {
-            onProcessPreferenceChange(processPreference.copy(hideSystem = it))
-            packageViewModel.setPreference("select_hideSystem", it)
-        },
-        onChangeHideModule = {
-            onProcessPreferenceChange(processPreference.copy(hideModule = it))
-            packageViewModel.setPreference("select_hideModule", it)
-        },
-        onChangeSortedBy = {
-            onProcessPreferenceChange(processPreference.copy(sortedBy = it))
-            packageViewModel.setPreference("select_sortedBy", it)
-        }
-    )
 }

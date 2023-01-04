@@ -22,11 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import lantian.nolitter.R
+import lantian.nolitter.repository.ProcessPackageInfoPreference
+import lantian.nolitter.views.model.PackageViewModel
 
 @Composable
 fun SelectAppsToolbarAction(
-    hideSystem: Boolean, hideModule: Boolean, sortedBy: String,
-    onChangeHideSystem: (Boolean) -> Unit, onChangeHideModule: (Boolean) -> Unit, onChangeSortedBy: (String) -> Unit
+    packageViewModel: PackageViewModel,
+    processPreference: ProcessPackageInfoPreference,
+    onProcessPreferenceChange: (ProcessPackageInfoPreference) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
     IconButton(onClick = { showMenu = !showMenu }) {
@@ -36,29 +39,41 @@ fun SelectAppsToolbarAction(
         PreferenceGroup(stringResource(R.string.ui_settings_packageList_hide)) {
             CheckBoxDropdownMenuItem(
                 text = stringResource(R.string.ui_settings_packageList_hide_system),
-                checked = hideSystem,
+                checked = processPreference.hideSystem,
                 onShowMenuChange = { showMenu = false },
-                onCheckedChange = { onChangeHideSystem(!hideSystem) }
+                onCheckedChange = {
+                    onProcessPreferenceChange(processPreference.copy(hideSystem = it))
+                    packageViewModel.setPreference("select_hideSystem", it)
+                }
             )
             CheckBoxDropdownMenuItem(
                 text = stringResource(R.string.ui_settings_packageList_hide_module),
-                checked = hideModule,
+                checked = processPreference.hideModule,
                 onShowMenuChange = { showMenu = false },
-                onCheckedChange = { onChangeHideModule(!hideModule) }
+                onCheckedChange = {
+                    onProcessPreferenceChange(processPreference.copy(hideModule = it))
+                    packageViewModel.setPreference("select_hideModule", it)
+                }
             )
         }
         PreferenceGroup(stringResource(R.string.ui_settings_packageList_sort)) {
             RadioButtonDropdownMenuItem(
                 text = stringResource(R.string.ui_settings_packageList_sort_appName),
-                selected = (sortedBy == "app_name"),
+                selected = (processPreference.sortedBy == "app_name"),
                 onShowMenuChange = { showMenu = false },
-                onSelectedChange = { onChangeSortedBy("app_name") }
+                onSelectedChange = {
+                    onProcessPreferenceChange(processPreference.copy(sortedBy = "app_name"))
+                    packageViewModel.setPreference("select_sortedBy", "app_name")
+                }
             )
             RadioButtonDropdownMenuItem(
                 text = stringResource(R.string.ui_settings_packageList_sort_firstInstallTime),
-                selected = (sortedBy == "first_install_time"),
+                selected = (processPreference.sortedBy == "first_install_time"),
                 onShowMenuChange = { showMenu = false },
-                onSelectedChange = { onChangeSortedBy("first_install_time") }
+                onSelectedChange = {
+                    onProcessPreferenceChange(processPreference.copy(sortedBy = "first_install_time"))
+                    packageViewModel.setPreference("select_sortedBy", "first_install_time")
+                }
             )
         }
     }
@@ -67,12 +82,12 @@ fun SelectAppsToolbarAction(
 @Composable
 fun CheckBoxDropdownMenuItem(
     text: String, checked: Boolean,
-    onShowMenuChange: (Boolean) -> Unit, onCheckedChange: () -> Unit,
+    onShowMenuChange: () -> Unit, onCheckedChange: (Boolean) -> Unit,
 ) {
     DropdownMenuItem(
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier.width(200.dp),
-        onClick = { onShowMenuChange(false); onCheckedChange() },
+        onClick = { onShowMenuChange(); onCheckedChange(!checked) },
         trailingIcon = { Checkbox(checked = checked, onCheckedChange = null, modifier = Modifier.padding(end = 16.dp)) },
         text = { Text(text = text, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 16.dp)) }
     )
@@ -81,12 +96,12 @@ fun CheckBoxDropdownMenuItem(
 @Composable
 fun RadioButtonDropdownMenuItem(
     text: String, selected: Boolean,
-    onShowMenuChange: (Boolean) -> Unit, onSelectedChange: () -> Unit,
+    onShowMenuChange: () -> Unit, onSelectedChange: () -> Unit,
 ) {
     DropdownMenuItem(
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier.width(200.dp),
-        onClick = { onShowMenuChange(false); onSelectedChange() },
+        onClick = { onShowMenuChange(); onSelectedChange() },
         trailingIcon = { RadioButton(selected = selected, onClick = null, modifier = Modifier.padding(end = 16.dp)) },
         text = { Text(text = text, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 16.dp)) }
     )

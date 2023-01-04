@@ -1,6 +1,5 @@
 package lantian.nolitter.views
 
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -9,7 +8,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.theme.ApplicationTheme
 
@@ -17,15 +15,17 @@ import lantian.nolitter.views.theme.ApplicationTheme
 @OptIn(ExperimentalMaterial3Api::class)
 fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
     ApplicationTheme(viewModel.appTheme) {
+        val localContext = LocalContext.current
         val navController = rememberNavController()
         var canNavigationPop by remember { mutableStateOf(false) }
 
         DisposableEffect(navController) {
             val listener = NavController.OnDestinationChangedListener { controller, destination, _ ->
-                viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-                    title = { Text(viewModel.getNavigationTitle(LocalContext.current, destination.route)) },
-                    actions = {}
-                )
+                viewModel.getNavigationTitle(localContext, destination.route)?.let {
+                    viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+                        title = { Text(it) }, actions = {}
+                    )
+                }
                 canNavigationPop = controller.previousBackStackEntry != null
             }
             navController.addOnDestinationChangedListener(listener)

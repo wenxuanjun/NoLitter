@@ -1,11 +1,11 @@
 package lantian.nolitter.views.model
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lantian.nolitter.MainActivity
@@ -56,11 +55,16 @@ class MainViewModel @Inject constructor(private val dataStore: DataStoreManager)
         )
     }
 
-    fun getNavigationTitle(context: Context, key: String?): String = when (key) {
-        "general" -> context.resources.getString(R.string.ui_settings_general)
-        "interface" -> context.resources.getString(R.string.ui_settings_interface)
-        "miscellaneous" -> context.resources.getString(R.string.ui_settings_miscellaneous)
-        "packages" -> context.resources.getString(R.string.ui_settings_packages)
-        else -> context.resources.getString(R.string.app_name)
+    @SuppressLint("DiscouragedApi")
+    fun getNavigationTitle(context: Context, key: String?): String? {
+        data class TitleItem(val name: String, val id: Int)
+        val navigationTitleList = listOf(
+            TitleItem("home", R.string.app_name),
+            TitleItem("general", R.string.ui_settings_general),
+            TitleItem("interface", R.string.ui_settings_interface),
+            TitleItem("miscellaneous", R.string.ui_settings_miscellaneous),
+            TitleItem("packages", R.string.ui_settings_packages)
+        )
+        return navigationTitleList.find { it.name == key }?.let { context.getString(it.id) }
     }
 }
