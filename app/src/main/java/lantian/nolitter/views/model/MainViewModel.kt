@@ -1,6 +1,5 @@
 package lantian.nolitter.views.model
 
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -35,7 +34,9 @@ class MainViewModel @Inject constructor(private val dataStore: DataStoreManager)
 
     fun <T> getPreference(key: String, defaultValue: T): T {
         var preferenceValue by mutableStateOf(defaultValue)
-        viewModelScope.launch { preferenceValue = dataStore.getPreference(key, defaultValue) }
+        viewModelScope.launch {
+            preferenceValue = dataStore.getPreference(key, defaultValue)
+        }
         return preferenceValue
     }
 
@@ -43,28 +44,32 @@ class MainViewModel @Inject constructor(private val dataStore: DataStoreManager)
         viewModelScope.launch { dataStore.setPreference(key, value) }
     }
 
-    fun intentToWebsite(context: Context, link: String) {
-        startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(link)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null)
-    }
+    companion object {
+        @JvmStatic
+        fun intentToWebsite(context: Context, link: String) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(context, intent, null)
+        }
 
-    fun hideAppIcon(context: Context, value: Boolean) {
-        context.packageManager.setComponentEnabledSetting(
-            ComponentName(context, MainActivity::class.java),
-            if (value) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
-    }
+        @JvmStatic
+        fun hideAppIcon(context: Context, value: Boolean) {
+            context.packageManager.setComponentEnabledSetting(
+                ComponentName(context, MainActivity::class.java),
+                if (value) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
+        }
 
-    @SuppressLint("DiscouragedApi")
-    fun getNavigationTitle(context: Context, key: String?): String? {
-        data class TitleItem(val name: String, val id: Int)
-        val navigationTitleList = listOf(
-            TitleItem("home", R.string.app_name),
-            TitleItem("general", R.string.ui_settings_general),
-            TitleItem("interface", R.string.ui_settings_interface),
-            TitleItem("miscellaneous", R.string.ui_settings_miscellaneous),
-            TitleItem("packages", R.string.ui_settings_packages)
-        )
-        return navigationTitleList.find { it.name == key }?.let { context.getString(it.id) }
+        @JvmStatic
+        fun getNavigationTitle(context: Context, key: String?): String {
+            return when (key) {
+                "home" -> context.getString(R.string.app_name)
+                "general" -> context.getString(R.string.ui_settings_general)
+                "interface" -> context.getString(R.string.ui_settings_interface)
+                "miscellaneous" -> context.getString(R.string.ui_settings_miscellaneous)
+                "packages" -> context.getString(R.string.ui_settings_packages)
+                else -> context.getString(R.string.app_name)
+            }
+        }
     }
 }

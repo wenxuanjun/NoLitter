@@ -1,10 +1,10 @@
 plugins {
-    id("com.android.application") version "8.0.0-alpha10" apply false
-    id("org.jetbrains.kotlin.android") version "1.7.21" apply false
-    id("com.google.dagger.hilt.android") version "2.43.2" apply false
-    id("org.jetbrains.kotlin.kapt") version "1.7.21" apply false
-    id("com.google.devtools.ksp") version "1.7.21-1.0.8" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.7.20" apply false
+    id("com.android.application") version "8.2.0-alpha01" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
+    id("com.google.dagger.hilt.android") version "2.45" apply false
+    id("org.jetbrains.kotlin.kapt") version "1.8.10" apply false
+    id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10" apply false
 }
 
 tasks.register("clean", Delete::class) {

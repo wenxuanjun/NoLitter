@@ -2,8 +2,11 @@ package lantian.nolitter.repository
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Build
+import androidx.core.content.PackageManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -64,6 +67,7 @@ class PreferenceRepository @Inject constructor(
         hideModule = dataStoreDataSource.getPreference("select_hideModule", true)
     )
 
+    @Suppress("DEPRECATION")
     suspend fun getInstalledPackageInfo(): List<InstalledPackageInfo> = withContext(Dispatchers.IO) {
         val packageManager = context.packageManager
         val allPackageInfo: ArrayList<InstalledPackageInfo> = ArrayList()

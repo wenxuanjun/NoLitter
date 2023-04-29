@@ -1,13 +1,18 @@
 package lantian.nolitter.views
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.theme.ApplicationTheme
 
@@ -21,7 +26,8 @@ fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
 
         DisposableEffect(navController) {
             val listener = NavController.OnDestinationChangedListener { controller, destination, _ ->
-                viewModel.getNavigationTitle(localContext, destination.route)?.let {
+                MainViewModel.getNavigationTitle(localContext, destination.route).let {
+                    // TopAppBar initialized here and updated in destination composable
                     viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
                         title = { Text(it) }, actions = {}
                     )
@@ -31,6 +37,9 @@ fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
             navController.addOnDestinationChangedListener(listener)
             onDispose { navController.removeOnDestinationChangedListener(listener) }
         }
+
+        // To display the content edge-to-edge, use the Insets API
+        TransparentSystemBars()
 
         Scaffold(
             topBar = {
@@ -42,6 +51,20 @@ fun AppUi(viewModel: MainViewModel = hiltViewModel()) {
             },
             content = { innerPadding -> Router(innerPadding, viewModel, navController) }
         )
+    }
+}
+
+@Composable
+fun TransparentSystemBars() {
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = !isSystemInDarkTheme()
+
+    DisposableEffect(systemUiController, useDarkIcons) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = useDarkIcons
+        )
+        onDispose {}
     }
 }
 

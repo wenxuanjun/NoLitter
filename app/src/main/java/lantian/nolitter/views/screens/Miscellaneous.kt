@@ -28,12 +28,12 @@ fun Miscellaneous(viewModel: MainViewModel) {
             PreferenceClickableItem(
                 text = stringResource(R.string.ui_settings_miscellaneous_source),
                 secondaryText = sourceLink,
-                onClick = { viewModel.intentToWebsite(context, sourceLink) }
+                onClick = { MainViewModel.intentToWebsite(context, sourceLink) }
             )
             PreferenceClickableItem(
                 text = stringResource(R.string.ui_settings_miscellaneous_lantian),
                 secondaryText = lantianLink,
-                onClick = { viewModel.intentToWebsite(context, lantianLink) }
+                onClick = { MainViewModel.intentToWebsite(context, lantianLink) }
             )
         }
     }

@@ -26,7 +26,11 @@ fun Router(innerPadding: PaddingValues, viewModel: MainViewModel, navController:
         composable("packages") { PackageList(navController, viewModel, it.getPackageViewModel(navController)) }
         composable("package/{packageName}") {
             val packageName = it.arguments?.getString("packageName") ?: ""
-            PackagePreference(packageName, viewModel, it.getPackageViewModel(navController))
+            PackagePreference(packageName, navController, viewModel, it.getPackageViewModel(navController))
+        }
+        composable("package/{packageName}/redirect") {
+            val packageName = it.arguments?.getString("packageName") ?: ""
+            PackageRedirect(packageName, navController, viewModel, it.getPackageViewModel(navController))
         }
     }
 }

@@ -41,7 +41,7 @@ fun Interface(viewModel: MainViewModel) {
             defaultValue = viewModel.getPreference("hide_icon", false),
             onChange = {
                 viewModel.setPreference("hide_icon", it)
-                viewModel.hideAppIcon(context, it)
+                MainViewModel.hideAppIcon(context, it)
             }
         )
     }
