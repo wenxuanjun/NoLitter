@@ -32,6 +32,7 @@ fun SelectAppsToolbarAction(
     onProcessPreferenceChange: (ProcessPackageInfoPreference) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
+
     IconButton(onClick = { showMenu = !showMenu }) {
         Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
     }
@@ -82,14 +83,30 @@ fun SelectAppsToolbarAction(
 @Composable
 fun CheckBoxDropdownMenuItem(
     text: String, checked: Boolean,
-    onShowMenuChange: () -> Unit, onCheckedChange: (Boolean) -> Unit,
+    onShowMenuChange: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     DropdownMenuItem(
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier.width(200.dp),
-        onClick = { onShowMenuChange(); onCheckedChange(!checked) },
-        trailingIcon = { Checkbox(checked = checked, onCheckedChange = null, modifier = Modifier.padding(end = 16.dp)) },
-        text = { Text(text = text, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 16.dp)) }
+        onClick = {
+            onShowMenuChange()
+            onCheckedChange(!checked)
+        },
+        trailingIcon = {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = null,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+        },
+        text = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
     )
 }
 
@@ -102,7 +119,19 @@ fun RadioButtonDropdownMenuItem(
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier.width(200.dp),
         onClick = { onShowMenuChange(); onSelectedChange() },
-        trailingIcon = { RadioButton(selected = selected, onClick = null, modifier = Modifier.padding(end = 16.dp)) },
-        text = { Text(text = text, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 16.dp)) }
+        trailingIcon = {
+            RadioButton(
+                selected = selected,
+                onClick = null,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+        },
+        text = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
     )
 }

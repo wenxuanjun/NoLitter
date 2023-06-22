@@ -3,13 +3,14 @@ package lantian.nolitter.views.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.widgets.PreferenceCheckBox
 import lantian.nolitter.views.widgets.PreferenceList
 
 @Composable
-fun General(viewModel: MainViewModel) {
+fun General(viewModel: MainViewModel = hiltViewModel()) {
     Column {
         PreferenceCheckBox(
             text = stringResource(R.string.ui_settings_forcedMode),

@@ -25,7 +25,9 @@ fun PreferenceGroup(title: String, content: @Composable () -> Unit) {
 fun PreferenceGroupHeader(title: String) {
     Box(
         contentAlignment = Alignment.CenterStart,
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 4.dp)
     ) {
         Text(
             text = title,

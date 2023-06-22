@@ -17,13 +17,15 @@ import lantian.nolitter.views.model.PackageViewModel
 import lantian.nolitter.views.screens.*
 
 @Composable
-fun Router(innerPadding: PaddingValues, viewModel: MainViewModel, navController: NavHostController) {
+fun Router(innerPadding: PaddingValues, viewModel: MainViewModel = hiltViewModel(), navController: NavHostController) {
     NavHost(navController = navController, startDestination = "home", modifier = Modifier.padding(innerPadding)) {
         composable("home") { Home(navController) }
         composable("general") { General(viewModel) }
         composable("interface") { Interface(viewModel) }
         composable("miscellaneous") { Miscellaneous(viewModel) }
-        composable("packages") { PackageList(navController, viewModel, it.getPackageViewModel(navController)) }
+        composable("packages") {
+            PackageList(navController, viewModel, it.getPackageViewModel(navController))
+        }
         composable("package/{packageName}") {
             val packageName = it.arguments?.getString("packageName") ?: ""
             PackagePreference(packageName, navController, viewModel, it.getPackageViewModel(navController))

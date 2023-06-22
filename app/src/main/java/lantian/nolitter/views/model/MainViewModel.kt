@@ -14,12 +14,14 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lantian.nolitter.MainActivity
 import lantian.nolitter.R
 import lantian.nolitter.modules.DataStoreManager
 import javax.inject.Inject
+import javax.inject.Singleton
 
 data class TopAppBarContent(
     var title: @Composable () -> Unit = {},

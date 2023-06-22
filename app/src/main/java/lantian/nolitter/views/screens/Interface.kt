@@ -8,13 +8,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.widgets.PreferenceCheckBox
 import lantian.nolitter.views.widgets.PreferenceList
 
 @Composable
-fun Interface(viewModel: MainViewModel) {
+fun Interface(viewModel: MainViewModel = hiltViewModel()) {
     Column {
         val themeOptions = mapOf(
             Pair("default", stringResource(R.string.ui_settings_theme_default)),

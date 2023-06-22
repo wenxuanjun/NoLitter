@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.widgets.PreferenceCheckBox
@@ -11,7 +12,7 @@ import lantian.nolitter.views.widgets.PreferenceClickableItem
 import lantian.nolitter.views.widgets.PreferenceGroup
 
 @Composable
-fun Miscellaneous(viewModel: MainViewModel) {
+fun Miscellaneous(viewModel: MainViewModel = hiltViewModel()) {
     Column {
         PreferenceGroup(stringResource(R.string.ui_settings_miscellaneous_advanced)) {
             PreferenceCheckBox(
