@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,6 +18,10 @@ val Context.dataStore by preferencesDataStore(name = "settings")
 class DataStoreManager @Inject constructor(@ApplicationContext private val context: Context) {
 
     private val dataStore = context.dataStore
+
+    fun <T> getPreferenceSync(key: String, defaultValue: T): T {
+        return runBlocking { getPreference(key, defaultValue) }
+    }
 
     @Suppress("UNCHECKED_CAST")
     suspend fun <T> getPreference(key: String, defaultValue: T): T {

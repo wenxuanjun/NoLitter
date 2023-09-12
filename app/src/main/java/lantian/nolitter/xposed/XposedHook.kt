@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.database.Cursor
+import android.database.MatrixCursor
 import android.net.Uri
 import android.os.Environment
 import app.softwork.serialization.csv.CSVFormat
@@ -20,8 +21,11 @@ import java.net.URI
 
 @Serializable
 data class XposedPreference(
-    val forcedMode: Boolean, val allowPublicDirs: Boolean,
-    val additionalHooks: Boolean, val redirectStyle: String, val debugMode: Boolean
+    val forcedMode: Boolean,
+    val allowPublicDirs: Boolean,
+    val additionalHooks: Boolean,
+    val redirectStyle: String,
+    val debugMode: Boolean
 )
 
 // The authority of the content resolver
@@ -103,6 +107,7 @@ class XposedHook : IXposedHookLoadPackage {
                     if (param.args[0] == null) return
                     applicationContext = param.args[0] as Context
                     initXposedPreferences(lpparam.packageName)
+                    initRedirectPath(xposedPreference.redirectStyle)
                     try {
                         XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, hookFileWithString)
                         XposedHelpers.findAndHookConstructor(File::class.java, String::class.java, String::class.java, hookFileWithStringAndString)
@@ -120,7 +125,6 @@ class XposedHook : IXposedHookLoadPackage {
     }
 
     private fun getReplacedPath(oldPath: String, storageDir: String, packageName: String): String {
-
         // Where the basic redirect path should be
         val absoluteRedirectPath = storageDir + redirectPath
 
@@ -177,13 +181,12 @@ class XposedHook : IXposedHookLoadPackage {
     private fun initXposedPreferences(packageName: String) {
         val xposedPreferenceCsv = resolveContent("content://$AUTHORITY/main/${packageName}").getString(0)
         xposedPreference = CSVFormat.decodeFromString(XposedPreference.serializer(), xposedPreferenceCsv)
-        initRedirectPath()
         printDebugLogs(packageName, "Initializing", "Preferences fetched: $xposedPreference")
     }
 
     @SuppressLint("SdCardPath")
-    private fun initRedirectPath() {
-        redirectPath = when (xposedPreference.redirectStyle) {
+    private fun initRedirectPath(redirectStyle: String) {
+        redirectPath = when (redirectStyle) {
             "data" -> "/Android/data/${applicationContext.packageName}/sdcard"
             "cache" -> "/Android/data/${applicationContext.packageName}/cache/sdcard"
             "external" -> "/Android/files/${applicationContext.packageName}"
@@ -192,14 +195,19 @@ class XposedHook : IXposedHookLoadPackage {
     }
 
     @SuppressLint("Recycle")
+    @OptIn(ExperimentalSerializationApi::class)
     private fun resolveContent(uriString: String): Cursor {
         val resolver = applicationContext.contentResolver
         val contentCursor = resolver.query(Uri.parse(uriString), null, null, null, null)
-        contentCursor?.let { while (it.moveToNext()) { return it } }
-        throw RuntimeException("Unable to fetch the content, url: $uriString")
-    }
 
-    private fun setPackageInstaller() {
-        /* TODO: Find some way to set the package installer of current app to NoLitter. */
+        // Should return exactly at the first row if the content exists
+        contentCursor?.let { while (it.moveToNext()) { return it } }
+
+        // Some apps on API30+ cannot resolve content, so we have to set a default value
+        // It will be removed after fixing the data transfer problem between the app and NoLitter
+        val defaultForUnsupported = XposedPreference(forcedMode = true, allowPublicDirs = false, true, "data", true)
+        XposedBridge.log("[NoLitter] Unable to resolve the content, url: $uriString")
+        val preferenceString = CSVFormat.encodeToString(XposedPreference.serializer(), defaultForUnsupported)
+        return MatrixCursor(arrayOf("value"), 1).apply { addRow(arrayOf(preferenceString)) }.apply { moveToNext() }
     }
 }

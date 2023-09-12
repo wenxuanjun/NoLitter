@@ -5,7 +5,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
+import lantian.nolitter.LocalActivity
 import lantian.nolitter.R
 import lantian.nolitter.views.model.MainViewModel
 import lantian.nolitter.views.model.PackageViewModel
@@ -16,11 +17,13 @@ import lantian.nolitter.views.widgets.PreferenceList
 
 @Composable
 fun PackagePreference(
-    packageName: String, navController: NavHostController,
-    viewModel: MainViewModel, packageViewModel: PackageViewModel
+    packageName: String,
+    packageViewModel: PackageViewModel,
+    viewModel: MainViewModel = hiltViewModel(LocalActivity.current),
+    navigateToCustomRedirect: (String) -> Unit
 ) {
     LaunchedEffect(true) {
-        viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+        viewModel.appBarContent = viewModel.appBarContent.copy(
             title = { Text(packageViewModel.getPackageInfo(packageName).appName) }
         )
         packageViewModel.getPackagePreference(packageName)
@@ -59,7 +62,7 @@ fun PackagePreference(
                 PreferenceClickableItem(
                     text = "Customize Redirect",
                     secondaryText = "Redirects specified files or directories to a custom location",
-                    onClick = { navController.navigate("package/${packageName}/redirect") },
+                    onClick = { navigateToCustomRedirect(packageName) },
                 )
             }
         }

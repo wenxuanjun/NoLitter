@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,10 +24,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import lantian.nolitter.LocalActivity
 import lantian.nolitter.R
 import lantian.nolitter.repository.InstalledPackageInfo
 import lantian.nolitter.views.model.MainViewModel
@@ -39,9 +38,9 @@ import lantian.nolitter.views.widgets.SelectAppsToolbarAction
 @Composable
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 fun PackageList(
-    navController: NavController,
-    viewModel: MainViewModel,
-    packageViewModel: PackageViewModel
+    packageViewModel: PackageViewModel,
+    viewModel: MainViewModel = hiltViewModel(LocalActivity.current),
+    navigateToPackage: (String) -> Unit
 ) {
     // The packageInfo will be empty until it is loaded
     if (packageViewModel.packageInfo.isEmpty()) { LoadingScreen() } else {
@@ -51,19 +50,19 @@ fun PackageList(
         val (processPreference, setProcessPreference) = remember { mutableStateOf(defaultProcessPreference) }
 
         // Need to remember the title so that it can be restored when the search is closed
-        val rememberedTitle = remember { viewModel.topAppBarContent.title }
+        val rememberedTitle = remember { viewModel.appBarContent.title }
 
         // Initialize the search text field
         var searchEnabled by remember { mutableStateOf(false) }
         val (searchText, setSearchText) = remember { mutableStateOf("") }
         val onSearchClosed = {
             searchEnabled = false; setSearchText("")
-            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(title = rememberedTitle)
+            viewModel.appBarContent = viewModel.appBarContent.copy(title = rememberedTitle)
         }
 
         val onSearchIconClick = {
             searchEnabled = true
-            viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
+            viewModel.appBarContent = viewModel.appBarContent.copy(
                 title = {
                     AppBarTextField(
                         value = searchText,
@@ -75,25 +74,27 @@ fun PackageList(
             )
         }
 
-        // Initialize the toolbar actions
-        viewModel.topAppBarContent = viewModel.topAppBarContent.copy(
-            actions = {
-                if (!searchEnabled) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clickable { onSearchIconClick() }
+        LaunchedEffect(true) {
+            // Initialize the toolbar actions
+            viewModel.appBarContent = viewModel.appBarContent.copy(
+                actions = {
+                    if (!searchEnabled) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .clickable { onSearchIconClick() }
+                        )
+                    }
+                    SelectAppsToolbarAction(
+                        packageViewModel = packageViewModel,
+                        processPreference = processPreference,
+                        onProcessPreferenceChange = setProcessPreference
                     )
                 }
-                SelectAppsToolbarAction(
-                    packageViewModel = packageViewModel,
-                    processPreference = processPreference,
-                    onProcessPreferenceChange = setProcessPreference
-                )
-            }
-        )
+            )
+        }
 
         LazyColumn {
             val filteredItems = packageViewModel.packageInfo
@@ -117,7 +118,7 @@ fun PackageList(
                 PreferenceClickableCheckbox(
                     text = item.appName, secondaryText = item.packageName,
                     defaultValue = packageViewModel.isCustomizedPackages(item.packageName),
-                    onClick = { navController.navigate("package/${item.packageName}") },
+                    onClick = { navigateToPackage(item.packageName) },
                     onChange = { packageViewModel.onChangeCustomizedPackages(item.packageName, it) },
                     modifier = Modifier.animateItemPlacement(),
                     icon = {

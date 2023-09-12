@@ -59,20 +59,22 @@ class MainProvider : ContentProvider() {
         val packagePreference = runBlocking { getPackagePreference(uri.pathSegments[1]) }
         val isCustomizedPackages = runBlocking { isCustomizedPackages(uri.lastPathSegment!!) }
         val xposedPreference = runBlocking {
-            CSVFormat.encodeToString(XposedPreference.serializer(),
+            CSVFormat.encodeToString(
+                XposedPreference.serializer(),
                 if (isCustomizedPackages) XposedPreference(
                     forcedMode = packagePreference.forcedMode,
                     allowPublicDirs = packagePreference.allowPublicDirs,
                     additionalHooks = packagePreference.additionalHooks,
                     redirectStyle = packagePreference.redirectStyle,
-                    debugMode = runBlocking { getPreference("debug_mode", false) }
+                    debugMode = getPreference("debug_mode", false)
                 )
                 else XposedPreference(
                     forcedMode = getPreference("forced_mode", false),
                     allowPublicDirs = getPreference("allow_public_dirs", false),
                     additionalHooks = getPreference("additional_hooks", false),
                     redirectStyle = getPreference("redirect_style", "data"),
-                    debugMode = runBlocking { getPreference("debug_mode", false) })
+                    debugMode = getPreference("debug_mode", false)
+                )
             )
         }
         return generateCursor(xposedPreference)

@@ -1,12 +1,9 @@
 plugins {
-    id("com.android.application") version "8.2.0-alpha09" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.21" apply false
-    id("com.google.dagger.hilt.android") version "2.46.1" apply false
-    id("org.jetbrains.kotlin.kapt") version "1.8.21" apply false
-    id("com.google.devtools.ksp") version "1.8.21-1.0.11" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21" apply false
+    id("com.android.application") version "8.3.0-alpha02" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.10" apply false
+    id("com.google.dagger.hilt.android") version "2.48" apply false
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13" apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10" apply false
 }
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
-}
+true // Needed to make the Suppress annotation work for the plugins block

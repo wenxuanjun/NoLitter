@@ -6,3 +6,13 @@ import androidx.compose.runtime.Composable
 fun DirectoryFilePicker() {
 
 }
+
+@Composable
+fun DirectoryFilePickerBreadcrumb() {
+
+}
+
+@Composable
+fun DirectoryFilePickerList() {
+
+}
