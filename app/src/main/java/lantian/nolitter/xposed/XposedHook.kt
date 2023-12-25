@@ -190,6 +190,7 @@ class XposedHook : IXposedHookLoadPackage {
             "data" -> "/Android/data/${applicationContext.packageName}/sdcard"
             "cache" -> "/Android/data/${applicationContext.packageName}/cache/sdcard"
             "external" -> "/Android/files/${applicationContext.packageName}"
+            "media" -> "/Android/media/${applicationContext.packageName}/sdcard"
             else -> throw IllegalArgumentException("Invalid redirect style")
         }
     }
