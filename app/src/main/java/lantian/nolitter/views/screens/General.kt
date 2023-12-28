@@ -35,7 +35,12 @@ fun General(viewModel: MainViewModel = hiltViewModel(LocalActivity.current)) {
             text = stringResource(R.string.ui_settings_redirectStyle),
             secondaryText = stringResource(R.string.ui_settings_redirectStyle_description),
             dialogTitle = stringResource(R.string.ui_settings_redirectStyle),
-            options = mapOf("data" to "Data", "cache" to "Cache", "external" to "External"),
+            options = mapOf(
+                "data" to "Data",
+                "cache" to "Cache",
+                "external" to "External",
+                "media" to "Media"
+            ),
             defaultValue = viewModel.getPreference("redirect_style", "data"),
             onSubmit = { viewModel.setPreference("redirect_style", it) }
         )
