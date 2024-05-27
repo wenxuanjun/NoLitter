@@ -1,0 +1,34 @@
+[plugins]
+android-application = { id = "com.android.application", version = "8.4.1" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.0.0" }
+jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version = "2.0.0" }
+google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version = "2.51.1" }
+google-devtools-ksp = { id = "com.google.devtools.ksp", version = "2.0.0-1.0.21" }
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "2.0.0" }
+
+[libraries]
+xposed-api = { group = "de.robv.android.xposed", name = "api", version = "82" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.13.1" }
+
+ui = { group = "androidx.compose.ui", name = "ui", version = "1.6.7" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling", version = "1.6.7" }
+ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+animation = { module = "androidx.compose.animation:animation", version = "1.6.7" }
+material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.1" }
+material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version = "1.6.7" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
+
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version = "2.8.0" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version = "2.7.7" }
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version = "0.34.0" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.34.0" }
+
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version = "1.1.1" }
+room-ktx = { module = "androidx.room:room-ktx", version = "2.6.1" }
+room-compiler = { module = "androidx.room:room-compiler", version = "2.6.1" }
+
+hilt-android = { module = "com.google.dagger:hilt-android", version = "2.51.1" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version = "1.2.0" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version = "2.51.1" }
+
+kotlinx-serialization-csv = { module = "app.softwork:kotlinx-serialization-csv", version = "0.0.18" }
