@@ -1,22 +1,22 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.jetbrains.kotlin.compose)
-    alias(libs.plugins.google.dagger.hilt.android)
-    alias(libs.plugins.google.devtools.ksp)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.dagger.hilt)
+    alias(libs.plugins.google.devtools)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    compileSdk = 34
     namespace = "lantian.nolitter"
+    compileSdk = 35
     buildFeatures.compose = true
     kotlinOptions.jvmTarget = "17"
 
     defaultConfig {
         applicationId = "lantian.nolitter"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 24
         versionName = "1.6.0"
         resourceConfigurations.addAll(listOf("en-rUS", "zh-rCN"))
@@ -40,10 +40,10 @@ dependencies {
     implementation(libs.core.ktx)
 
     // Jetpack Compose
-    implementation(libs.ui)
-    implementation(libs.ui.tooling)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.animation)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.animation)
     implementation(libs.material3)
     implementation(libs.material.icons.extended)
     implementation(libs.activity.compose)

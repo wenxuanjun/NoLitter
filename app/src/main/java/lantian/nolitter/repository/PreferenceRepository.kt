@@ -64,20 +64,21 @@ class PreferenceRepository @Inject constructor(
         hideModule = dataStoreDataSource.getPreference("select_hideModule", true)
     )
 
-    @Suppress("DEPRECATION")
     suspend fun getInstalledPackageInfo(): List<InstalledPackageInfo> = withContext(Dispatchers.IO) {
         val packageManager = context.packageManager
         val allPackageInfo: ArrayList<InstalledPackageInfo> = ArrayList()
         for (installedPackage in packageManager.getInstalledPackages(PackageManager.GET_META_DATA)) {
             val applicationInfo = installedPackage.applicationInfo
-            allPackageInfo.add(InstalledPackageInfo(
-                appName = applicationInfo.loadLabel(packageManager).toString(),
-                appIcon = applicationInfo.loadIcon(packageManager),
-                isSystem = applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0,
-                isModule = applicationInfo.metaData != null && applicationInfo.metaData.containsKey("xposedminversion"),
-                packageName = applicationInfo.packageName,
-                firstInstallTime = installedPackage.firstInstallTime
-            ))
+            if (applicationInfo != null) {
+                allPackageInfo.add(InstalledPackageInfo(
+                    appName = applicationInfo.loadLabel(packageManager).toString(),
+                    appIcon = applicationInfo.loadIcon(packageManager),
+                    isSystem = applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0,
+                    isModule = applicationInfo.metaData != null && applicationInfo.metaData.containsKey("xposedminversion"),
+                    packageName = applicationInfo.packageName,
+                    firstInstallTime = installedPackage.firstInstallTime
+                ))
+            }
         }
         return@withContext allPackageInfo
     }

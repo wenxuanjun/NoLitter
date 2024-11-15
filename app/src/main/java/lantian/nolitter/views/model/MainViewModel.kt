@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,7 +36,6 @@ private val appBarTitles = mapOf(
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val dataStore: DataStoreManager) : ViewModel() {
-
     var appBarContent by mutableStateOf(AppBarContent())
     var currentAppTheme by mutableStateOf(dataStore.getPreferenceSync("theme", "default"))
 
@@ -45,7 +43,7 @@ class MainViewModel @Inject constructor(private val dataStore: DataStoreManager)
         @JvmStatic
         fun intentToWebsite(context: Context, link: String) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-            startActivity(context, intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null)
+            context.startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null)
         }
 
         @JvmStatic

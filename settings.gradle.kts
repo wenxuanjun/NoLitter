@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-include(":app")
 rootProject.name = "NoLitter"
+include(":app")

@@ -120,7 +120,7 @@ fun PackageList(
                     defaultValue = packageViewModel.isCustomizedPackages(item.packageName),
                     onClick = { navigateToPackage(item.packageName) },
                     onChange = { packageViewModel.onChangeCustomizedPackages(item.packageName, it) },
-                    modifier = Modifier.animateItemPlacement(),
+                    modifier = Modifier.animateItem(),
                     icon = {
                         Image(
                             painter = rememberDrawablePainter(item.appIcon),

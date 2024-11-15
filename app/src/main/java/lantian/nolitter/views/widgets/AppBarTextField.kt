@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
@@ -45,7 +44,7 @@ fun AppBarTextField(
     val interactionSource = remember { MutableInteractionSource() }
 
     // Make sure there is no background color in the decoration box
-    val colors = TextFieldDefaults.textFieldColors(containerColor = Color.Unspecified)
+    val colors = TextFieldDefaults.colors()
 
     // If color is not provided via the text style, use content color as a default
     val textColor = textStyle.color.takeOrElse { MaterialTheme.colorScheme.onSurface }
@@ -61,8 +60,7 @@ fun AppBarTextField(
     // Combine two thing into one
     val trueOnValueChange: (String) -> Unit = { inputTextValue = it; onValueChange(it) }
 
-    CompositionLocalProvider(LocalTextSelectionColors provides LocalTextSelectionColors.current) {
-        @OptIn(ExperimentalMaterial3Api::class)
+    CompositionLocalProvider(LocalTextSelectionColors provides colors.textSelectionColors) {
         BasicTextField(
             value = inputTextValue,
             modifier = Modifier
@@ -78,7 +76,7 @@ fun AppBarTextField(
             interactionSource = interactionSource,
             singleLine = true,
             decorationBox = { innerTextField ->
-                TextFieldDefaults.TextFieldDecorationBox(
+                TextFieldDefaults.DecorationBox(
                     value = inputTextValue,
                     visualTransformation = VisualTransformation.None,
                     innerTextField = innerTextField,

@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PackageViewModel @Inject constructor(private val preferenceRepository : PreferenceRepository) : ViewModel() {
-
     var packageInfo by mutableStateOf(listOf<InstalledPackageInfo>())
     var currentPackagePreference: PackagePreference? by mutableStateOf(null)
     var customizedPackages: List<String> = listOf()
