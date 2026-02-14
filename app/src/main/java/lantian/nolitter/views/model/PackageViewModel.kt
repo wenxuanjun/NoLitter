@@ -31,10 +31,6 @@ class PackageViewModel @Inject constructor(private val preferenceRepository : Pr
         return packageInfo.first { it.packageName == packageName }
     }
 
-    fun <T> getPreference(key: String, defaultValue: T): T {
-        return runBlocking { preferenceRepository.getPreference(key, defaultValue) }
-    }
-
     fun <T> setPreference(key: String, value: T) {
         return runBlocking { preferenceRepository.setPreference(key, value) }
     }

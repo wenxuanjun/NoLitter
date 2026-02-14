@@ -6,12 +6,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-import android.net.Uri
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +42,7 @@ class MainViewModel @Inject constructor(private val dataStore: DataStoreManager)
     companion object {
         @JvmStatic
         fun intentToWebsite(context: Context, link: String) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            val intent = Intent(Intent.ACTION_VIEW, link.toUri())
             context.startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK), null)
         }
 

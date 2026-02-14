@@ -24,8 +24,8 @@ private const val AUTHORITY = "lantian.nolitter.provider"
 @EntryPoint
 @InstallIn(SingletonComponent::class)
 interface ContentProviderEntryPoint {
-    var dataStoreDataSource: DataStoreManager
-    var databaseDataSource: PackagePreferenceDao
+    val dataStoreDataSource: DataStoreManager
+    val databaseDataSource: PackagePreferenceDao
 }
 
 class MainProvider : ContentProvider() {

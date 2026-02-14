@@ -16,7 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://jcenter.bintray.com")
+        maven("https://api.xposed.info")
     }
 }
 
